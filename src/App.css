@@ -1,0 +1,1082 @@
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                    APP 
+------------------------------------------------------------  
+------------------------------------------------------------  
+*/
+body{ 
+    font-size: 0.5em;
+}
+.App {
+text-align: center;
+margin: 0;
+height: 100vh;
+width: 100vw;
+background: url('./res/images/stockBG.jpeg') no-repeat center center fixed; /* change this in case of overflow*/
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;
+overflow: hidden;
+}
+
+.app-logo{
+    height: 7em;
+    width: 7em;
+    padding: 1em;
+}
+
+#record-label{
+animation: App-logo-spin infinite 2s linear;
+}
+#info-icon{
+    position: absolute;
+    right: 0;
+    margin: 0.5em;
+}
+
+.loading-logo {
+    height: 6rem;
+    animation: App-logo-spin infinite 2s ease-in-out;
+}
+#logo-container{
+position: absolute;
+top: 40vh;
+left: 50vw;
+transform: translate(-50%, -50%);
+font-family: 'sofia_problack';
+color: #1ED660;
+}
+#loading-title{
+    font-size: 4em;
+}
+#loading-message{
+    font-size: 2em;
+}
+.loading-container, .container-w-hostbar{
+    height: 100vh;
+    width: 100vw;
+    background:rgba(0,0,0,0.7);
+}
+
+
+@keyframes App-logo-spin {
+from {
+    transform: rotate(0deg);
+}
+to {
+    transform: rotate(360deg);
+}
+}
+
+
+
+.list-icon-container, .popup-close-icon{
+height: 1.5rem;
+width: 1.5rem;
+margin: auto 0;
+-webkit-transition: transform 0.3s ease;
+-moz-transition: transform 0.3s ease;
+-o-transition: transform 0.3s ease;
+transition: transform 0.3s ease;
+
+}
+
+.heading{
+font-family: 'sofia_problack';
+font-size: 1.35rem;
+padding: 2em; 
+color: white;
+}
+
+#icon-active{
+    transform: rotate(90deg);
+    cursor: pointer;
+    fill: #1ED660;
+}
+
+#menu-icon:hover, #list-icon:hover, #list-icon-added, #ca-popup-close-icon:hover, #active-icon{
+fill: #1ED660;
+}
+
+.header-container{
+position: absolute;
+top: 0;
+right: 0;
+margin:1em;
+font-family: 'sofia_problack';
+font-size: 2em;
+color: #1ED660;
+}
+
+.search-container{
+display: grid;
+grid-template-columns: 8fr 2fr;
+font-family: 'sofia_proregular';
+background: white;
+border-radius: 3em;
+margin: auto 0;
+max-width: 300px;
+}
+
+#spotify-search-input{
+outline: none;
+border:none;
+padding: 0.3em 1em;
+border-radius: 2em;
+font-size: 1rem;
+
+}  
+
+.search-button{
+margin: auto 0;
+padding: 0 1em;
+border-left: solid #1ED660 1px;
+font-size: 1rem;
+color: black;
+
+}
+.search-button:hover{
+color: #1ED660;
+cursor: pointer;
+}
+
+
+
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                    PLAYER
+------------------------------------------------------------  
+------------------------------------------------------------  
+*/
+
+.spotify-player-container{
+    display: grid;
+    justify-content: center;
+    padding: 2em 2em 4em 2em;
+}
+.player-icon{
+fill: #1ED660;
+height: 4em;
+}
+
+#player-prev{
+transform: rotate(180deg);
+}
+
+.control-icon{
+height: 3rem;
+width: 3rem;
+fill: #1ED660;
+border-radius: 3em;
+border: 2px solid #1ED660;
+}
+.control-icon:hover{
+fill: white;
+cursor: pointer;
+border: 2px solid white;
+}
+.vote-icon{
+height: 3rem;
+width: 3rem;
+stroke: #1ED660;
+fill: rgba(0,0,0,0);
+}
+.vote-icon:hover{
+    height: 3rem;
+    width: 3rem;
+    stroke: #1ED660;
+    fill: #1ED660;
+    cursor: pointer;
+}
+.vote-icon-host{
+    height: 1.2em;
+    width: 1.2em;
+    fill: #1ED660;
+    padding: 0 0.2em;
+}
+.votes-host{
+    color: #1ED660;
+    font-size: 1.5em;
+    font-family: 'sofia_problack';
+    display: inline-flex;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 2.4em 0.5em;
+    background: rgba(25, 20, 20, 0.8);
+    padding: 0.2em 0.4em;
+    border-radius: 0.5em;
+
+}
+#vote-select{
+    fill: #1ED660;
+}
+#play{
+height: 5rem;
+width: 5rem;
+}
+#pause{
+height: 5rem;
+width: 5rem;
+}
+.controls-container{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+align-items: center;
+padding-bottom: 2em;
+}
+#guest-controls-container{
+    grid-template-columns: 1fr 1fr;
+    padding-bottom: 3em;
+}
+.track-container{
+    font-family: 'sofia_problack';
+    color: white;
+    margin: auto;
+}
+
+.track-art{
+    margin: auto;
+    border-radius: 0.5em;
+    -webkit-box-shadow: 0px 0px 16px -1px rgba(0,0,0,0.8);
+    -moz-box-shadow: 0px 0px 16px -1px rgba(0,0,0,0.8);
+    box-shadow: 0px 0px 16px -1px rgba(0,0,0,0.8);
+}
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                        POPUP 
+------------------------------------------------------------  
+------------------------------------------------------------  
+*/
+
+.ca-popup-container{
+height: 100vh;
+width: 100vw;
+background: rgba(25, 20, 20, 0.9);
+position: absolute;
+z-index: 10;
+}
+.ca-popup{
+font-family: 'sofia_proregular';
+display: grid;
+padding: 1em;
+position: relative;
+width: 20em;
+height: 25em;
+background: white;
+top: 50vh;
+left: 50vw;
+transform: translate(-50%, -50%);
+border-radius: 1em;
+text-align: left;
+z-index: 1;
+
+}
+#ca-popup-title{
+display: grid;
+line-height: 2.5rem;
+}
+#ca-popup-close-icon{
+position: absolute;
+margin: 0.5rem;
+right: 0;
+cursor: pointer;
+fill: #1ED660;
+}
+#ca-popup-action{
+display: grid;
+
+}
+#ca-popup-button{
+color: black;
+text-align: center;
+margin: auto 0;
+padding: 1em 1em;
+}
+.ca-popup-message{
+font-size: 1.2em;
+padding: 0 1em;
+}
+button{
+    background: none;
+    border: none;
+}
+button:focus{
+    background: none;
+    border: none;
+}
+
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                        LOGIN PAGE 
+------------------------------------------------------------  
+------------------------------------------------------------  
+*/
+.login-page-container{
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(1, 1, 1, 0.7);
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+}
+.login-page-logo{
+    margin-top: 2em;
+}
+.login-page-title{
+    padding-top: 1rem;
+    margin: 0;
+    font-family: 'sofia_problack';
+    font-size: 4em; /* changed */
+    color: #1ED660;
+}
+.logo{
+    margin-top: 1em;
+    height: 5em; /* changed */
+    width: 5em; /* changed */
+}
+
+#spotify-login-tip{
+    margin: 0;
+    font-family: 'sofia_problack';
+    font-size: 2em; /* changed */
+    padding-bottom: 1em;
+    color: white;
+
+}
+.button-container
+{
+
+    text-decoration: none;
+    background-color: transparent;
+    border: solid rgba(30, 214, 96, 1) 2px;
+    cursor: pointer !important;
+    color:white;
+    transition-delay:0s, 0s;
+    transition-duration:0.4s, 0.4s;
+    transition-property:border-color, background-color;
+    transition-timing-function:ease, ease;
+    
+    padding: 0.5em 2em; /*changed*/
+    border-radius: 4em;
+}
+.button-container:hover
+{
+    background-color: rgba(30, 214, 96, 1);
+    border: solid rgba(30, 214, 96, 1) 2px;
+    cursor: pointer !important;
+    color:white;
+    transition-delay:0s, 0s;
+    transition-duration:0.4s, 0.4s;
+    transition-property:border-color, background-color;
+    transition-timing-function:ease, ease;
+}
+
+#spotify-button{
+    font-family: 'sofia_proregular';
+    /* changed */
+}
+/*---------------------------------------------------------*/
+
+
+
+
+
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                        SESSION TYPE PAGE 
+------------------------------------------------------------  
+------------------------------------------------------------  
+*/
+.header-logo{
+    height: 5em;
+    width: 5em;
+}
+.header-title, .popup-title{
+font-family: 'sofia_problack';
+font-size: 3em;
+padding: 0.2em;
+color: #1ED660;
+}
+.session-logo{
+    height: 4em;
+    width: 4em;
+}
+.session-buttons{
+    width: 50%;
+    border-radius: 2em;
+    background: #1ED660;
+    margin: 0 auto;
+    text-align: center;
+    
+}
+.button-text{
+    margin: auto;
+}
+
+.card-info{   /*changed*/
+font-family: 'sofia_proregular';
+padding: 1em;   
+color: black;
+}
+
+
+.divider{
+    max-height: 0.1rem;
+    background-color: black;
+    width: 80%;
+    margin: 0 auto;
+}
+.card-title{
+margin: auto;
+font-family: 'sofia_problack';
+font-size: 2em;  /*changed*/
+padding: 0.1em; /*changed*/
+text-decoration: underline;
+}
+
+.card-icon-container{
+    margin: auto;
+}
+.card-icon{       /* changed */
+    height: 5em; 
+}
+.session-container {
+    display: grid;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0,0,0,0.7);
+    grid-template-rows: 1fr 4fr;
+}
+/*changed*/
+#session-container-split, #import{
+grid-template-rows: 12vh 6vh 82vh;
+}
+.session-title{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5em;
+
+}
+.session-header{
+    margin: 1em auto;
+}
+#session-info{
+font-family: 'sofia_problack';
+font-size: 2em; /*changed*/
+margin: auto;
+color: white;
+}
+.session-types{
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    justify-content: center;
+    margin: 1em auto; /*changed*/
+    
+
+}
+.session-types-card{
+    /* width: 21rem;
+    height: 28rem; */     /*changed*/
+    padding: 1em;
+    border-radius: 1em;
+    background-color: white;
+    color: rgba(30, 214, 96);
+    display: grid;
+    margin: 1em;
+    /* grid-template-rows: 0.8fr 0.3fr 1.5fr 2fr; changed */
+    transition-delay:0s, 0s;
+    transition-duration:0.4s, 0.4s;
+    transition-property:color, background-color;
+    transition-timing-function:ease, ease;
+    
+    
+}
+
+.session-types-card:hover{
+background-color: rgba(30, 214, 96);
+transition-delay:0s, 0s;
+transition-duration:0.4s, 0.4s;
+transition-property:color, background-color;
+transition-timing-function:ease, ease;
+cursor: pointer;
+color: white;
+}
+/*          ROOM          */
+
+.room-card{
+display: grid;
+grid-template-columns: 1fr;
+justify-content: center;
+margin: 0 auto;
+}
+.room-icon{
+height: 8rem;
+}
+.room-card-title{
+font-family: 'sofia_problack';
+font-size: 1.5em; /*changed*/
+color: white;
+margin: auto;
+}
+#room-code-card{
+display: grid;
+justify-items: center;
+grid-template-rows: 1fr 0.5fr 0.5fr 0.5fr 1fr;
+}
+
+#room-code-input{
+font-family: 'sofia_problack';
+font-size: 1em; /*changed*/
+text-align: center;
+border-radius: 1em;
+outline: none;
+border:none;
+text-transform:uppercase;
+
+}
+.input-invalid{
+border: 2px solid red;
+}
+
+.room-text-tip{
+font-family: 'sofia_proregular';
+font-size: 1em;     /*changed*/
+color: white;
+margin: auto;
+}
+
+#room-text-error{
+color: red;
+}
+
+
+#continue-button{ /*changed*/
+align-self: baseline;
+}
+/* .session-types-card:hover ~ .card-title {
+color: white;
+} */
+
+/*
+
+for mobile, change: 
+-header logo
+-sf
+-sf
+-sf
+
+*/
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                        Spotify Search
+------------------------------------------------------------  
+------------------------------------------------------------  
+*/
+
+#spotify-results-container{
+padding: 0.5em 1em;
+}
+.dashboard-search{
+    font-size: 1rem;
+    overflow: auto;
+}
+.search-result-title{
+font-family: 'sofia_problack';
+font-size: 2em;
+color: #1ED660;
+padding: 0.5em;
+}
+.result-container{
+border-radius: 1em;
+margin-bottom: 1em;
+background: rgba(1,1, 1, 0.6);
+}
+#list-dark{
+    border-radius: 1em;
+
+    background: rgba(1,1, 1, 0.6);
+    height: 72vh;
+    padding: 0.5em 0;
+}
+#list-small{
+    max-height: 60vh;
+}
+#list-showmore-button{
+width: 20%;
+margin: 1em auto;
+}
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                        LIST 
+------------------------------------------------------------  
+------------------------------------------------------------  
+*/
+
+.list-container, .search-results-container{
+    overflow: auto;
+    max-height: inherit;
+    max-height: 72vh;
+}
+
+#list-context{
+    max-height: inherit;
+}
+.list-item{
+    display: grid;
+    grid-template-columns: 1fr 5fr 1fr;
+    padding: 0.5em 0.5em 0.5em 1em;
+    color: white;
+    font-family: 'sofia_proregular';
+}
+.list-content-container{
+    text-align: left;
+    margin: auto 1em;
+    cursor: pointer;
+}
+.list-content{
+padding-bottom: 0.1em;
+}
+.list-subcontent{
+font-size: 0.7em;
+}
+.list-selection-container{
+    margin: auto;
+}
+
+.list-item-image, .import-header-logo{
+    height: 3rem;
+    width: 3rem;
+}
+.list-image{
+    margin: auto;
+}
+
+#list-play-icon{
+    fill:white;
+    border-radius: 3em;
+    border: 1px solid white;
+    cursor: pointer;
+}
+#list-play-icon:hover{
+    fill:#1ED660;
+    border: 1px solid #1ED660;
+}
+
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                        TRACK IMPORT 
+------------------------------------------------------------  
+------------------------------------------------------------  
+*/
+
+
+
+.import-container{
+display: grid;
+margin: auto;
+background: rgba(25, 20, 20, 0.7);
+grid-template-rows: 4em auto;
+padding: 4em 2em;
+height: 100vh;
+box-sizing: border-box;
+position: absolute;
+width: 100vw;
+}
+#import-header-title{
+font-size: 2em;
+}
+#import-info{
+font-family: 'sofia_problack';
+color: white;
+margin: auto;
+}
+
+.import-main-container{
+display: grid;
+}
+
+#import-w-sidebar{
+    /*change*/
+    grid-template-columns: 15% 85%;
+}
+
+#import-head{
+padding: 1em 0.5em 0.5em 0.5em;
+margin: 0 0.4em 0.5em 0.4em;
+border-bottom: 1px solid white;
+}
+
+#import-header-container{
+display: grid;
+grid-template-columns: 1fr 10fr 3fr;
+font-size: 1em;
+margin: auto 0;
+padding: 0 0.5em;
+}
+
+.mobile-import-container{
+display: inline-flex;
+justify-content: flex-end;
+/* padding: 0.7em 0.5em 0.2em 1em; */
+}
+.mobile-import-icons{
+
+}
+
+.icon-container{
+    display: inline-flex;
+    margin: auto 0;
+}
+
+.mobile-icon-container{
+padding: 0 0.5em;
+}
+
+
+.import-library-container{
+text-align: unset;
+border-radius: 1em;
+background: rgba(255,255,255,0.1);
+font-family: 'sofia_proregular';
+}
+
+.import-library-button{
+cursor: pointer;
+color: white;
+margin-bottom: 0.5em;
+border-radius: 0.75em;
+}
+
+.import-library-button-desc{
+padding: 0.5em;
+}
+
+.import-library-button:hover, .show-queue-button:hover, #active, .popup-button:hover, .list-showmore:hover{
+background-color: #1ED660;
+color: black;
+}
+
+.import-icons{
+    height: 2em;
+    width: 2em;
+    fill: #1ED660;
+    cursor: pointer;
+}
+#guest-logo{
+    padding-right: 1em;
+}
+#start-logo, .dash-logo, .home-icon{
+    fill: #1ED660;
+    height: 2.2em;
+    width:  2.2em;
+    margin: auto 0;
+}
+.import-icons:hover, #start-logo:hover, .dash-logo:hover, .home-icon:hover, #menu-icon, #list-icon, #list-icon-added:hover{
+    fill: white;
+    cursor: pointer;
+}
+
+
+
+.popup-button, .list-showmore{
+font-family: 'sofia_proregular';
+font-size: 1em;
+border-radius: 2em;
+border: solid #1ED660 1px;
+color: white;
+padding: 0.5em 1em;    
+cursor: pointer;
+
+}
+.show-queue-button{
+display: none;
+}
+
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                        DASHBOARD 
+------------------------------------------------------------  
+------------------------------------------------------------  
+*/
+
+
+.dashboard-container{
+    background-color: rgba(0,0,0,0.7);
+    height: 100vh;
+    width: 100vw; /*change this on mobile to 100*/ 
+    display: grid;
+    grid-template-rows: 3em auto;
+    
+}
+
+.dashboard-header{
+    font-family: 'sofia_problack';
+    color: #1ED660;
+    padding: 0 0.5em;
+    background: rgba(25, 20, 20, 0.8);
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    position: absolute;
+    width: 100%;
+    box-sizing: border-box;
+    height: 3em;
+    z-index: 10;
+}
+#dashboard-header-dark{
+    background: rgba(25, 20, 20, 0.985);
+}
+
+.dashboard-roominfo{
+    display: inline-flex;
+}
+
+.sidebar-container{
+    height: 100vh;
+    position: absolute;
+    padding-top: 3em;
+    box-sizing: border-box;
+    z-index: 1;
+}
+#sidebar-home-icon{
+    right: 0;
+    margin: 0.5rem;
+    position: absolute;
+}
+.sidebar-context-title{
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+    text-decoration: underline;
+    color: #1ED660;
+}
+.dashboard-view-container{ /*change*/
+    display: grid;
+    height: 100vh;
+    padding-top: 3em;
+}
+#dashboard-menu-icon{
+    position: absolute;
+    margin: 0.5rem;
+    left: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+#dashboard-w-sidebar{
+    grid-template-columns: 15em auto;
+}
+
+#dashboard-w-queue, #dashboard-w-search{
+    grid-template-columns: 25em auto;
+}
+
+#host-roomcode{
+    margin: auto 0.5rem; 
+    font-size: 1.5em;
+}
+
+.dashboard-logo{
+    height: 2em;
+    width: 2em;
+    margin: auto 0;
+}
+.dashboard-title{
+    font-family: 'sofia_proregular';
+    margin: auto;
+    font-size: 1.3em;
+    color:white;
+}
+
+.dashboard-settings-container{
+    display: inline-flex;
+    justify-content: flex-end;
+}
+
+.dashboard-sidebar{
+    background: rgba(25, 20, 20, 0.8);
+    padding-bottom: 1em;
+    font-family: 'sofia_problack';
+    color: white;
+    display: grid;
+    height: 100%;
+    box-sizing: border-box;
+}
+.options-container{
+    margin-top: 2.5rem;
+    padding: 1em;
+    font-size: 1.3em;
+}
+.options{
+    padding: 0.5em;
+    border-bottom: 1px solid #1ED660;
+    cursor: pointer;
+}
+.options:hover{
+    color: #1ED660;
+    /* text-decoration: underline; */
+
+}
+
+/* #settings-logo{
+    fill: #1ED660;
+    height: 2em;
+} */
+/* #settings-logo:hover{
+    cursor: pointer;
+    fill: white;
+} */
+
+/*---------------------------------------------------------- 
+------------------------------------------------------------  
+                        SETTINGS
+------------------------------------------------------------  
+-----------------------------------------------------------*/
+#settings-logo{
+    height: 2em;
+    width: 2em;
+}
+.settings{
+    height: 100%;
+}
+.settings-list{
+    height: 65%;
+    overflow: auto;
+    padding: 1.5em 3em;
+}
+.setting-list-item{
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+    width: fit-content;
+    margin: auto;
+    padding: 1em;
+    border-bottom: 1px solid white;
+}
+.settings-container{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    padding-top: 3em;
+    box-sizing: border-box;
+}
+.settings-window{
+    background: rgba(25, 20, 20, 0.985);
+    z-index: 3;
+    height: 100%;
+    position: relative;
+}
+
+.setting-desc{
+    font-family: 'sofia_proregular';
+    font-size: 1.2em;
+    color: white;
+    width: 50vw;
+    text-align: initial;
+}
+#context-title{
+    font-family: 'sofia_problack';
+    font-size: 2em;
+}
+#setting-end-button{
+    max-width: 25vw;
+    margin: 0.2em auto;
+}
+
+.settings-buttons-container{
+    display: inline-flex;
+
+}
+/*//////////////////////////////////////////////////////////
+---------------------------------------------------------- 
+------------------------------------------------------------  
+                        Media Queries
+------------------------------------------------------------  
+------------------------------------------------------------  
+//////////////////////////////////////////////////////////*/
+
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    #import-header-container{
+        display: grid;
+        grid-template-columns: 1fr 10fr 3fr;
+        font-size: 0.8em;
+        margin: auto 0;
+        padding: 0 0.5em;
+    }
+    #import-w-sidebar{
+        /*change*/
+        grid-template-columns: 1fr;
+        grid-template-rows: 93% 7%;
+    }
+    
+.import-library-container{
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    text-align: unset;
+    border-radius: 1em;
+    background: rgba(255,255,255,0.1);
+    font-family: 'sofia_proregular';
+    grid-row-start: 2;
+    }
+
+    #lib-side-divider{
+    display: none;
+    }
+    #import-head{
+    display: none;
+    }
+    .import-library-button {
+        cursor: pointer;
+        color: white;
+        /* margin-bottom: 0.5em; */
+        border-radius: 0.75em;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        display: grid;
+        margin: 0;
+    }      
+} 
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+
+} 
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+
+    .card-icon{       /* changed */
+        height: 7em; 
+    }
+} 
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+.session-types{
+    width: 50em;
+    font-size: 1.2em;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    margin: 1em auto; /*changed*/
+}
+
+.import-main-container{
+    display: grid;
+}
+    
+
+} 
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    .import-main-container{
+        display: grid;
+    }
+}

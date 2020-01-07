@@ -1,0 +1,15 @@
+{
+  "short_name": "TrnTable",
+  "name": "TrnTable",
+  "icons": [
+    {
+        "src": "/android-chrome-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    }
+],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#1ED660",
+  "background_color": "#ffffff"
+}
