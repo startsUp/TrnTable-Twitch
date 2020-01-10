@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import Icon from '@material-ui/core/Icon';
 import { width } from '@material-ui/system';
+import ViewerTab from './components/ViewerTab/ViewerTab';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -67,15 +68,13 @@ function Title(){
     )
 
 }
-export default function Home(props){
+export default function ViewerDashboard(props){
     const classes = useStyles();
   
     return (
      
-             
         <Container className={classes.root}>
-            
-            hello
+            <ViewerTab/>
         </Container>
         
 			

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import ViewerDashboard from './App';
 import registerServiceWorker from './registerServiceWorker';
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
@@ -62,7 +62,7 @@ firebase.initializeApp({
 
 ReactDOM.render(
 <MuiThemeProvider theme={ theme }>
-    <App dbRef={db} firebase={firebase} />
+    <ViewerDashboard dbRef={db} firebase={firebase} />
 </MuiThemeProvider>
 , document.getElementById('root'));
 // registerServiceWorker();
