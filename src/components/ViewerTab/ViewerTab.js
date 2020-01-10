@@ -7,6 +7,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Icon from '@material-ui/core/Icon';
+import AudiotrackIcon from '@material-ui/icons/Audiotrack';
+import AddIcon from '@material-ui/icons/Add';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -71,7 +74,6 @@ export default function FullWidthTabs() {
         >
           <Tab label="Item One" {...a11yProps(0)} />
           <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <SwipeableViews
@@ -80,14 +82,12 @@ export default function FullWidthTabs() {
         onChangeIndex={handleChangeIndex}
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
-          Item One
+          Request <AddIcon/>
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
-          Item Two
+          Now Playing <AudiotrackIcon/>
         </TabPanel>
-        <TabPanel value={value} index={2} dir={theme.direction}>
-          Item Three
-        </TabPanel>
+   
       </SwipeableViews>
     </div>
   );
