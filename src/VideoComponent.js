@@ -1,13 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import ViewerDashboard from './App';
 import registerServiceWorker from './registerServiceWorker';
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 
 
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';  
+
+
+const theme = createMuiTheme({
+    
+     typography: {
+        fontFamily: [
+            'sofia_proregular',
+            
+        ].join(','),
+        h1: {
+            fontFamily: 'sofia_problack'
+        },
+        h5: {
+            fontFamily: 'sofia_problack'
+        },
+        body2: {
+            fontFamily: 'sofia_prolight',
+        }
+   },
+ });
 firebase.initializeApp({
     apiKey: "AIzaSyC9zba9_9VW7_9EIvTjU5e_MllyfapJ9iQ",
     authDomain: "jukebox-2952e.firebaseapp.com",
@@ -39,6 +60,9 @@ firebase.initializeApp({
 //   }
   // Disable deprecated features
 
-
-ReactDOM.render(<App dbRef={db} firebase={firebase} />, document.getElementById('root'));
+ReactDOM.render(
+<MuiThemeProvider theme={ theme }>
+    <ViewerDashboard dbRef={db} firebase={firebase} />
+</MuiThemeProvider>
+, document.getElementById('root'));
 // registerServiceWorker();

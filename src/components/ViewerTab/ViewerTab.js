@@ -10,6 +10,7 @@ import Box from '@material-ui/core/Box';
 import Icon from '@material-ui/core/Icon';
 import AudiotrackIcon from '@material-ui/icons/Audiotrack';
 import AddIcon from '@material-ui/icons/Add';
+import SpotifySearch from '../Search/spotifySearch'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -44,8 +45,11 @@ function a11yProps(index) {
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    // width: 500,
+    height: '100%',
   },
+  swipeView: {
+    height: '100%'
+  }
 }));
 
 export default function FullWidthTabs() {
@@ -63,28 +67,32 @@ export default function FullWidthTabs() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
+      <AppBar position="sticky" color="default">
         <Tabs
           value={value}
           onChange={handleChange}
           indicatorColor="primary"
           textColor="primary"
           variant="fullWidth"
+          
           aria-label="full width tabs example"
         >
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
+          <Tab label="Request" {...a11yProps(0)} />
+          <Tab label="Now Playing" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
-      <SwipeableViews
+
+      <SwipeableViews 
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
         onChangeIndex={handleChangeIndex}
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
-          Request <AddIcon/>
+            <Box height="100%">
+                <SpotifySearch/>
+            </Box>
         </TabPanel>
-        <TabPanel value={value} index={1} dir={theme.direction}>
+        <TabPanel className={classes.swipeView} value={value} index={1} dir={theme.direction}>
           Now Playing <AudiotrackIcon/>
         </TabPanel>
    

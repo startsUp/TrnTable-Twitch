@@ -15,7 +15,9 @@ const useStyles = makeStyles(theme => ({
 	root: {
         background: '#191414',
         height: '100vh',
-        padding: '10px'
+        width: '100vw',
+        padding: '0',
+        display: 'grid'
 	},
     title: {
 		fontFamily: '"Playfair Display", serif',    
@@ -69,6 +71,7 @@ function Title(){
 
 }
 export default function ViewerDashboard(props){
+    console.log(Twitch.ext.viewer);
     const classes = useStyles();
   
     return (

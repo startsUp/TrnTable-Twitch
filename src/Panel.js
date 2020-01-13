@@ -6,29 +6,12 @@ import registerServiceWorker from './registerServiceWorker';
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
-
+import { TrnTableTheme } from './global-theme'
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';  
 
 
-const theme = createMuiTheme({
-    
-     typography: {
-        fontFamily: [
-            'sofia_proregular',
-            
-        ].join(','),
-        h1: {
-            fontFamily: 'sofia_problack'
-        },
-        h5: {
-            fontFamily: 'sofia_problack'
-        },
-        body2: {
-            fontFamily: 'sofia_prolight',
-        }
-   },
- });
+
 firebase.initializeApp({
     apiKey: "AIzaSyC9zba9_9VW7_9EIvTjU5e_MllyfapJ9iQ",
     authDomain: "jukebox-2952e.firebaseapp.com",
@@ -61,7 +44,7 @@ firebase.initializeApp({
   // Disable deprecated features
 
 ReactDOM.render(
-<MuiThemeProvider theme={ theme }>
+<MuiThemeProvider theme={ TrnTableTheme }>
     <ViewerDashboard dbRef={db} firebase={firebase} />
 </MuiThemeProvider>
 , document.getElementById('root'));
