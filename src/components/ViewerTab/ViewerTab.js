@@ -10,8 +10,8 @@ import Box from '@material-ui/core/Box';
 import Icon from '@material-ui/core/Icon';
 import AudiotrackIcon from '@material-ui/icons/Audiotrack';
 import AddIcon from '@material-ui/icons/Add';
-import SpotifySearch from '../Search/spotifySearch'
-import SpotifySearchResults from '../Search/spotifySearchResults';
+import SpotifySearch from '../Search/components/spotifySearch'
+import SpotifySearchResults from '../Search/components/spotifySearchResults';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -62,7 +62,7 @@ export default function ViewerTab() {
   const [value, setValue] = React.useState(0);
 	const [trackSearchView, setTrackSearchView] = React.useState(TrackSearchView.SEARCH);
   const [results, setResults] = React.useState([]);
-  const [error, setError] = React.useState({errorCode: 0, errorMsg: ''});
+  const [error, setError] = React.useState({errorMsg: ''});
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -71,6 +71,10 @@ export default function ViewerTab() {
   const handleChangeIndex = index => {
     setValue(index);
   };
+
+  const showSearch = () => {
+    setTrackSearchView(TrackSearchView.SEARCH);
+  }
 
 	const showTracks = tracks => {
     setResults(tracks);
@@ -93,7 +97,7 @@ export default function ViewerTab() {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Request" {...a11yProps(0)} />
+          <Tab label="Request Songs" {...a11yProps(0)} />
           <Tab label="Now Playing" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
@@ -106,8 +110,8 @@ export default function ViewerTab() {
         <TabPanel value={value} index={0} dir={theme.direction}>
             <Box height="100%">
 							{trackSearchView === TrackSearchView.SEARCH && <SpotifySearch onResult={showTracks} onError={showError}/>}
-							{trackSearchView === TrackSearchView.RESULTS && results && <SpotifySearchResults tracks={results}/>}
-							{trackSearchView === TrackSearchView.ERROR && <SpotifySearch/>}
+							{trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} backToSearch={showSearch}/>}
+							{trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}
                 
             </Box>
         </TabPanel>
