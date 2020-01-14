@@ -55,6 +55,7 @@ class SpotifySearch extends Component {
 
         spotifyApi.search(query)
 					.then(
+						(result) => {
 							console.log(result)
 						},
 						// Note: it's important to handle errors here
