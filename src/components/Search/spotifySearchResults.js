@@ -1,49 +1,55 @@
 import React, { Component } from 'react'
-import '../App.css'
-import List from './list'
+import { makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
 
-class SpotifySearchResults extends Component {
+const useStyles = makeStyles(theme => ({
+  root: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+  },
+  inline: {
+    display: 'inline',
+  },
+}));
 
-    componentWillUnmount = () => {
-        
-    }
-    render(){
-        var emptyMessage = 'No results'
-        const { tracks, albums, playlists, query } = this.props.data
-        return(
-            <div className={this.props.small ? 'dashboard-search': 'search-results-container'} id='spotify-results-container'>
-                <div className='result-container'>
-                    <div className='search-result-title'>Songs</div>
-                    <List selectable  id='search-result-songs' emptyMessage={emptyMessage} 
-                         items={tracks} query={query}
-                        type='songs'  itemsToShow={this.props.songsOnly ? 5:3} {...this.props}/>
-                </div>
-                {!this.props.songsOnly &&
-                <div className='result-container'>
-                    <div className='search-result-title'>Albums</div>
-                    <List id='search-result-albums' emptyMessage={emptyMessage} 
-                         items={albums} query={query}
-                        type='albums' itemsToShow={3} {...this.props}/>
-                </div>
-                }
-                {!this.props.songsOnly &&
-                <div className='result-container'>
-                    <div className='search-result-title'>Playlists</div>
-                    <List id='search-result-playlist' emptyMessage={emptyMessage} 
-                          items={playlists} query={query}
-                        type='playlist'  itemsToShow={3} {...this.props}/>
-                </div>
-                }
-               
-                {/* <div className='result-container'>
-                    <div className='search-result-title'>Artists</div>
-                    <List  id='search-result-artists' emptyMessage={emptyMessage} 
-                         contentClick={this.props.contentClick} items={artists} query={query}
-                        type='artist' updateTracks={this.props.updateTracks} itemsToShow={3}/>
-                </div>                 */}
-            </div>
-        )
-    }
+
+export function SpotifySearchResults(props) {
+
+
+    return(
+        <List className={classes.root}>
+        {
+            props.tracks.map(track => {
+                return(
+									<ListItem alignItems="flex-start" key={track.id}>
+											<ListItemAvatar>
+											<Avatar alt="Remy Sharp" src={track.album.images[0].url} />
+											</ListItemAvatar>
+											<ListItemText
+											primary={track.name}
+											secondary={
+													<React.Fragment>
+														{track.artist.map(artist => artist.name).join(", ")}
+													</React.Fragment>
+											}
+											/>
+											<Divider variant="inset" component="li" />
+									</ListItem>
+									
+                )
+            })
+        }
+      
+      </List>
+    )
+    
 }
 
 export default SpotifySearchResults

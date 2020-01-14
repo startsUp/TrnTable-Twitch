@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import SpotifyService from '../../util/Spotify/SpotifyService';
 import '../../App.css'
+import Error from './searchErrors';
 
 // const SearchInput = props => (
 //     // <div className='search-container' style={props.center && {margin: '0.5em auto'}}>
@@ -34,64 +35,51 @@ export function SearchInput(props) {
 }
 
 
-class SpotifySearch extends Component {
-    onSearch = (e) => {
+function SpotifySearch(props){
+    const onSearch = (e) => {
         e.preventDefault();
         const query = document.getElementById('spotify-search-input').value
         if (query === "") return
         this.getSearchResults(query)
     }
 
-		showResults = tracks => {
+		const showResults = tracks => {
 			props.onResult(tracks)
 		}
 
-		showError = error => {
+		const showError = error => {
 			props.onError(error)
 		}
 
-    getSearchResults = (query) => {
+    const getSearchResults = (query) => {
         const spotifyApi = new SpotifyService();
 
         spotifyApi.search(query)
 					.then(
 						(result) => {
-							console.log(result)
+              const tracks = result.body.tracks;
+              if (tracks.items.length > 0){
+                showResults(tracks.items)
+              }
+              else{
+                showError(Error.NOTRACKSFOUND);
+              }
 						},
 						// Note: it's important to handle errors here
 						// instead of a catch() block so that we don't swallow
 						// exceptions from actual bugs in components.
 						(error) => {
-							console.log(error)
+							showError(Error[error.statusCode])
 						}
 						
 					)
-        // const {apiRef, songsOnly } = this.props
-
-        // var searchType = ['track', 'album', 'playlist', 'artist']
-        // if (songsOnly)
-        //     searchType = ['track']
-        // apiRef.search(query, searchType)
-        //            .then((res)=> {
-        //                 document.getElementById('spotify-search-input').value = ""
-        //                 this.props.onSearchResults(query, res)
-        //             })
-        //             .catch(err => {
-        //                 if(err.status === 401){
-        //                     this.props.updateToken()
-        //                         .then(this.getSearchResults(query))
-        //                 }
-        //             })
-
-        console.log(query);
     }
 
-    render(){
-        
-        return(
-            <SearchInput submit={this.onSearch} inputID='spotify-search-input' {...this.props}/>
-        )
-    }
+   
+    return(
+        <SearchInput submit={onSearch} inputID='spotify-search-input' {...props}/>
+    )
+  
 }
 
 export default SpotifySearch

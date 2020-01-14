@@ -11,6 +11,7 @@ import Icon from '@material-ui/core/Icon';
 import AudiotrackIcon from '@material-ui/icons/Audiotrack';
 import AddIcon from '@material-ui/icons/Add';
 import SpotifySearch from '../Search/spotifySearch'
+import SpotifySearchResults from '../Search/spotifySearchResults';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -54,12 +55,14 @@ const useStyles = makeStyles(theme => ({
 
 const TrackSearchView  = { SEARCH: 'search', RESULTS: 'results', ERROR: 'error'};
 
-export default function FullWidthTabs() {
+
+export default function ViewerTab() {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
 	const [trackSearchView, setTrackSearchView] = React.useState(TrackSearchView.SEARCH);
-	const [results, setResults] = React.useState([]);
+  const [results, setResults] = React.useState([]);
+  const [error, setError] = React.useState({errorCode: 0, errorMsg: ''});
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -70,9 +73,15 @@ export default function FullWidthTabs() {
   };
 
 	const showTracks = tracks => {
-		setTrackSearchView(TrackSearchView.RESULTS);
-		setResults()
-	}
+    setResults(tracks);
+    setTrackSearchView(TrackSearchView.RESULTS);
+  }
+  
+  const showError = error => {
+    setError(error);
+    setTrackSearchView(TrackSearchView.ERROR);
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="sticky" color="default">
@@ -97,7 +106,7 @@ export default function FullWidthTabs() {
         <TabPanel value={value} index={0} dir={theme.direction}>
             <Box height="100%">
 							{trackSearchView === TrackSearchView.SEARCH && <SpotifySearch onResult={showTracks} onError={showError}/>}
-							{trackSearchView === TrackSearchView.RESULTS && <SpotifySearch/>}
+							{trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results}/>}
 							{trackSearchView === TrackSearchView.ERROR && <SpotifySearch/>}
                 
             </Box>
