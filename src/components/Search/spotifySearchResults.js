@@ -20,36 +20,33 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export function SpotifySearchResults(props) {
-
-
+export default function SpotifySearchResults(props) {
+		const classes = useStyles();
+		console.log(props);
     return(
         <List className={classes.root}>
-        {
+        {	props.tracks &&
             props.tracks.map(track => {
                 return(
-									<ListItem alignItems="flex-start" key={track.id}>
-											<ListItemAvatar>
-											<Avatar alt="Remy Sharp" src={track.album.images[0].url} />
-											</ListItemAvatar>
-											<ListItemText
-											primary={track.name}
-											secondary={
-													<React.Fragment>
-														{track.artist.map(artist => artist.name).join(", ")}
-													</React.Fragment>
-											}
-											/>
-											<Divider variant="inset" component="li" />
-									</ListItem>
+                <ListItem alignItems="flex-start" key={track.id}>
+                        <ListItemAvatar>
+                        <Avatar alt="Remy Sharp" src={track.album.images[0].url} />
+                        </ListItemAvatar>
+                        <ListItemText
+                        primary={track.name}
+                        secondary={
+                                <React.Fragment>
+                                    {track.artists.map(artist => artist.name).join(", ")}
+                                </React.Fragment>
+                        }
+                        />
+                        <Divider variant="inset" component="li" />
+                </ListItem>
 									
                 )
             })
         }
       
       </List>
-    )
-    
+    )   
 }
-
-export default SpotifySearchResults

@@ -35,12 +35,12 @@ export function SearchInput(props) {
 }
 
 
-function SpotifySearch(props){
+export default function SpotifySearch(props){
     const onSearch = (e) => {
         e.preventDefault();
         const query = document.getElementById('spotify-search-input').value
         if (query === "") return
-        this.getSearchResults(query)
+        getSearchResults(query)
     }
 
 		const showResults = tracks => {
@@ -81,5 +81,3 @@ function SpotifySearch(props){
     )
   
 }
-
-export default SpotifySearch

@@ -106,7 +106,7 @@ export default function ViewerTab() {
         <TabPanel value={value} index={0} dir={theme.direction}>
             <Box height="100%">
 							{trackSearchView === TrackSearchView.SEARCH && <SpotifySearch onResult={showTracks} onError={showError}/>}
-							{trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results}/>}
+							{trackSearchView === TrackSearchView.RESULTS && results && <SpotifySearchResults tracks={results}/>}
 							{trackSearchView === TrackSearchView.ERROR && <SpotifySearch/>}
                 
             </Box>
