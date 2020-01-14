@@ -5,21 +5,9 @@ import SpotifyService from '../../util/Spotify/SpotifyService';
 import '../../App.css'
 import Error from './searchErrors';
 
-// const SearchInput = props => (
-//     // <div className='search-container' style={props.center && {margin: '0.5em auto'}}>
-//     //     <input className='search-input' autoComplete='off' onKeyPress={(e)=>(e.key==='Enter' && props.submit())} id={props.inputID} placeholder='Search... '/>
-//     //     <div className='search-button' onClick={props.submit}>Search</div>
-//     // </div>
-    
-// )
-
 const useStyles = makeStyles(theme => ({
   root: {
     '& > *': {
-   
-    //   width: 200,
-    
-        padding: theme.spacing(1)
     },
   },
 }));

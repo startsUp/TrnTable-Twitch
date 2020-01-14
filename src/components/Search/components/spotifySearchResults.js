@@ -7,6 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,13 +20,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const Error = (props) => (
+  <Box>
+    props.error.errorMsg
+  </Box>
+)
 
 export function SpotifySearchResults(props) {
 
 
-    return(
+    return( // TODO: FIX STYLING 
+      <Box>
+        <ArrowBack onClick={props.backToSearch}/>
+        { props.error.errorMsg !== '' && 
+          <Error {...props}>
+        }
         <List className={classes.root}>
-        {
+        {   props.error.errorMsg === '' &&
             props.tracks.map(track => {
                 return(
 									<ListItem alignItems="flex-start" key={track.id}>
@@ -34,11 +45,7 @@ export function SpotifySearchResults(props) {
 											</ListItemAvatar>
 											<ListItemText
 											primary={track.name}
-											secondary={
-													<React.Fragment>
-														{track.artist.map(artist => artist.name).join(", ")}
-													</React.Fragment>
-											}
+											secondary={<>{track.artist.map(artist => artist.name).join(", ")}</>}
 											/>
 											<Divider variant="inset" component="li" />
 									</ListItem>
@@ -46,8 +53,8 @@ export function SpotifySearchResults(props) {
                 )
             })
         }
-      
       </List>
+      </Box>
     )
     
 }
