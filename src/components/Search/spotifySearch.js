@@ -42,13 +42,29 @@ class SpotifySearch extends Component {
         this.getSearchResults(query)
     }
 
+		showResults = tracks => {
+			props.onResult(tracks)
+		}
+
+		showError = error => {
+			props.onError(error)
+		}
+
     getSearchResults = (query) => {
         const spotifyApi = new SpotifyService();
 
         spotifyApi.search(query)
-                    .then(data=> {
-                        console.log(data)
-                    })
+					.then(
+							console.log(result)
+						},
+						// Note: it's important to handle errors here
+						// instead of a catch() block so that we don't swallow
+						// exceptions from actual bugs in components.
+						(error) => {
+							console.log(error)
+						}
+						
+					)
         // const {apiRef, songsOnly } = this.props
 
         // var searchType = ['track', 'album', 'playlist', 'artist']

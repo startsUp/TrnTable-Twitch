@@ -52,10 +52,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const TrackSearchView  = { SEARCH: 'search', RESULTS: 'results', ERROR: 'error'};
+
 export default function FullWidthTabs() {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
+	const [trackSearchView, setTrackSearchView] = React.useState(TrackSearchView.SEARCH);
+	const [results, setResults] = React.useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -65,6 +69,10 @@ export default function FullWidthTabs() {
     setValue(index);
   };
 
+	const showTracks = tracks => {
+		setTrackSearchView(TrackSearchView.RESULTS);
+		setResults()
+	}
   return (
     <div className={classes.root}>
       <AppBar position="sticky" color="default">
@@ -74,7 +82,6 @@ export default function FullWidthTabs() {
           indicatorColor="primary"
           textColor="primary"
           variant="fullWidth"
-          
           aria-label="full width tabs example"
         >
           <Tab label="Request" {...a11yProps(0)} />
@@ -89,7 +96,10 @@ export default function FullWidthTabs() {
       >
         <TabPanel value={value} index={0} dir={theme.direction}>
             <Box height="100%">
-                <SpotifySearch/>
+							{trackSearchView === TrackSearchView.SEARCH && <SpotifySearch onResult={showTracks} onError={showError}/>}
+							{trackSearchView === TrackSearchView.RESULTS && <SpotifySearch/>}
+							{trackSearchView === TrackSearchView.ERROR && <SpotifySearch/>}
+                
             </Box>
         </TabPanel>
         <TabPanel className={classes.swipeView} value={value} index={1} dir={theme.direction}>
