@@ -12,6 +12,7 @@ import AudiotrackIcon from '@material-ui/icons/Audiotrack';
 import AddIcon from '@material-ui/icons/Add';
 import SpotifySearch from '../Search/components/spotifySearch'
 import SpotifySearchResults from '../Search/components/spotifySearchResults';
+import { Toolbar } from '@material-ui/core';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,7 +50,13 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
   },
   swipeView: {
-    height: '100%'
+    height: '100vh',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  scrollView: {
+    overflow: 'auto'
   }
 }));
 
@@ -88,7 +95,8 @@ export default function ViewerTab() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="sticky" color="default">
+      <AppBar position="fixed" color="default">
+        
         <Tabs
           value={value}
           onChange={handleChange}
@@ -101,24 +109,23 @@ export default function ViewerTab() {
           <Tab label="Now Playing" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
-
+     
       <SwipeableViews 
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
         onChangeIndex={handleChangeIndex}
       >
-        <TabPanel value={value} index={0} dir={theme.direction}>
-            <Box height="100%">
-							{trackSearchView === TrackSearchView.SEARCH && <SpotifySearch onResult={showTracks} onError={showError}/>}
-							{trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} backToSearch={showSearch}/>}
-							{trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}
-                
-            </Box>
-        </TabPanel>
-        <TabPanel className={classes.swipeView} value={value} index={1} dir={theme.direction}>
-          Now Playing <AudiotrackIcon/>
-        </TabPanel>
-   
+        <div className={classes.swipeView}>
+          <Toolbar/>
+          <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
+                {trackSearchView === TrackSearchView.SEARCH && <SpotifySearch onResult={showTracks} onError={showError}/>}
+                {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} backToSearch={showSearch} error={error}/>}
+                {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}
+          </TabPanel>
+          <TabPanel value={value} index={1} dir={theme.direction}>
+            Now Playing <AudiotrackIcon/>
+          </TabPanel>
+        </div>   
       </SwipeableViews>
     </div>
   );
