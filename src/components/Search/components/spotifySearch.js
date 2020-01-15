@@ -3,21 +3,31 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import SpotifyService from '../../../util/Spotify/SpotifyService';
 import Error from '../searchErrors';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
     '& > *': {
     },
   },
+  spotifySearch: {
+    fontFamily: 'sofia_problack'
+  }
 }));
 
 export function SearchInput(props) {
   const classes = useStyles();
 
   return (
-    <form className={classes.root} noValidate autoComplete="off" onKeyPress={(e)=>(e.key==='Enter' && props.submit(e))}>
-      <TextField id="spotify-search-input" label="Search For Song" />
-    </form>
+    <div>
+      <form className={classes.root} noValidate autoComplete="off" onKeyPress={(e)=>(e.key==='Enter' && props.submit(e))}>
+            <TextField id="spotify-search-input" label="Search For Song" 
+            InputLabelProps={{
+              classes: {root: classes.spotifySearch}
+            }}/>
+      </form>
+    </div>
+    
   );
 }
 

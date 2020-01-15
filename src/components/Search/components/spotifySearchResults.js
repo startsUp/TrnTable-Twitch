@@ -1,21 +1,25 @@
 import React, { Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Grid } from '@material-ui/core';
+import { Grid, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
+    display: 'grid',
+    gridTemplateColumns: '20px auto',
+  },
+  results: {
     width: '100%',
     maxWidth: 360,
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    margin: 'auto',
     backgroundColor: theme.palette.background.paper,
+  },
+  artistName:{
+    fontSize: '0.75rem'
   },
   grid: {
     display: 'grid',
@@ -26,9 +30,15 @@ const useStyles = makeStyles(theme => ({
     display: 'inline',
   },
   backIcon: {
-    position: 'fixed',
-    top: '0.5rem',
-    left: '0.5rem'
+    position: 'sticky',
+    top: theme.spacing(1)
+  },
+  albumImage: {
+    width: theme.spacing(5),
+    height: theme.spacing(5)
+  }, 
+  listItem: {
+    fontSize: '0.8rem'
   }
 }));
 
@@ -40,26 +50,57 @@ const Error = (props) => (
 
 export default function SpotifySearchResults(props) {
     const classes = useStyles();
+    const [checked, setChecked] = React.useState([]);
+    
+    
+    const handleToggle = value => () => {
+      const currentIndex = checked.indexOf(value);
+      const newChecked = [...checked];
+  
+      if (currentIndex === -1) {
+        newChecked.push(value);
+      } else {
+        newChecked.splice(currentIndex, 1);
+      }
+  
+      setChecked(newChecked);
+    };
 
     return( // TODO: FIX STYLING 
-      <div>
-        <ArrowBackIcon onClick={props.backToSearch} className={classes.backIcon}/>
+      <div className={classes.root}>
+        <ArrowBackIcon onClick={props.backToSearch} className={classes.backIcon} color='primary' />
         { props.error.errorMsg !== '' && 
           <Error {...props}/>
         }
-					<List className={classes.root}>
+					<List className={classes.results}>
 					{   props.error.errorMsg === '' &&
-							props.tracks.map(track => {
+							props.tracks.map((track,index) => {
+                  const labelId = `checkbox-request-song-label-${index}`;
 									return(
                     <React.Fragment>
                       <ListItem alignItems="flex-start" key={track.id}>
                           <ListItemAvatar>
-                          <Avatar alt="Remy Sharp" src={track.album.images[0].url} />
+                          <Avatar alt={track.album.name}/* TO DO: CHECK if right way to access album name*/
+                            variant="rounded" src={track.album.images[0].url} 
+                            className={classes.albumImage}
+                           />
                           </ListItemAvatar>
                           <ListItemText
-                          primary={track.name}
-                          secondary={track.artists.map(artist => artist.name).join(", ")}
-                          />        
+                            primaryTypographyProps={{color: 'textPrimary'}}
+                            classes={{secondary: classes.artistName}}
+                            primary={track.name}
+                            secondary={track.artists.map(artist => artist.name).join(", ")}
+                            className={classes.listItem}
+                          />
+                          <ListItemSecondaryAction>
+                            <Checkbox
+                              edge="end"
+                              disabled={false}
+                              onChange={handleToggle(index)}
+                              checked={checked.indexOf(index) !== -1}
+                              inputProps={{ 'aria-labelledby': labelId }}
+                            />
+                          </ListItemSecondaryAction>        
                       </ListItem>
                     </React.Fragment>
 										

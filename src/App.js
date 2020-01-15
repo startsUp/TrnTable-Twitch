@@ -61,27 +61,19 @@ function Title(){
             <div className="title-bar">
                 <div id="name-div">
                     <Typography variant="h3" color="primary" className={classes.title}>Shardool Patel</Typography>
-                
                 </div>
-        
             </div>
-            	
         </Box>
     )
 
 }
 export default function ViewerDashboard(props){
-    console.log(Twitch.ext.viewer);
     const classes = useStyles();
   
     return (
-     
-        <Container className={classes.root}>
+        <div className={classes.root}>
             <ViewerTab/>
-        </Container>
-        
-			
-      
+        </div>
     )
   
 }
