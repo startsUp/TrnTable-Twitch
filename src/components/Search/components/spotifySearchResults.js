@@ -41,7 +41,7 @@ export function SpotifySearchResults(props) {
                 return(
 									<ListItem alignItems="flex-start" key={track.id}>
 											<ListItemAvatar>
-											<Avatar alt="Remy Sharp" src={track.album.images[0].url} />
+											<Avatar alt="Album Image" src={track.album.images[0].url} />
 											</ListItemAvatar>
 											<ListItemText
 											primary={track.name}
