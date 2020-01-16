@@ -12,6 +12,7 @@ import AudiotrackIcon from '@material-ui/icons/Audiotrack';
 import AddIcon from '@material-ui/icons/Add';
 import SpotifySearch from '../Search/components/spotifySearch'
 import SpotifySearchResults from '../Search/components/spotifySearchResults';
+import SpotifyNowPlaying from '../NowPlaying/components/spotifyNowPlaying';
 import { Toolbar } from '@material-ui/core';
 
 function TabPanel(props) {
@@ -72,10 +73,12 @@ export default function ViewerTab() {
   const [error, setError] = React.useState({errorMsg: ''});
 
   const handleChange = (event, newValue) => {
+    console.log(newValue);
     setValue(newValue);
   };
 
   const handleChangeIndex = index => {
+    console.log(index);
     setValue(index);
   };
 
@@ -122,8 +125,11 @@ export default function ViewerTab() {
                 {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} backToSearch={showSearch} error={error}/>}
                 {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}
           </TabPanel>
-          <TabPanel value={value} index={1} dir={theme.direction}>
-            Now Playing <AudiotrackIcon/>
+        </div>   
+        <div className={classes.swipeView}>
+          <Toolbar/>   
+          <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
+            <SpotifyNowPlaying/> 
           </TabPanel>
         </div>   
       </SwipeableViews>

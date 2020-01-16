@@ -7,8 +7,9 @@ import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    '& > *': {
-    },
+    display: 'grid',
+    justifyContent: 'center',
+    paddingTop: theme.spacing(3) 
   },
   spotifySearch: {
     fontFamily: 'sofia_problack'
