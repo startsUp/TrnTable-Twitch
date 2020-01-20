@@ -81,6 +81,11 @@ module.exports = (_env,argv)=> {
           }
         },
         {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
+        },
+        {
           test: /\.css$/,
           use: [ 'style-loader', 'css-loader' ]
         },
@@ -109,7 +114,7 @@ module.exports = (_env,argv)=> {
         }
       ]
     },
-    resolve: { extensions: ['*', '.js', '.jsx'] },
+    resolve: { extensions: ['*', '.js', '.jsx', '.tsx', '.ts'] },
     output: {
       filename: "[name].bundle.js",
       path:bundlePath

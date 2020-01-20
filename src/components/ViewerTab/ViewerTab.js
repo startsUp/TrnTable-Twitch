@@ -73,12 +73,10 @@ export default function ViewerTab() {
   const [error, setError] = React.useState({errorMsg: ''});
 
   const handleChange = (event, newValue) => {
-    console.log(newValue);
     setValue(newValue);
   };
 
   const handleChangeIndex = index => {
-    console.log(index);
     setValue(index);
   };
 
@@ -99,7 +97,6 @@ export default function ViewerTab() {
   return (
     <div className={classes.root}>
       <AppBar position="fixed" color="default">
-        
         <Tabs
           value={value}
           onChange={handleChange}

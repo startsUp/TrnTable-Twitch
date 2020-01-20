@@ -10,6 +10,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Icon from '@material-ui/core/Icon';
 import { width } from '@material-ui/system';
 import ViewerTab from './components/ViewerTab/ViewerTab';
+import { useApolloClient } from "@apollo/react-hooks";
+import { gql } from 'apollo-boost';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -53,9 +55,22 @@ const useStyles = makeStyles(theme => ({
 	}
     }));
 
+const GET_SESSIONS = gql`
+	{
+		extension_session {
+				broadcaster_id
+				created_at
+				active
+				session_id
+				updated_at
+				settings
+		}
+	}
+`;
 
 function Title(){
     const classes = useStyles();
+
     return(
         <Box className={classes.titleContainer}>
             <div className="title-bar">
@@ -70,7 +85,14 @@ function Title(){
 export default function ViewerDashboard(props){
     console.log(Twitch)
     const classes = useStyles();
-  
+		const client = useApolloClient();
+    
+    
+    // Twitch.ext.onAuthorized(() => {
+
+    // })
+
+
     return (
         <div className={classes.root}>
             <ViewerTab/>
