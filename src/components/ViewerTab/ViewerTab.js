@@ -14,6 +14,8 @@ import SpotifySearch from '../Search/components/spotifySearch'
 import SpotifySearchResults from '../Search/components/spotifySearchResults';
 import SpotifyNowPlaying from '../NowPlaying/components/spotifyNowPlaying';
 import { Toolbar } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -58,10 +60,15 @@ const useStyles = makeStyles(theme => ({
   },
   scrollView: {
     overflow: 'auto'
+  },
+  loading: {
+    display: 'grid',
+    justifyContent: 'center',
+    paddingTop: theme.spacing(3) 
   }
 }));
 
-const TrackSearchView  = { SEARCH: 'search', RESULTS: 'results', ERROR: 'error'};
+const TrackSearchView  = { SEARCH: 'search', RESULTS: 'results', ERROR: 'error', LOADING: 'loading'};
 
 
 export default function ViewerTab() {
@@ -121,7 +128,9 @@ export default function ViewerTab() {
         <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
-                {trackSearchView === TrackSearchView.SEARCH && <SpotifySearch onResult={showTracks} onError={showError}/>}
+                {trackSearchView === TrackSearchView.SEARCH && 
+                  <SpotifySearch onResult={showTracks} onError={showError} onLoad={setTrackSearchView(TrackSearchView.LOADING)}/>}
+                {trackSearchView === TrackSearchView.LOADING && <div className={classes.loading}><CircularProgress /></div>}
                 {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} backToSearch={showSearch} error={error}/>}
                 {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}
           </TabPanel>

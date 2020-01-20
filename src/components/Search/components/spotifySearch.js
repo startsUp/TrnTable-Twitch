@@ -51,7 +51,7 @@ export default function SpotifySearch(props){
 
     const getSearchResults = (query) => {
         const spotifyApi = new SpotifyService();
-
+        props.onLoad()
         spotifyApi.search(query)
 					.then(
 						(result) => {
