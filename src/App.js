@@ -68,7 +68,7 @@ function Title(){
 
 }
 export default function ViewerDashboard(props){
-    console.log(Twitch)
+    // console.log(Twitch)
     const classes = useStyles();
   
     return (

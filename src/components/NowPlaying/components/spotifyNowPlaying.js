@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
 import { Avatar } from '@material-ui/core';
 import { getThemeProps } from '@material-ui/styles';
+import ThumbDownRoundedIcon from '@material-ui/icons/ThumbDownRounded';
+import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -12,14 +14,22 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(3)
   },
   albumImage: {
-    width: '100%',
-    height: '100%'
+    width: theme.spacing(8),
+    height: theme.spacing(8),
   },
+  vote: {
+    fill: 'none',
+    stroke: theme.palette.primary.main
+  },
+  selectedVote: {
+    fill: theme.palette.primary.main
+  }
 }));
 
-
+const Vote = { NONE: 1, LIKE: 2, DISLIKE: 3}
 export default function SpotifyNowPlaying(props) {
     const classes = useStyles();
+    const [vote, setVote] = React.useState(Vote.NONE);
     const track = {
       artists: [{
         external_urls: {spotify: "https://open.spotify.com/artist/7gP3bB2nilZXLfPHJhMdvc"},
@@ -38,6 +48,13 @@ export default function SpotifyNowPlaying(props) {
       name: "Doing It for the Money"
     }
 
+    const handleVote = (newVote) => { 
+      if (vote === newVote)
+        setVote(Vote.NONE)
+      else
+        setVote(newVote);
+    }
+
     return(
         <div className={classes.root}>
           <Avatar alt={track.album.name}
@@ -46,6 +63,10 @@ export default function SpotifyNowPlaying(props) {
           />
           <Typography variant="h6" color='textPrimary'>{track.name}</Typography>
           <Typography variant="body2" color='textSecondary'>{track.artists.map(artist => artist.name).join(", ")}</Typography>
+          <Box>
+            <ThumbDownRoundedIcon className={vote === Vote.DISLIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.DISLIKE)}/>
+            <ThumbUpAltRoundedIcon className={vote === Vote.LIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.LIKE)}/>
+          </Box>
         </div>
     )
     
