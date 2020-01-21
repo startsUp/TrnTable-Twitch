@@ -85,8 +85,12 @@ function Title(){
 export default function ViewerDashboard(props){
     console.log(Twitch)
     const classes = useStyles();
-		const client = useApolloClient();
-    
+    const client = useApolloClient();
+    client
+    .query({
+        query:GET_SESSIONS
+    })
+    .then(result => console.log(result));
     
     // Twitch.ext.onAuthorized(() => {
 

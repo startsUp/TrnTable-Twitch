@@ -10,7 +10,7 @@ import { TrnTableTheme } from './global-theme'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';  
 import { AuthProvider } from './auth/AuthProvider';
 import { ApolloProvider } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+
 
 const auth = new AuthProvider(Twitch);
 const GET_SESSIONS = gql`

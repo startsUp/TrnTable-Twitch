@@ -25,16 +25,17 @@ export class AuthProvider{
     }
     private setupAuthListener(Twitch: any){
         Twitch.ext.onAuthorized(data => {
-            this.token = data.token;
+            localStorage.setItem('token', data.token);
         })
     }
     getAuthOptions(token?: string){
         return setContext((_, { headers }) => {
             // return the headers to the context so httpLink can read them
+            const token = localStorage.getItem('token');
             return {
               headers: {
                 ...headers,
-                authorization: token ? `Bearer ${token}` : "",
+                authorization: token ? `${token}` : "",
               }
             }
           });
