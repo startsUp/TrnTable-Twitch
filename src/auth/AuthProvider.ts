@@ -38,7 +38,7 @@ export class AuthProvider{
                 authorization: token ? `${token}` : "",
               }
             }
-          });
+        });
     }
 
     getClient(){
@@ -46,7 +46,6 @@ export class AuthProvider{
     }
 
     resetAuth(token){
-        console.log(token)
         this.client.resetStore().then(()=> {
             this.client.link = this.getAuthOptions(token).concat(this.httpLink);
         })

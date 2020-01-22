@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { Avatar } from '@material-ui/core';
 import { getThemeProps } from '@material-ui/styles';
 import ThumbDownRoundedIcon from '@material-ui/icons/ThumbDownRounded';
-import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
+import ThumbUpRoundedIcon from '@material-ui/icons/ThumbUpRounded';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -14,8 +14,8 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(3)
   },
   albumImage: {
-    width: theme.spacing(8),
-    height: theme.spacing(8),
+    width: theme.spacing(10),
+    height: theme.spacing(10),
   },
   vote: {
     fill: 'none',
@@ -63,10 +63,10 @@ export default function SpotifyNowPlaying(props) {
           />
           <Typography variant="h6" color='textPrimary'>{track.name}</Typography>
           <Typography variant="body2" color='textSecondary'>{track.artists.map(artist => artist.name).join(", ")}</Typography>
-          <Box>
+          <Grid spacing={3}>
             <ThumbDownRoundedIcon className={vote === Vote.DISLIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.DISLIKE)}/>
-            <ThumbUpAltRoundedIcon className={vote === Vote.LIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.LIKE)}/>
-          </Box>
+            <ThumbUpRoundedIcon className={vote === Vote.LIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.LIKE)}/>
+          </Grid>
         </div>
     )
     

@@ -29,7 +29,7 @@ function TabPanel(props) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && <Box p={1}>{children}</Box>}
+      {value === index && <Box p={0}>{children}</Box>}
     </Typography>
   );
 }
@@ -64,7 +64,8 @@ const useStyles = makeStyles(theme => ({
   loading: {
     display: 'grid',
     justifyContent: 'center',
-    paddingTop: theme.spacing(3) 
+    paddingTop: theme.spacing(5),
+    overflow:'hidden' 
   }
 }));
 
@@ -126,7 +127,7 @@ export default function ViewerTab() {
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
                 {trackSearchView === TrackSearchView.SEARCH && 
-                  <SpotifySearch onResult={showTracks} onError={showError} onLoad={setTrackSearchView(TrackSearchView.LOADING)}/>}
+                  <SpotifySearch onResult={showTracks} onError={showError} onLoad={() => setTrackSearchView(TrackSearchView.LOADING)}/>}
                 {trackSearchView === TrackSearchView.LOADING && <div className={classes.loading}><CircularProgress /></div>}
                 {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} backToSearch={showSearch} error={error}/>}
                 {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}

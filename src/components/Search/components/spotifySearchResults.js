@@ -3,17 +3,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Grid, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import { Grid, Button, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'grid',
-    gridTemplateColumns: '20px auto',
   },
   results: {
     width: '100%',
     maxWidth: 360,
-    paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     margin: 'auto',
     backgroundColor: theme.palette.background.paper,
@@ -30,8 +29,6 @@ const useStyles = makeStyles(theme => ({
     display: 'inline',
   },
   backIcon: {
-    position: 'sticky',
-    top: theme.spacing(1)
   },
   albumImage: {
     width: theme.spacing(5),
@@ -39,6 +36,24 @@ const useStyles = makeStyles(theme => ({
   }, 
   listItem: {
     fontSize: '0.8rem'
+  },
+  request: {
+    top: theme.spacing(1),
+    right: theme.spacing(1)
+  },
+  requestButton: {
+    borderRadius: theme.spacing(2),
+    justifySelf: 'end',
+    fontFamily: 'sofia_problack',
+  },
+  header: {
+    position: 'sticky',
+    top: '0px',
+    backgroundColor: 'rgba(25,20,20,0.95)',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    padding: '5px',
+    zIndex: '10'
   }
 }));
 
@@ -68,10 +83,17 @@ export default function SpotifySearchResults(props) {
 
     return( // TODO: FIX STYLING 
       <div className={classes.root}>
-        <ArrowBackIcon onClick={props.backToSearch} className={classes.backIcon} color='primary' />
+      <div className={classes.header}>
+      <ArrowBackIcon onClick={props.backToSearch} className={classes.backIcon} color='primary' />
         { props.error.errorMsg !== '' && 
           <Error {...props}/>
         }
+       
+            
+        <Button variant="outlined" size="small" color="primary" className={classes.requestButton} disabled={checked.length === 0}>
+          Request
+        </Button>
+      </div>
 					<List className={classes.results}>
 					{   props.error.errorMsg === '' &&
 							props.tracks.map((track,index) => {
@@ -107,8 +129,9 @@ export default function SpotifySearchResults(props) {
 									)
 							})
 					}
-					
+          
 					</List>
+          
       </div>
     )   
 }
