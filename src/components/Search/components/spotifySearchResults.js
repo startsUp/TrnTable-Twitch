@@ -16,6 +16,8 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
     margin: 'auto',
     backgroundColor: theme.palette.background.paper,
+    boxSizing: 'border-box',
+    paddingLeft: '8px'
   },
   artistName:{
     fontSize: '0.75rem'
@@ -99,8 +101,8 @@ export default function SpotifySearchResults(props) {
 							props.tracks.map((track,index) => {
                   const labelId = `checkbox-request-song-label-${index}`;
 									return(
-                    <React.Fragment>
-                      <ListItem alignItems="flex-start" key={track.id}>
+                    <React.Fragment key={track.id}>
+                      <ListItem alignItems="flex-start" >
                           <ListItemAvatar>
                           <Avatar alt={track.album.name}/* TO DO: CHECK if right way to access album name*/
                             variant="rounded" src={track.album.images[0].url} 

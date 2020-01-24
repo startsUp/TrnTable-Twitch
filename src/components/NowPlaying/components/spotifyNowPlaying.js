@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Box, Typography } from '@material-ui/core';
 import { Avatar } from '@material-ui/core';
 import { getThemeProps } from '@material-ui/styles';
 import ThumbDownRoundedIcon from '@material-ui/icons/ThumbDownRounded';
@@ -11,11 +11,25 @@ const useStyles = makeStyles(theme => ({
     display: 'grid',
     justifyContent: 'center',
     justifyItems: 'center',
-    paddingTop: theme.spacing(3)
+    paddingTop: theme.spacing(3),
+    gridGap: theme.spacing(2),
+    maxHeight: '500px'
   },
   albumImage: {
     width: theme.spacing(10),
     height: theme.spacing(10),
+  },
+  voting: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    justifyItems: 'center',
+    width: '100%'
+  },
+  like: {
+    paddingRight: theme.spacing(2)
+  },
+  dislike: {
+    paddingLeft: theme.spacing(2)
   },
   vote: {
     fill: 'none',
@@ -23,6 +37,9 @@ const useStyles = makeStyles(theme => ({
   },
   selectedVote: {
     fill: theme.palette.primary.main
+  },
+  voteCount: {
+    fontFamily: 'sofia_problack'
   }
 }));
 
@@ -61,12 +78,20 @@ export default function SpotifyNowPlaying(props) {
             variant="rounded" src={track.album.images[0].url} 
             className={classes.albumImage}
           />
-          <Typography variant="h6" color='textPrimary'>{track.name}</Typography>
-          <Typography variant="body2" color='textSecondary'>{track.artists.map(artist => artist.name).join(", ")}</Typography>
-          <Grid spacing={3}>
-            <ThumbDownRoundedIcon className={vote === Vote.DISLIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.DISLIKE)}/>
-            <ThumbUpRoundedIcon className={vote === Vote.LIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.LIKE)}/>
-          </Grid>
+          <div>
+            <Typography variant="h6" color='textPrimary' align='center'>{track.name}</Typography>
+            <Typography variant="body2" color='textSecondary' align='center'>{track.artists.map(artist => artist.name).join(", ")}</Typography>
+          </div>
+          <Box className={classes.voting}>
+            <div className={classes.dislike}>
+              <ThumbDownRoundedIcon className={vote === Vote.DISLIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.DISLIKE)}/>
+              {/* <Typography className={classes.voteCount} variant="body2" color={vote === Vote.DISLIKE ? 'primary' : 'secondary'}>3.3k</Typography> */}
+            </div>
+            <div className={classes.like}>
+              <ThumbUpRoundedIcon className={vote === Vote.LIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.LIKE)}/>
+              {/* <Typography className={classes.voteCount} variant="body2" color={vote === Vote.LIKE ? 'primary' : 'secondary'}>3.3k</Typography> */}
+            </div>
+          </Box>
         </div>
     )
     

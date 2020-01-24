@@ -1,68 +1,54 @@
-import React from 'react'
-import Authentication from '../../util/Authentication/Authentication'
+import React, { useEffect, useState } from 'react';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {  Button } from '@material-ui/core'; 
+import Login from '../../pages/login';
+import SpotifyWebApi from 'spotify-web-api-js'
 
-import './Config.css'
 
-export default class ConfigPage extends React.Component{
-    constructor(props){
-        super(props)
-        this.Authentication = new Authentication()
+const spotifyApi = new SpotifyWebApi();
 
-        //if the extension is running on twitch or dev rig, set the shorthand here. otherwise, set to null. 
-        this.twitch = window.Twitch ? window.Twitch.ext : null
-        this.state={
-            finishedLoading:false,
-            theme:'light'
-        }
-    }
+const useStyles = makeStyles(theme => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+    height: '100%',
+  }
+})); 
 
-    contextUpdate(context, delta){
-        if(delta.includes('theme')){
-            this.setState(()=>{
-                return {theme:context.theme}
-            })
-        }
-    }
 
-    componentDidMount(){
-        // do config page setup as needed here
-        if(this.twitch){
-            this.twitch.onAuthorized((auth)=>{
-                this.Authentication.setToken(auth.token, auth.userId)
-                if(!this.state.finishedLoading){
-                    // if the component hasn't finished loading (as in we've not set up after getting a token), let's set it up now.
-    
-                    // now we've done the setup for the component, let's set the state to true to force a rerender with the correct data.
-                    this.setState(()=>{
-                        return {finishedLoading:true}
-                    })
-                }
-            })
-    
-            this.twitch.onContext((context,delta)=>{
-                this.contextUpdate(context,delta)
-            })
-        }
-    }
 
-    render(){
-        if(this.state.finishedLoading && this.Authentication.isModerator()){
-            return(
-                <div className="Config">
-                    <div className={this.state.theme==='light' ? 'Config-light' : 'Config-dark'}>
-                        There is no configuration needed for this extension!
-                    </div>
-                </div>
-            )
-        }
-        else{
-            return(
-                <div className="Config">
-                    <div className={this.state.theme==='light' ? 'Config-light' : 'Config-dark'}>
-                        Loading...
-                    </div>
-                </div>
-            )
-        }
-    }
+export default function ConfigPage() {
+	const classes = useStyles();
+	const [spotifyId, setSpotifyId] = useState(localStorage.getItem('spotifyId'));
+	const [spotifyUser, setSpotifyUser] = useState(localStorage.getItem('spotifyUser'));
+	
+	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
+		localStorage.setItem('spotifyId',spotifyId);
+		localStorage.setItem('spotifyUser',spotifyUser);
+	}
+	 
+	const getUserInfoAndSave = () => {
+		return spotifyApi.getMe({}, (err, data)=>{
+			if(err) console.log(err);
+			else{
+				setSpotifyId(data.id);
+				setSpotifyUser(data.display_name ? data.display_name : 'Your');
+				saveSpotifyInfo(data.id,data.display_name);
+			}
+		})
+	}
+
+	const popupCallback = async (tokens) => {
+		console.info({tokens}) 
+		spotifyApi.setAccessToken(tokens.accessToken)
+		getUserInfoAndSave()
+	}
+
+  return (
+    <div className={classes.root}>
+      <Button variant="outlined" size="small" color="primary" href="http://jukebox-2952e.firebaseapp.com/login">
+        Login
+			</Button>
+			<Login callback={popupCallback}/>
+    </div>
+  );
 }

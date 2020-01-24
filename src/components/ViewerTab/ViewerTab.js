@@ -59,7 +59,8 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column'
   },
   scrollView: {
-    overflow: 'auto'
+    overflow: 'auto',
+    height: 'inherit'
   },
   loading: {
     display: 'grid',
