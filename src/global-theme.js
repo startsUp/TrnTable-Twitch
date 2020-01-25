@@ -26,7 +26,7 @@ export const TrnTableTheme = createMuiTheme({
             main: '#FFFFFF'
         },
         background: {
-            paper: '191414',
+            paper: '#191414',
             default: "#191414"
         }
   },

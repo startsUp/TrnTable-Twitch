@@ -1,5 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
+import './index.css'
 import ConfigPage from "./components/ConfigPage/ConfigPage"
 import { TrnTableTheme } from './global-theme'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';  

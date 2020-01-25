@@ -53,7 +53,7 @@ module.exports = (_env,argv)=> {
   for(name in entryPoints){
     if(entryPoints[name].build){
       entry[name]=entryPoints[name].path
-      if(argv.mode==='none'){
+      if(argv.mode==='none' || argv.mode === 'development'){
         plugins.push(new HtmlWebpackPlugin({
           inject:true,
           chunks:[name],

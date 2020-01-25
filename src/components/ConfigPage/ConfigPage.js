@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import {  Button } from '@material-ui/core'; 
+import { Container, Button } from '@material-ui/core'; 
 import Login from '../../pages/login';
 import SpotifyWebApi from 'spotify-web-api-js'
 
@@ -10,7 +10,7 @@ const spotifyApi = new SpotifyWebApi();
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    height: '100%',
+    height: '100vh',
   }
 })); 
 
@@ -44,11 +44,9 @@ export default function ConfigPage() {
 	}
 
   return (
-    <div className={classes.root}>
-      <Button variant="outlined" size="small" color="primary" href="http://jukebox-2952e.firebaseapp.com/login">
-        Login
-			</Button>
-			<Login callback={popupCallback}/>
-    </div>
+	<div className={classes.root}>
+		<Login callback={popupCallback}/>
+	</div>
+	
   );
 }
