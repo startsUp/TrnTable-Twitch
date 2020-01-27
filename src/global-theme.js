@@ -27,7 +27,8 @@ export const TrnTableTheme = createMuiTheme({
         },
         background: {
             paper: '#191414',
-            default: "#191414"
+            default: "#191414",
+            cover: 'rgba(0,0,0,0.85)'
         }
   },
  });
