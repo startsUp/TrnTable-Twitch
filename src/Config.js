@@ -9,6 +9,7 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 
 const auth = new AuthProvider(Twitch);
+// const authContext = React.CreateContext(auth);
 ReactDOM.render(
 <MuiThemeProvider theme={ TrnTableTheme }>
   <ApolloProvider client={ auth.getClient() } >
