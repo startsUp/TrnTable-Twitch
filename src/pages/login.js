@@ -1,35 +1,12 @@
 import React, { useState, Component } from 'react'
-import '../App.css'
 import { SvgIcon, Button, Typography, Paper } from '@material-ui/core';
 import ConfirmActionPopup from '../components/confirmPopup'
 import {ReactComponent as InfoLogo} from '../res/images/round-info.svg'
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Bg from '../res/images/stockBG.jpeg'
+
 import HostCard from '../components/ConfigPage/hostCard'
 
-const useStyles = makeStyles(theme => ({
-	root: {
-		height: '100vh',
-		background: `url(${Bg}) no-repeat center center fixed`,
-		backgroundSize: 'cover'
-	},
-	cover:{
-		background: theme.palette.background.cover,
-		height: '100vh',
-	},
-  grid: {
-		height: '100%',
-		display: 'grid',
-		paddingTop: theme.spacing(10),
-		gridTemplateRows: '0.5fr 1fr',
-		justifyContent: 'center',
-		minWidth: '100px',
-		alignItems: 'center'
-	}
-}));
 
 export default function Login(props){
-	const classes = useStyles();	
 	const handleLogin = () => {
 			popupCenter('https://jukebox-2952e.firebaseapp.com/login', 'Spotify Auth', 350, 550);
 	}
@@ -65,13 +42,5 @@ export default function Login(props){
 		}); 
 	}
 
-	return (
-		<div className={classes.root}>
-			<div className={classes.cover}> 
-				<div className={classes.grid}>
-					<HostCard handleLogin={handleLogin} {...props}/>
-				</div>
-			</div>
-		</div> 
-	)
+	return (<HostCard handleLogin={handleLogin} {...props}/>)
 }

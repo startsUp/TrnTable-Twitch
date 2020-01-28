@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
+
 const patternURL = "url(" + window.location.href + "#a)"
-function AppLogo(props) {
+const AppLogo = (props) => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200" className={props.styleName}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200" className={props.appLogo}>
             <defs>
                 <pattern patternUnits="userSpaceOnUse" width="462.222" height="265" patternTransform="translate(747.778 285)" id="a">
                     <path fill="#1ed660" strokeWidth="25.116" d="M747.778 285H1210v265H747.778z" transform="translate(-747.778 -285)"/>
