@@ -107,8 +107,8 @@ export default function ConfigPage() {
 						<Typography variant="h5" className={classes.title} color='primary'>TrnTable</Typography>
 					</div>
 					<Divider/>
-					{ !config && <Login callback={popupCallback}/> }
-					{ config && 
+					{ config && <Login callback={popupCallback}/> }
+					{ !config && 
 					<Box p={3}>
 						{settingsService.BroadcasterSettings.map(setting => setting.getComponent())}
 					</Box> 

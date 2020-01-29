@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField, ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, Switch } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 export enum SettingType {
     BOOLEAN = 1,
     SELECTION,
@@ -11,9 +12,27 @@ export interface Setting<T>{
     name: string
     details: string
     defaultValue: T
-    getComponent(): any
+    getComponent(props: {settingStyle: {}}): any
     getSettingType(): SettingType
 }
+const SettingComponent = props => {
+	return (
+		<ListItem>
+        <ListItemText id="switch-list-label-wifi" primary="Wi-Fi" />
+        <ListItemSecondaryAction>
+          {props.children}
+        </ListItemSecondaryAction>
+      </ListItem>
+	)
+}
+const useStyles = makeStyles(theme => ({
+  1: {
+    height: '100vh',
+	},
+	2: {
+			
+	}
+}))
 
 export class NumberSetting implements Setting<number>{
     
@@ -32,16 +51,24 @@ export class NumberSetting implements Setting<number>{
 			return this.settingType
     }
 
-    getComponent(){
+    getComponent(props){
 			return (
-				<TextField 
-					type="number"
-					InputProps={{
-							inputProps: { 
-									max:{this.maxValue}, min:{this.minValue}
-							}}
-					label="what ever"
-				</TextField>
+				<SettingComponent>
+					<TextField
+						className={props.settingStyle}
+						id="filled-number-small"
+						label="Number"
+						type="number"
+						InputLabelProps={{
+							shrink: true,
+							max: this.maxValue,
+							min: this.minValue
+						}}
+						size="small"
+						variant="filled"
+					/>
+				</SettingComponent>
+				
 			)
     }
 }
@@ -60,11 +87,15 @@ export class BooleanSetting implements Setting<boolean>{
 		getSettingType(){
 			return this.settingType
 		}
-    getComponent(){
+    getComponent(props){
 			return (
-					<div>
-							Yes or No
-					</div>
+				<Switch
+					className={props.settingStyle}
+					edge="end"
+					// onChange={}
+					checked={true}
+					inputProps={{ 'aria-labelledby': `yes-or-no-switch` }}
+				/>
 			)
     }
     
