@@ -1,21 +1,21 @@
 import * as Settings from './model/Setting'
 export class SettingsService{
 	private BroadcasterSettings = [
+			new Settings.NumberSetting(
+				'Max Requests', 
+				'The maximum number of songs a viewer can request',
+				100,
+				100,
+				0,
+				100),
 			new Settings.BooleanSetting(
-					'Delete Playlist After Stream end', 
-					'If set to True, TrnTable will create a new playlist everytime you go live instead of using the last active playlist',
+					'Delete Playlist', 
+					'Delete stream playlist after every stream. Lets you start a new playlist for each stream.',
 					false, 
 					false),
-			new Settings.NumberSetting(
-					'Maximum Number of Songs viewer can Request', 
-					'The maximum number of songs a viewer can request',
-					100,
-					100,
-					1,
-					100),
 			new Settings.BooleanSetting(
-					'Auto add Song Requests', 
-					'Requested songs are automatically added to playlist',
+					'Auto add Requests', 
+					'Requested songs are automatically added to the playlist.',
 					false, 
 					false),
 	]

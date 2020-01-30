@@ -1,38 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import '../../App.css'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Container, Box, Paper, Typography, SvgIcon, Divider } from '@material-ui/core'; 
+import { Container, Box, Paper, Typography, SvgIcon, Divider, List, Button } from '@material-ui/core'; 
 import Login from '../../pages/login';
 import SpotifyWebApi from 'spotify-web-api-js'
 import { Error } from './ConfigErrors'
 import AppLogo from '../logo'
 import Bg from '../../res/images/stockBG.jpeg'
+import { SettingType } from './model/Setting'
 import { SettingsService } from './configurations'
 
+const VERSION_NO = "1.0.0";
 const spotifyApi = new SpotifyWebApi();
 const settingsService = new SettingsService();
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    height: '100vh',
+  	root: {
+		height: '100vh',
 		background: `url(${Bg}) no-repeat center center fixed`,
 		backgroundSize: 'cover'
-  },
-  cover:{
+	},
+	cover:{
 		background: theme.palette.background.cover,
 		height: '100vh',
+		overflow: 'auto'
+	},
+	hostTitle: {
+		textDecoration: 'underline',
+		fontFamily: 'sofia_problack',
+		background: theme.palette.background.paper,
+		width: '100%',
+		zIndex: '10',
+		paddingBottom: theme.spacing(1),
+		position: 'sticky',
+		top: '0px'
 	},
 	grid: {
-		height: '100%',
 		display: 'grid',
 		paddingTop: theme.spacing(10),
-		gridTemplateRows: '0.5fr 1fr',
+		gridTemplateRows: '1fr',
 		justifyContent: 'center',
 		minWidth: '100px',
 		alignItems: 'center'
 	},
 	hostCard: {
-		width: '400px',
+		width: '450px',
 		justifySelf: 'center',
 		padding: theme.spacing(1),
 		textAlign: 'center'
@@ -47,7 +59,23 @@ const useStyles = makeStyles(theme => ({
 	},
 	appLogo: {
 		width: '25px',
-	}
+	},
+	numberSetting:{
+		width: '30px'
+	},
+	settingStyle: {
+		maxWidth: theme.spacing(9),
+	},
+	listItem: {
+		paddingRight: theme.spacing(8)
+	},
+	button: {
+    	borderRadius: theme.spacing(2),
+		fontFamily: 'sofia_problack',
+		justifySelf: 'center',
+		width: theme.spacing(15),
+		marginTop: theme.spacing(1)
+	},
 })); 
 
 
@@ -81,8 +109,8 @@ export default function ConfigPage() {
 	}
 	const setTwitchConfiguration = () => {
 		if (Twitch){
-			//JSON
-			Twitch.ext.configuration.set()
+			Twitch.ext.configuration.set("broadcaster", VERSION_NO, settingsService.getJSONConfig());
+			setError(Error.NONE)
 		}
 		else {
 			setError(Error.NOTSET);
@@ -110,7 +138,15 @@ export default function ConfigPage() {
 					{ config && <Login callback={popupCallback}/> }
 					{ !config && 
 					<Box p={3}>
-						{settingsService.BroadcasterSettings.map(setting => setting.getComponent())}
+						<Typography variant="h4" className={classes.hostTitle}>
+							Settings
+						</Typography>
+						<List>
+						{settingsService.BroadcasterSettings.map((setting, index) => setting.getComponent(classes, index))}
+						</List>
+						<Button variant="outlined" size="small" color="primary" className={classes.button} onClick={setTwitchConfiguration}>
+							Save
+						</Button>
 					</Box> 
 					}	
 				</Paper>

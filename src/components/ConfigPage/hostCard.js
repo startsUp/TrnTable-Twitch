@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
 		fontFamily: 'sofia_prolight',
 		padding: `${theme.spacing(2)}px 0 ${theme.spacing(5)}px 0`
 	},
-	loginButton: {
+	button: {
     	borderRadius: theme.spacing(2),
 		fontFamily: 'sofia_problack',
 		justifySelf: 'center',
@@ -39,7 +39,7 @@ export default function HostCard(props){
 			</Typography>
 			<Box className={classes.login}>
 				<Typography color='textPrimary'>Let's Get Started</Typography>
-				<Button variant="outlined" onClick={props.handleLogin} size="small" color="primary" className={classes.loginButton}>
+				<Button variant="outlined" onClick={props.handleLogin} size="small" color="primary" className={classes.button}>
 					Login
 				</Button>
 			</Box>
