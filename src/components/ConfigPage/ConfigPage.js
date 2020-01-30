@@ -110,6 +110,7 @@ export default function ConfigPage() {
 	const setTwitchConfiguration = () => {
 		if (Twitch){
 			Twitch.ext.configuration.set("broadcaster", VERSION_NO, settingsService.getJSONConfig());
+			setConfig('')
 			setError(Error.NONE)
 		}
 		else {
