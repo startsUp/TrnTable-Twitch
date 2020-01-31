@@ -10,7 +10,7 @@ import Bg from '../../res/images/stockBG.jpeg'
 import { SettingType } from './model/Setting'
 import { SettingsService } from './configurations'
 
-const VERSION_NO = "1.0.0";
+const VERSION_NO = "0.0.1";
 const spotifyApi = new SpotifyWebApi();
 const settingsService = new SettingsService();
 
@@ -83,16 +83,26 @@ const useStyles = makeStyles(theme => ({
 const ConfigState = {SET: 1, NOTSET: 2, PENDING:3};
 export default function ConfigPage() {
 	const classes = useStyles();
+	const twitch = Twitch ? Twitch.ext : null
 	const [spotifyId, setSpotifyId] = useState(localStorage.getItem('spotifyId'));
 	const [spotifyUser, setSpotifyUser] = useState(localStorage.getItem('spotifyUser'));
 	const [config, setConfig] = useState(Twitch ? Twitch.ext.configuration.broadcaster : null);
 	const [error, setError] = useState(Error.NONE);
-
+	
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
 		localStorage.setItem('spotifyId',spotifyId);
 		localStorage.setItem('spotifyUser',spotifyUser);
 	}
-	 
+	
+	useEffect(()=>{
+		
+		if(twitch){
+			twitch.configuration.onChanged(()=>{
+				console.warn(twitch.configuration.broadcaster)
+			})
+		}
+	},[])
+
 	const getUserInfoAndSave = () => {
 		return spotifyApi.getMe({}, (err, data)=>{
 			if(err) console.log(err);
