@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import '../index.css'
 
 const patternURL = "url(" + window.location.href + "#a)"
 const AppLogo = (props) => {

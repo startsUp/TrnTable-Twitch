@@ -11,6 +11,7 @@ import { SettingType } from './model/Setting'
 import { SettingsService } from './configurations'
 import SettingsCard from './settingsCard'
 import LoggedInCard from './loggedinCard'
+import LoadingCard from '../loader'
 
 const VERSION_NO = "0.0.1";
 const spotifyApi = new SpotifyWebApi();
@@ -21,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 		height: '100vh',
 		background: `url(${Bg}) no-repeat center center fixed`,
 		backgroundSize: 'cover'
-	},
+    },
 	cover:{
 		background: theme.palette.background.cover,
 		height: '100vh',
@@ -77,7 +78,11 @@ const useStyles = makeStyles(theme => ({
 		justifySelf: 'center',
 		width: theme.spacing(15),
 		marginTop: theme.spacing(1)
-	},
+    },
+    loadingLogo: {
+        width: '5rem'
+    },
+    
 })); 
 
 
@@ -96,7 +101,8 @@ export default function ConfigPage() {
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
 		localStorage.setItem('spotifyId',spotifyId);
 		localStorage.setItem('spotifyUser',spotifyUser);
-	}
+    }
+    console.log(Twitch.ext.viewer)
 	
 	useEffect(()=>{
 		
@@ -152,7 +158,8 @@ export default function ConfigPage() {
 						<Typography variant="h5" className={classes.title} color='primary'>TrnTable</Typography>
 					</div>
 					<Divider/>
-					{ !config && <Login callback={popupCallback}/> }
+					{/* { !config && <Login callback={popupCallback}/> } */}
+					{ !config && <LoadingCard/> }
 					{/* { !config && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={setTwitchConfiguration}/>} */}
                     {/* { config && <LoggedInCard classes={classes} settingsCallback={s}/>}	 */}
 				</Paper>
