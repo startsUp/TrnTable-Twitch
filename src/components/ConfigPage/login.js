@@ -1,9 +1,5 @@
-import React, { useState, Component } from 'react'
-import { SvgIcon, Button, Typography, Paper } from '@material-ui/core';
-import ConfirmActionPopup from '../components/confirmPopup'
-import {ReactComponent as InfoLogo} from '../res/images/round-info.svg'
-
-import HostCard from '../components/ConfigPage/hostCard'
+import React from 'react'
+import HostCard from './hostCard'
 
 
 export default function Login(props){

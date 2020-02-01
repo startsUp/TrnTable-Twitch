@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import '../../App.css'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Container, Box, Paper, Typography, SvgIcon, Divider, List, Button } from '@material-ui/core'; 
-import Login from '../../pages/login';
+import Login from './login';
 import SpotifyWebApi from 'spotify-web-api-js'
 import { Error } from './ConfigErrors'
 import AppLogo from '../logo'
 import Bg from '../../res/images/stockBG.jpeg'
 import { SettingType } from './model/Setting'
 import { SettingsService } from './configurations'
+import SettingsCard from './settingsCard'
+import LoggedInCard from './loggedinCard'
 
 const VERSION_NO = "0.0.1";
 const spotifyApi = new SpotifyWebApi();
@@ -81,6 +83,8 @@ const useStyles = makeStyles(theme => ({
 
 
 const ConfigState = {SET: 1, NOTSET: 2, PENDING:3};
+
+
 export default function ConfigPage() {
 	const classes = useStyles();
 	const twitch = Twitch ? Twitch.ext : null
@@ -98,8 +102,10 @@ export default function ConfigPage() {
 		
 		if(twitch){
 			twitch.configuration.onChanged(()=>{
-				console.warn(twitch.configuration.broadcaster)
-			})
+                console.warn(twitch.configuration.broadcaster)
+                setConfig()
+            })
+            
 		}
 	},[])
 
@@ -146,20 +152,9 @@ export default function ConfigPage() {
 						<Typography variant="h5" className={classes.title} color='primary'>TrnTable</Typography>
 					</div>
 					<Divider/>
-					{ config && <Login callback={popupCallback}/> }
-					{ !config && 
-					<Box p={3}>
-						<Typography variant="h4" className={classes.hostTitle}>
-							Settings
-						</Typography>
-						<List>
-						{settingsService.BroadcasterSettings.map((setting, index) => setting.getComponent(classes, index))}
-						</List>
-						<Button variant="outlined" size="small" color="primary" className={classes.button} onClick={setTwitchConfiguration}>
-							Save
-						</Button>
-					</Box> 
-					}	
+					{ !config && <Login callback={popupCallback}/> }
+					{/* { !config && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={setTwitchConfiguration}/>} */}
+                    {/* { config && <LoggedInCard classes={classes} settingsCallback={s}/>}	 */}
 				</Paper>
 			</div>
 		</div>
