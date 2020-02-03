@@ -8,11 +8,11 @@ import 'firebase/firestore'
 import 'firebase/auth'
 import { TrnTableTheme } from './global-theme'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';  
-import { AuthProvider } from './auth/AuthProvider';
+import { GraphQLAuth } from './auth/GraphQLAuth';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 
-const auth = new AuthProvider(Twitch);
+const auth = new GraphQLAuth();
 const GET_SESSIONS = gql`
 	{
 		extension_session {
