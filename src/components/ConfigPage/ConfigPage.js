@@ -12,6 +12,7 @@ import { SettingsService } from './configurations'
 import SettingsCard from './settingsCard'
 import LoggedInCard from './loggedinCard'
 import LoadingCard from '../loader'
+import { useAuth } from '../../auth/auth-context';
 
 const VERSION_NO = "0.0.1";
 const spotifyApi = new SpotifyWebApi();
@@ -91,7 +92,8 @@ const ConfigState = {SET: 1, NOTSET: 2, PENDING:3};
 
 
 export default function ConfigPage() {
-	const classes = useStyles();
+    const classes = useStyles();
+    const auth = useAuth()
 	const twitch = Twitch ? Twitch.ext : null
 	const [spotifyId, setSpotifyId] = useState(localStorage.getItem('spotifyId'));
 	const [spotifyUser, setSpotifyUser] = useState(localStorage.getItem('spotifyUser'));
@@ -102,7 +104,6 @@ export default function ConfigPage() {
 		localStorage.setItem('spotifyId',spotifyId);
 		localStorage.setItem('spotifyUser',spotifyUser);
     }
-    console.log(Twitch.ext.viewer)
 	
 	useEffect(()=>{
 		

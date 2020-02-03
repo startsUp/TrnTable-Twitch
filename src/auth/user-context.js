@@ -1,22 +1,22 @@
 import React from 'react'
 import LoadingCard from '../components/loader'
 import { SpotifyLogin } from './spotify-login'
-import { SpotifyService } from '../util/Spotify/SpotifyService'
+import SpotifyService from '../util/Spotify/SpotifyService'
 import { gql } from 'apollo-boost';
+import Authentication from '../util/Twitch/Authentication'
 
-const GET_USER = gql`
-	{
-		user {
-            
-		}
+
+const UserContext = React.createContext()
+
+function UserProvider(props) {
+	const {
+		data = { spotifyUser: null, twitchUser: null }
 	}
-`;
 
-const AuthContext = React.createContext()
+	const twitchAuth = new Authentication()
+	const spotify = new SpotifyService()
+	const spotifyAuth = { login: spotify.handleLogin, logout: spotify.logout }
 
-function AuthProvider(props) {
-	const twitch = Twitch.ext
-	
 	React.useEffect(() => {
 		twitch.onAuthorized(auth => {
 			console.warn(auth)
@@ -34,11 +34,10 @@ function AuthProvider(props) {
   }
 	
 	const spotifyCallback = () => {
-
+		
 	}
-
-  const spotify = new SpotifyService()
-  const spotifyAuth = { login: spotify.handleLogin, logout: spotify.logout }
+  
+  
 
   const register = () => {} // register the user
   const logout = () => {} // clear the token in localStorage and the user data
@@ -46,14 +45,7 @@ function AuthProvider(props) {
   // because this is the top-most component rendered in our app and it will very
   // rarely re-render/cause a performance problem.
   return (
-    <AuthContext.Provider value={{ thirdPartyLogin: { spotifyAuth } }} {...props} />
+    <UserContext.Provider value={{ thirdPartyLogin: { spotifyAuth } }} {...props} />
   )
 }
-const useAuth = () => React.useContext(AuthContext)
-export {AuthProvider, useAuth}
-// the UserProvider in user-context.js is basically:
-// const UserProvider = props => (
-//   <UserContext.Provider value={useAuth().data.user} {...props} />
-// )
-// and the useUser hook is basically this:
-// const useUser = () => React.useContext(UserContext)
+const useUser = () => React.useContext(AuthContext)

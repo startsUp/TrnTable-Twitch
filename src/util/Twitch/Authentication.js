@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
 
 /**
  * Helper class for authentication against an EBS service. Allows the storage of a token to be accessed across componenents. 
