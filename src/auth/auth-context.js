@@ -1,38 +1,67 @@
-import React from 'react'
+import React, { useState } from 'react'
 import LoadingCard from '../components/loader'
 import { SpotifyLogin } from './spotify-login'
 import { SpotifyService } from '../util/Spotify/SpotifyService'
 import Authentication from '../util/Twitch/Authentication';
-import { useQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import jwt from 'jsonwebtoken'
 
-const GET_USER = gql`{
-  extension_session(where: {session_id: {_eq: "1"}}) {
+const GET_SESSION = gql`
+query GetSession($channelId: String){
+  extension_session(where: {session_id: {_eq: $channelId}}) {
     active
     broadcaster_id
     created_at
     session_id
-    settings
+    spotify_token
     updated_at
+    settings
   }
 }`
 
 const AuthContext = React.createContext()
-
+const validateToken = token => {
+  if (token){
+    let decoded = jwt.decode(token)
+    let expiry = new Date(decoded.exp*1000)
+    return new Date() < expiry
+  }
+  return false
+  
+}
 function AuthProvider(props) {
 	const tokenUpdateCallback = props.onTokenChange
-	const twitch = Twitch.ext
+  const twitch = Twitch.ext
+  const authToken = localStorage.getItem('token')
+  const isTokenValid = validateToken(authToken) 
 	const twitchAuth = new Authentication()
-	const getUser = useQuery(GET_USER)
+	const [ getSession, {loading, data} ] = useLazyQuery(GET_SESSION)
+  const [ fetchDone, setFetchStatus ] = useState(false)
 
 	React.useEffect(() => {
+    if (isTokenValid) twitchAuth.setToken(authToken)
+    if (twitchAuth.isModerator()){
+      setFetchStatus(true)
+      fetchSession(twitchAuth.getUserId())
+    }
+
 		twitch.onAuthorized(auth => {
 			if (auth.token) {
-				twitchAuth.setToken(auth.token)
+        twitchAuth.setToken(auth.token)
 				if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
 			}
 		})
-	}, [])
+  }, [])
+  
+  const onSessionInfo = data => {
+    console.log(data)
+  }
+
+  const fetchSession = channelId => {
+    getSession({ variables: { channelId: channelId}, onCompleted: data => console.log(data) })
+  }
+
   // code for pre-loading the user's information if we have their token in
   // localStorage goes here
   // 🚨 this is the important bit.
