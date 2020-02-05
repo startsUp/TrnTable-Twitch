@@ -39,17 +39,21 @@ function AuthProvider(props) {
 	const [ getSession, {loading, data} ] = useLazyQuery(GET_SESSION)
   const [ fetchDone, setFetchStatus ] = useState(false)
 
-	React.useEffect(() => {
-    if (isTokenValid) twitchAuth.setToken(authToken)
+  const fetchInfo = ()=> {
     if (twitchAuth.isModerator()){
       setFetchStatus(true)
       fetchSession(twitchAuth.getUserId())
     }
+  }
+	React.useEffect(() => {
+    if (isTokenValid) twitchAuth.setToken(authToken)
+    fetchInfo()
 
 		twitch.onAuthorized(auth => {
 			if (auth.token) {
         twitchAuth.setToken(auth.token)
-				if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
+        fetchInfo()
+        if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
 			}
 		})
   }, [])
@@ -59,7 +63,7 @@ function AuthProvider(props) {
   }
 
   const fetchSession = channelId => {
-    getSession({ variables: { channelId: channelId}, onCompleted: data => console.log(data) })
+    getSession({ variables: { channelId: 'test' }})
   }
 
   // code for pre-loading the user's information if we have their token in
@@ -69,9 +73,9 @@ function AuthProvider(props) {
   // But we post-pone rendering any of the children until after we've determined
   // whether or not we have a user token and if we do, then we render a spinner
   // while we go retrieve that user's information.
-  // if (weAreStillWaitingToGetTheUserData) {
-  //   return <LoadingCard />
-  // }
+  if (loading) {
+    return <div style={{height: '100vh'}}><LoadingCard /></div>
+  }
 	
 	const spotifyCallback = () => {
 
@@ -86,7 +90,7 @@ function AuthProvider(props) {
   // because this is the top-most component rendered in our app and it will very
   // rarely re-render/cause a performance problem.
   return (
-    <AuthContext.Provider value={{ thirdPartyLogin: { spotifyAuth } }} {...props} />
+    <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, data }} {...props} />
   )
 }
 const useAuth = () => React.useContext(AuthContext)

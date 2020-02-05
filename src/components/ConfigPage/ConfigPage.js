@@ -97,7 +97,9 @@ export default function ConfigPage() {
 	const twitch = Twitch ? Twitch.ext : null
 	const [spotifyId, setSpotifyId] = useState(localStorage.getItem('spotifyId'));
 	const [spotifyUser, setSpotifyUser] = useState(localStorage.getItem('spotifyUser'));
-	const [config, setConfig] = useState(Twitch ? Twitch.ext.configuration.broadcaster : null);
+	const [config, setConfig] = useState(auth.data ? auth.data.extension_session[0] : Twitch.ext.configuration.broadcaster);
+	
+	if (auth.data) console.warn({d: auth.data.extension_session, config})
 	const [error, setError] = useState(Error.NONE);
 	
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
@@ -106,13 +108,10 @@ export default function ConfigPage() {
     }
 	
 	useEffect(()=>{
-		
 		if(twitch){
 			twitch.configuration.onChanged(()=>{
-                console.warn(twitch.configuration.broadcaster)
                 setConfig()
             })
-            
 		}
 	},[])
 
@@ -160,8 +159,7 @@ export default function ConfigPage() {
 					</div>
 					<Divider/>
 					{/* { !config && <Login callback={popupCallback}/> } */}
-					{ !config && <LoadingCard/> }
-					{/* { !config && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={setTwitchConfiguration}/>} */}
+					{ auth.data && auth.data.extension_session[0] && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={setTwitchConfiguration}/>}
                     {/* { config && <LoggedInCard classes={classes} settingsCallback={s}/>}	 */}
 				</Paper>
 			</div>
