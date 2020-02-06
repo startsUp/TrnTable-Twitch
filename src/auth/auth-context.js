@@ -36,7 +36,9 @@ function AuthProvider(props) {
   const authToken = localStorage.getItem('token')
   const isTokenValid = validateToken(authToken) 
 	const twitchAuth = new Authentication()
-	const [ getSession, {loading, data} ] = useLazyQuery(GET_SESSION)
+  // const [ getSession, {loading, data} ] = useLazyQuery(GET_SESSION)
+  const [ loading, setLoading ] = useState(true);
+  const [ data, setData ] =  useState(null)
   const [ fetchDone, setFetchStatus ] = useState(false)
 
   const fetchInfo = ()=> {
@@ -47,15 +49,23 @@ function AuthProvider(props) {
   }
 	React.useEffect(() => {
     if (isTokenValid) twitchAuth.setToken(authToken)
-    fetchInfo()
+    // fetchInfo()
 
 		twitch.onAuthorized(auth => {
 			if (auth.token) {
+        console.warn(twitch.configuration.broadcaster)
         twitchAuth.setToken(auth.token)
-        fetchInfo()
+        // fetchInfo()
         if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
 			}
-		})
+    })
+    console.log(twitch)
+    if (twitch.configuration) console.warn('exists')
+    twitch.configuration.onChanged(()=> {
+      setLoading(false)
+      console.warn('CONFIG RECIEVED ->' + twitch.configuration.broadcaster)
+      setData(twitch.configuration.broadcaster)
+    })
   }, [])
   
   const onSessionInfo = data => {
@@ -73,7 +83,7 @@ function AuthProvider(props) {
   // But we post-pone rendering any of the children until after we've determined
   // whether or not we have a user token and if we do, then we render a spinner
   // while we go retrieve that user's information.
-  if (loading) {
+  if (loading && !data) {
     return <div style={{height: '100vh'}}><LoadingCard /></div>
   }
 	

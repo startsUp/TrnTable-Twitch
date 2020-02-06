@@ -1,5 +1,7 @@
 import * as Settings from './model/Setting'
+
 export class SettingsService{
+	
 	private BroadcasterSettings = [
 			new Settings.NumberSetting(
 				'Max Requests', 

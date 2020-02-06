@@ -13,7 +13,7 @@ import SettingsCard from './settingsCard'
 import LoggedInCard from './loggedinCard'
 import LoadingCard from '../loader'
 import { useAuth } from '../../auth/auth-context';
-
+import { ConfigStates } from './config-states'
 const VERSION_NO = "0.0.1";
 const spotifyApi = new SpotifyWebApi();
 const settingsService = new SettingsService();
@@ -88,8 +88,6 @@ const useStyles = makeStyles(theme => ({
 
 
 
-const ConfigState = {SET: 1, NOTSET: 2, PENDING:3};
-
 
 export default function ConfigPage() {
     const classes = useStyles();
@@ -97,9 +95,8 @@ export default function ConfigPage() {
 	const twitch = Twitch ? Twitch.ext : null
 	const [spotifyId, setSpotifyId] = useState(localStorage.getItem('spotifyId'));
 	const [spotifyUser, setSpotifyUser] = useState(localStorage.getItem('spotifyUser'));
-	const [config, setConfig] = useState(auth.data ? auth.data.extension_session[0] : Twitch.ext.configuration.broadcaster);
-	
-	if (auth.data) console.warn({d: auth.data.extension_session, config})
+	const [config, setConfig] = useState(auth.data ? auth.data.extension_session[0].settings : Twitch.ext.configuration.broadcaster);
+	const [configState, setConfigState] = useState(config ? ConfigStates.LOGGEDIN : ConfigStates.LOGGEDOUT)
 	const [error, setError] = useState(Error.NONE);
 	
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
@@ -158,9 +155,9 @@ export default function ConfigPage() {
 						<Typography variant="h5" className={classes.title} color='primary'>TrnTable</Typography>
 					</div>
 					<Divider/>
-					{/* { !config && <Login callback={popupCallback}/> } */}
-					{ auth.data && auth.data.extension_session[0] && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={setTwitchConfiguration}/>}
-                    {/* { config && <LoggedInCard classes={classes} settingsCallback={s}/>}	 */}
+					{ config && <Login callback={popupCallback}/> }
+					{ !config && error === Error.NONE && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={setTwitchConfiguration}/>}
+                    { config && error === Error.NONE && <LoggedInCard classes={classes} />}	
 				</Paper>
 			</div>
 		</div>
