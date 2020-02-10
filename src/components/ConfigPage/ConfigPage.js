@@ -15,8 +15,7 @@ import LoadingCard from '../loader'
 import { useAuth } from '../../auth/auth-context';
 import { ConfigStates } from './config-states'
 const VERSION_NO = "0.0.1";
-const spotifyApi = new SpotifyWebApi();
-const settingsService = new SettingsService();
+
 
 const useStyles = makeStyles(theme => ({
   	root: {
@@ -90,13 +89,16 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function ConfigPage() {
+	const spotifyApi = new SpotifyWebApi();
+	const settingsService = new SettingsService();
     const classes = useStyles();
-    const auth = useAuth()
+	const auth = useAuth()
 	const twitch = Twitch ? Twitch.ext : null
 	const [spotifyId, setSpotifyId] = useState(localStorage.getItem('spotifyId'));
 	const [spotifyUser, setSpotifyUser] = useState(localStorage.getItem('spotifyUser'));
-	const [config, setConfig] = useState(auth.data ? auth.data.extension_session[0].settings : Twitch.ext.configuration.broadcaster);
+	const [config, setConfig] = useState(auth.data ? settingsService.getUserSettings(auth.data.config) : null);
 	const [configState, setConfigState] = useState(config ? ConfigStates.LOGGEDIN : ConfigStates.LOGGEDOUT)
+	console.warn(configState)
 	const [error, setError] = useState(Error.NONE);
 	
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
@@ -155,9 +157,9 @@ export default function ConfigPage() {
 						<Typography variant="h5" className={classes.title} color='primary'>TrnTable</Typography>
 					</div>
 					<Divider/>
-					{ config && <Login callback={popupCallback}/> }
-					{ !config && error === Error.NONE && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={setTwitchConfiguration}/>}
-                    { config && error === Error.NONE && <LoggedInCard classes={classes} />}	
+					{ configState === ConfigStates.LOGGEDOUT && <Login callback={popupCallback}/> }
+					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={setTwitchConfiguration}/>}
+                    { configState === ConfigStates.LOGGEDIN  && error === Error.NONE && <LoggedInCard classes={classes} />}	
 				</Paper>
 			</div>
 		</div>

@@ -63,7 +63,7 @@ function AuthProvider(props) {
     if (twitch.configuration) console.warn('exists')
     twitch.configuration.onChanged(()=> {
       setLoading(false)
-      console.warn('CONFIG RECIEVED ->' + twitch.configuration.broadcaster)
+      console.warn('CONFIG RECIEVED ->', twitch.configuration.broadcaster)
       setData(twitch.configuration.broadcaster)
     })
   }, [])
