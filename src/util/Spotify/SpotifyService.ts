@@ -1,11 +1,12 @@
 
 export class SpotifyService{
     readonly SPOTIFY_API_URL = 'https://jukebox-2952e.firebaseapp.com';
+    readonly SPOTIFY_LOGIN_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api';
     tokens: {}
     constructor(){}
 
     handleLogin = () => {
-        this.popupCenter(`${this.SPOTIFY_API_URL}/login`, 'Spotify Auth', 350, 550);
+        this.popupCenter(`${this.SPOTIFY_LOGIN_URL}/login`, 'Spotify Auth', 350, 550);
     }
 
     search = async (query: string) => {
@@ -31,6 +32,7 @@ export class SpotifyService{
         //  if (window.focus) newWindow.focus();
         window.addEventListener('message', event => {
             // IMPORTANT: check the origin of the data! 
+            console.warn(event)
             if (event.origin.startsWith('https://trntable.live')) { 
                     // The data was sent from your site.
                     // Data sent with postMessage is stored in event.data:

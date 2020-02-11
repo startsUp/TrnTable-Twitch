@@ -19,7 +19,7 @@ query GetSession($channelId: String){
     settings
   }
 }`
-
+const API_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api'
 const AuthContext = React.createContext()
 const validateToken = token => {
   if (token){
@@ -35,7 +35,7 @@ function AuthProvider(props) {
   const twitch = Twitch.ext
   const authToken = localStorage.getItem('token')
   const isTokenValid = validateToken(authToken) 
-	const twitchAuth = new Authentication()
+	const twitchAuth = new Authentication(authToken || null)
   // const [ getSession, {loading, data} ] = useLazyQuery(GET_SESSION)
   const [ loading, setLoading ] = useState(true);
   const [ data, setData ] =  useState(null)
@@ -47,6 +47,11 @@ function AuthProvider(props) {
       fetchSession(twitchAuth.getUserId())
     }
   }
+  const getUserData = async (id) => {
+    const res = await twitchAuth.makeCall(`${API_URL}/broadcaster/${id}`)
+    return console.log(res);
+  }
+
 	React.useEffect(() => {
     if (isTokenValid) twitchAuth.setToken(authToken)
     // fetchInfo()
@@ -56,6 +61,7 @@ function AuthProvider(props) {
         console.warn(twitch.configuration.broadcaster)
         twitchAuth.setToken(auth.token)
         // fetchInfo()
+        getUserData(auth.channelId)
         if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
 			}
     })
