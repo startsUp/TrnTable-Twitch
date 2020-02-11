@@ -6,6 +6,7 @@ import Authentication from '../util/Twitch/Authentication';
 import { useLazyQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import jwt from 'jsonwebtoken'
+import { ViewType } from '../util/Twitch/ViewType' 
 
 const GET_SESSION = gql`
 query GetSession($channelId: String){
@@ -21,6 +22,11 @@ query GetSession($channelId: String){
 }`
 const API_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api'
 const AuthContext = React.createContext()
+
+/**
+ * Checks if token has expired or not.
+ * @param {string} token Token passed by Twitch
+ */
 const validateToken = token => {
   if (token){
     let decoded = jwt.decode(token)
@@ -30,14 +36,20 @@ const validateToken = token => {
   return false
   
 }
+
+/**
+ * Auth Provider for auth context. This handles login/logout and fetching of user data
+ * @param {Object} props 
+ */
 function AuthProvider(props) {
+  const viewType = props.viewType
   const twitch = Twitch.ext
   const tokenUpdateCallback = props.onTokenChange
 
   const authToken = localStorage.getItem('token')
   const isTokenValid = validateToken(authToken) 
   
-  const twitchAuth = new Authentication(authToken || null)
+  const twitchAuth = new Authentication(isTokenValid && authToken)
 
   // initFetchDone - for checking if refresh token is stored, 
   // data - twitch configuration
@@ -54,19 +66,20 @@ function AuthProvider(props) {
   }
 
 	React.useEffect(() => {
-    if (isTokenValid) twitchAuth.setToken(authToken)
 
 		twitch.onAuthorized(auth => {
 			if (auth.token) {
         twitchAuth.setToken(auth.token)
+        localStorage.setItem('token', auth.token)
         
-        // get user data to check if it exist
-        getBroadcasterData(auth.channelId)
-
+        // get user data to check if it exist, only need to this in config view
+        if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
+          getBroadcasterData(auth.channelId)
+      
         // update any parent props expecting token updates
         if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
-			}
-    })
+    }
+  })
     
 
     // listen for configuration changes

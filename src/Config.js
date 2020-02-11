@@ -8,13 +8,14 @@ import { GraphQLAuth } from './auth/GraphQLAuth';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { AuthProvider } from './auth/auth-context'
+import { ViewType } from './util/Twitch/ViewType'
 
 const auth = new GraphQLAuth();
 // const authContext = React.CreateContext(auth);
 ReactDOM.render(
 <MuiThemeProvider theme={ TrnTableTheme }>
   <ApolloProvider client={ auth.getClient() } >
-      <AuthProvider onTokenChange={token => auth.resetAuthWithToken(token)}>
+      <AuthProvider onTokenChange={token => auth.resetAuthWithToken(token)} viewType={ViewType.CONFIG}>
         <ConfigPage />
       </AuthProvider>
   </ApolloProvider> 
