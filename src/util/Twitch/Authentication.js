@@ -91,7 +91,7 @@ export default class Authentication{
             if(this.isAuthenticated()){
                 let headers={
                     'Content-Type':'application/json',
-                    'Authorization': `Bearer ${this.state.token}`
+                    'Authorization': `${this.state.token}`
                 }
     
                 fetch(url,
