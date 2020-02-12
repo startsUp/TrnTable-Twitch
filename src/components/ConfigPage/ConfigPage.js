@@ -98,7 +98,7 @@ export default function ConfigPage() {
 	const [spotifyUser, setSpotifyUser] = useState(localStorage.getItem('spotifyUser'));
 	const [config, setConfig] = useState(auth.data ? settingsService.getUserSettings(auth.data.config) : null);
 	const [configState, setConfigState] = useState(config ? ConfigStates.LOGGEDIN : ConfigStates.LOGGEDOUT)
-	console.warn(configState)
+	console.warn(config)
 	const [error, setError] = useState(Error.NONE);
 	
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {

@@ -59,7 +59,8 @@ function AuthProvider(props) {
 
   const getBroadcasterData = async (channelId) => {
     // fetch broadcaster data to make sure they are registered
-    const data = await twitchAuth.makeCall(`${API_URL}/broadcaster/${channelId}`).then(res=>res.text())            
+    const data = await twitchAuth.makeCall(`${API_URL}/broadcaster/${channelId}`).then(res=>res.text())  
+    console.warn(data)          
     setData({spotifyToken: data})
     setInitFetch(true)
   }
