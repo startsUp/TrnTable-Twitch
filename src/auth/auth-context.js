@@ -10,18 +10,6 @@ import { ViewType } from '../util/Twitch/ViewType'
 import { Role } from './roles/roles';
 const VERSION_NO = "0.0.1";
 
-const GET_SESSION = gql`
-query GetSession($channelId: String){
-  extension_session(where: {session_id: {_eq: $channelId}}) {
-    active
-    broadcaster_id
-    created_at
-    session_id
-    spotify_token
-    updated_at
-    settings
-  }
-}`
 const API_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api'
 const AuthContext = React.createContext()
 
@@ -62,9 +50,9 @@ function AuthProvider(props) {
   const getBroadcasterData = async (channelId) => {
     // fetch broadcaster data to make sure they are registered
     const token = await twitchAuth.makeCall(`${API_URL}/broadcaster/${channelId}`).then(res=>res.text())  
-    console.warn(data)          
-    setData(prev => {
-        return {...prev, spotifyTokenSaved: true, role: Role.BROADCASTER}
+    
+    setData(prev => { // prevent overwrites from other setData calls 
+        return {...prev, spotifyTokenSaved: (token !== null || token !== undefined), role: Role.BROADCASTER}
     })
     setInitFetch(true)
   }
@@ -75,7 +63,7 @@ function AuthProvider(props) {
 			if (auth.token) {
         twitchAuth.setToken(auth.token)
         localStorage.setItem('token', auth.token)
-        console.log(data)
+        
         // get user data to check if it exist, only need to this in config view
         if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
           getBroadcasterData(auth.channelId)
@@ -88,7 +76,7 @@ function AuthProvider(props) {
 
     // listen for configuration changes
     twitch.configuration.onChanged(()=> {
-      setData(prev => {
+      setData(prev => { // prevent ovewrites
           return {...prev, config: twitch.configuration.broadcaster}
       })
     })
