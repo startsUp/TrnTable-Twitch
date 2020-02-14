@@ -1,5 +1,6 @@
 export enum ConfigStates {
 	SETTINGS = 1, 
 	LOGGEDOUT, 
-	LOGGEDIN
+    LOGGEDIN,
+    LOADING
 }

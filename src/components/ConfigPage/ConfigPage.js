@@ -96,6 +96,8 @@ export default function ConfigPage() {
 	const auth = useAuth()
 	const { spotifyTokenSaved, config, role } = auth.data
 
+	var userSettings = settingsService.getUserSettings(config, role)
+	console.warn(userSettings)
 	const twitch = Twitch ? Twitch.ext : null
 	const [error, setError] = useState(Error.NONE);
     
@@ -129,7 +131,7 @@ export default function ConfigPage() {
 		setDefaultConfiguration()
 	}
 
-	var configState = null
+	var configState = ConfigStates.LOADING
 	if (auth.data.hasOwnProperty('spotifyTokenSaved') && auth.data.hasOwnProperty('config')){
 		if (spotifyTokenSaved){
 			configState = ConfigStates.LOGGEDIN
@@ -150,6 +152,7 @@ export default function ConfigPage() {
 						<Typography variant="h5" className={classes.title} color='primary'>TrnTable</Typography>
 					</div>
 					<Divider/>
+					{ configState === ConfigStates.LOADING && <LoadingCard/>}
 					{ configState === ConfigStates.LOGGEDOUT && <Login callback={popupCallback}/> }
 					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={auth.twitch.setConfig}/>}
 					{ configState === ConfigStates.LOGGEDIN && error === Error.NONE && <LoggedInCard classes={classes} />}	

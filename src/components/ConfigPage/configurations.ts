@@ -26,14 +26,17 @@ export class SettingsService{
 
 	constructor(){}
 
-    getDefaultUserSettings(role: Role, token?: string){
-        if(role === Role.BROADCASTER){
-            return new UserSettings(this.BroadcasterSettings.map(s=>s.defaultValue), role, false, new Date(), new Date())
+    getDefaultUserSettings(userRole: Role){
+        if(userRole === Role.BROADCASTER){
+            return new UserSettings(this.BroadcasterSettings.map(s=>s.defaultValue), userRole, false, new Date(), new Date())
         }
     }
 
-	getUserSettings(config: string){
-		if (!config) return null
+	getUserSettings(config: string, userRole: Role){
+        // return default settings if no config json provided
+        if (config === null || config === undefined) 
+            return this.getDefaultUserSettings(userRole)
+
 		let {settings, role, playlistCreated, created, updated} = JSON.parse(config).content		
 		return new UserSettings(settings, role, playlistCreated, created, updated)
 	}
