@@ -61,26 +61,27 @@ function AuthProvider(props) {
 
 		twitch.onAuthorized(auth => {
 			if (auth.token) {
-        twitchAuth.setToken(auth.token)
-        localStorage.setItem('token', auth.token)
-        
-        // get user data to check if it exist, only need to this in config view
-        if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
-          getBroadcasterData(auth.channelId)
-      
-        // update any parent props expecting token updates
-        if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
-    }
-  })
+					twitchAuth.setToken(auth.token)
+					localStorage.setItem('token', auth.token)
+					
+					// get user data to check if it exist, only need to this in config view
+					if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
+					getBroadcasterData(auth.channelId)
+			
+					// update any parent props expecting token updates
+					if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
+			}
+		})
     
 
-    // listen for configuration changes
-    twitch.configuration.onChanged(()=> {
-      setData(prev => { // prevent ovewrites
-          return {...prev, config: twitch.configuration.broadcaster}
-      })
-    })
-  }, [])
+        // listen for configuration changes
+        twitch.configuration.onChanged(()=> {
+					setData(prev => { // prevent ovewrites
+							return {...prev, config: twitch.configuration.broadcaster}
+					})
+        })
+
+    }, [])
 
 
   const setTwitchConfig = (config) => {
