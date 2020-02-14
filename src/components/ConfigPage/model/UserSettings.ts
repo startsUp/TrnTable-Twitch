@@ -1,10 +1,10 @@
+import { Role } from "../../../auth/roles/roles";
 
 export class UserSettings{
 
 	constructor(
-        public settings: [],
-        public role: string,
-        public spotifyToken: string,
+        public settings: any [],
+        public role: Role,
         public playlistCreated: boolean,
         public created: Date,
         public updated: Date,

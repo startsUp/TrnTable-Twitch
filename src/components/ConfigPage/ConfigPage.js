@@ -14,7 +14,7 @@ import LoggedInCard from './loggedinCard'
 import LoadingCard from '../loader'
 import { useAuth } from '../../auth/auth-context';
 import { ConfigStates } from './config-states'
-const VERSION_NO = "0.0.1";
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -91,61 +91,54 @@ const useStyles = makeStyles(theme => ({
 export default function ConfigPage() {
 	const spotifyApi = new SpotifyWebApi();
 	const settingsService = new SettingsService();
-    const classes = useStyles();
-	const auth = useAuth()
-	const twitch = Twitch ? Twitch.ext : null
-	const [spotifyId, setSpotifyId] = useState(localStorage.getItem('spotifyId'));
-	const [spotifyUser, setSpotifyUser] = useState(localStorage.getItem('spotifyUser'));
-	const [config, setConfig] = useState(auth.data ? settingsService.getUserSettings(auth.data.config) : null);
-	const [configState, setConfigState] = useState(config ? ConfigStates.LOGGEDIN : ConfigStates.LOGGEDOUT)
-	console.warn(config)
-	const [error, setError] = useState(Error.NONE);
+	const classes = useStyles();
 	
+	const auth = useAuth()
+	const { spotifyTokenSaved, config, role } = auth.data
+
+	const twitch = Twitch ? Twitch.ext : null
+	const [error, setError] = useState(Error.NONE);
+    
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
 		localStorage.setItem('spotifyId',spotifyId);
 		localStorage.setItem('spotifyUser',spotifyUser);
-    }
-	
-	useEffect(()=>{
-		if(twitch){
-			twitch.configuration.onChanged(()=>{
-                setConfig()
-            })
-		}
-	},[])
-
-	const getUserInfoAndSave = () => {
-		return spotifyApi.getMe({}, (err, data)=>{
-			if(err) console.log(err);
-			else{
-				console.log(data)
-				setSpotifyId(data.id);
-				setSpotifyUser(data.display_name ? data.display_name : 'Your');
-				saveSpotifyInfo(data.id,data.display_name);
-			}
-		})
 	}
+
+
+	// const getUserInfoAndSave = () => {
+	// 	return spotifyApi.getMe({}, (err, data)=>{
+	// 		if(err) console.log(err);
+	// 		else{
+	// 			console.log(data)
+	// 			setSpotifyId(data.id);
+	// 			setSpotifyUser(data.display_name ? data.display_name : 'Your');
+	// 			saveSpotifyInfo(data.id,data.display_name);
+	// 		}
+	// 	})
+	// }
 	const setDefaultConfiguration = () => {
 		setConfig(settingsService.getJSONConfig())
 	}
-	const setTwitchConfiguration = () => {
-		if (Twitch){
-			Twitch.ext.configuration.set("broadcaster", VERSION_NO, settingsService.getJSONConfig());
-			setConfig('')
-			setError(Error.NONE)
-		}
-		else {
-			setError(Error.NOTSET);
-		}
-	}
+	
 
 	const popupCallback = async (tokens) => {
 		console.info({tokens}) 
 		spotifyApi.setAccessToken(tokens.accessToken)
-		getUserInfoAndSave()
+		// getUserInfoAndSave()
 		//setTwitchConfiguration()
 		setDefaultConfiguration()
 	}
+
+	var configState = null
+	if (auth.data.hasOwnProperty('spotifyTokenSaved') && auth.data.hasOwnProperty('config')){
+		if (spotifyTokenSaved){
+			configState = ConfigStates.LOGGEDIN
+			if (!config) configState = ConfigStates.SETTINGS 
+		}
+		else
+			configState = ConfigStates.LOGGEDOUT
+	}
+	
 
   return (
 	<div className={classes.root}>
@@ -158,8 +151,8 @@ export default function ConfigPage() {
 					</div>
 					<Divider/>
 					{ configState === ConfigStates.LOGGEDOUT && <Login callback={popupCallback}/> }
-					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={setTwitchConfiguration}/>}
-                    { configState === ConfigStates.LOGGEDIN  && error === Error.NONE && <LoggedInCard classes={classes} />}	
+					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} settings={settingsService} saveConfigCallback={auth.twitch.setConfig}/>}
+					{ configState === ConfigStates.LOGGEDIN && error === Error.NONE && <LoggedInCard classes={classes} />}	
 				</Paper>
 			</div>
 		</div>

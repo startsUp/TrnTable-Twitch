@@ -7,6 +7,8 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import jwt from 'jsonwebtoken'
 import { ViewType } from '../util/Twitch/ViewType' 
+import { Role } from './roles/roles';
+const VERSION_NO = "0.0.1";
 
 const GET_SESSION = gql`
 query GetSession($channelId: String){
@@ -59,9 +61,11 @@ function AuthProvider(props) {
 
   const getBroadcasterData = async (channelId) => {
     // fetch broadcaster data to make sure they are registered
-    const data = await twitchAuth.makeCall(`${API_URL}/broadcaster/${channelId}`).then(res=>res.text())  
+    const token = await twitchAuth.makeCall(`${API_URL}/broadcaster/${channelId}`).then(res=>res.text())  
     console.warn(data)          
-    setData({spotifyToken: data})
+    setData(prev => {
+        return {...prev, spotifyTokenSaved: true, role: Role.BROADCASTER}
+    })
     setInitFetch(true)
   }
 
@@ -71,7 +75,7 @@ function AuthProvider(props) {
 			if (auth.token) {
         twitchAuth.setToken(auth.token)
         localStorage.setItem('token', auth.token)
-        
+        console.log(data)
         // get user data to check if it exist, only need to this in config view
         if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
           getBroadcasterData(auth.channelId)
@@ -84,10 +88,16 @@ function AuthProvider(props) {
 
     // listen for configuration changes
     twitch.configuration.onChanged(()=> {
-      setData(twitch.configuration.broadcaster)
+      setData(prev => {
+          return {...prev, config: twitch.configuration.broadcaster}
+      })
     })
   }, [])
 
+
+  const setTwitchConfig = (config) => {
+    twitch.configuration.set("broadcaster", VERSION_NO, config);
+  }
 
   // 🚨 If initial calls still loading show generic loading card.
   if (!initFetchDone && !data) {
@@ -103,7 +113,7 @@ function AuthProvider(props) {
   // because this is the top-most component rendered in our app and it will very
   // rarely re-render/cause a performance problem.
   return (
-    <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, data }} {...props} />
+    <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, twitch: { setConfig: setTwitchConfig }, data }} {...props} />
   )
 }
 const useAuth = () => React.useContext(AuthContext)

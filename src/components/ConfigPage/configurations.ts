@@ -1,5 +1,6 @@
 import * as Settings from './model/Setting'
 import { UserSettings } from './model/UserSettings'
+import { Role } from '../../auth/roles/roles'
 
 export class SettingsService{
 	
@@ -25,15 +26,21 @@ export class SettingsService{
 
 	constructor(){}
 
+    getDefaultUserSettings(role: Role, token?: string){
+        if(role === Role.BROADCASTER){
+            return new UserSettings(this.BroadcasterSettings.map(s=>s.defaultValue), role, false, new Date(), new Date())
+        }
+    }
+
 	getUserSettings(config: string){
 		if (!config) return null
-		let {settings, role, spotifyToken, playlistCreated, created, updated} = JSON.parse(config).content		
-		return new UserSettings(settings, role, spotifyToken, playlistCreated, created, updated)
+		let {settings, role, playlistCreated, created, updated} = JSON.parse(config).content		
+		return new UserSettings(settings, role, playlistCreated, created, updated)
 	}
 
     toJSON(userSettings: UserSettings){
-        const { settings, role, spotifyToken, playlistCreated, created, updated } = userSettings
-        let obj = {settings, role, spotifyToken, playlistCreated, created, updated}
+        const { settings, role, playlistCreated, created, updated } = userSettings
+        let obj = {settings, role, playlistCreated, created, updated}
         return JSON.stringify(obj)
     }
 	/**
@@ -41,13 +48,14 @@ export class SettingsService{
 	 * @param userSettings UserSettings Object @see UserSettings
 	 */
 	getSettingComponents(userSettings: UserSettings){
-		if (userSettings.role === 'broadcaster'){
-			var settingsObj = this.BroadcasterSettings.map((setting: Settings.Setting<any>, index: number) => {
-				return setting.getSettingWithValue(userSettings.settings[index])
-			})  
+        var settingsObj = this.BroadcasterSettings.map((setting: Settings.Setting<any>, index: number) => {
+                if (userSettings.role === Role.BROADCASTER){
+                    return setting.getSettingWithValue(userSettings.settings[index])
+                }
+            })  
 			return settingsObj
 		}
-	}
+	
 
 	updateSettings = (settingValues: string) => {
 		var settings = JSON.parse(settingValues);
