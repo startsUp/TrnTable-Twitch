@@ -77,7 +77,12 @@ module.exports = (_env,argv)=> {
           exclude: /(node_modules|bower_components)/,
           loader: 'babel-loader',
           options: {
-            plugins: ['transform-class-properties', 'babel-plugin-transform-object-rest-spread','babel-plugin-transform-runtime']
+            plugins: [
+              'transform-class-properties', 
+              'babel-plugin-transform-object-rest-spread',
+              'babel-plugin-transform-runtime',
+              'transform-es2015-modules-commonjs'
+            ]
           }
         },
         {
