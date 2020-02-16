@@ -3,33 +3,29 @@ import { setContext } from 'apollo-link-context';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { useState, createContext } from 'react';
-export class AuthProvider{
+export class GraphQLAuth{
     
     readonly GRAPHQL_URL= 'https://trntable-twitch.herokuapp.com/v1/graphql';
     httpLink: any;
     client: any;
     token: string;
 
-    constructor(Twitch: any){
-        // listen for token updates from twitch extension helper
-        this.setupAuthListener(Twitch);
-
+    constructor(token: any){
+        this.token = token 
+        if (token) localStorage.setItem('token', token)
+        
         // initalize apollo client
         this.httpLink = createHttpLink({
             uri: this.GRAPHQL_URL
         });
-        var link = this.getAuthOptions(this.token).concat(this.httpLink);
+        var link = this.getAuthOptions().concat(this.httpLink);
         this.client = new ApolloClient({
             link: link,
             cache: new InMemoryCache()
         })
     }
-    private setupAuthListener(Twitch: any){
-        Twitch.ext.onAuthorized(data => {
-            localStorage.setItem('token', data.token);
-        })
-    }
-    getAuthOptions(token?: string){
+
+    getAuthOptions(){
         return setContext((_, { headers }) => {
             // return the headers to the context so httpLink can read them
             const token = localStorage.getItem('token');
@@ -46,18 +42,20 @@ export class AuthProvider{
         return this.client
     }
 
-    resetAuth(token){
+    resetAuthWithToken(token: string) {
+        this.setToken(token)
+        this.resetAuth()
+    }
+
+    setToken(token: string){
+        this.token = token
+        localStorage.setItem('token', token)
+    }
+
+    resetAuth(){
         this.client.resetStore().then(()=> {
-            this.client.link = this.getAuthOptions(token).concat(this.httpLink);
+            this.client.link = this.getAuthOptions().concat(this.httpLink);
         })
         
     }
-
-    // getReactContext(){
-    //     const [auth, setAuth] = useState(null)
-    //     const authContext = createContext(auth)
-
-        
-         
-    // }
 }

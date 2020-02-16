@@ -13,7 +13,8 @@ export interface Setting<T>{
     name: string
     details: string
     defaultValue: T
-    getComponent(props: {settingStyle: {}}, id: number): any
+	getComponent(props: {settingStyle: {}}, id: number): any
+	getSettingWithValue(value: T): Setting<T>
 }
 const SettingComponent = props => {
 	return (
@@ -28,7 +29,7 @@ const SettingComponent = props => {
 
 
 export class NumberSetting implements Setting<number>{
-    
+	
     constructor(
         public name: string,
         public details: string,
@@ -66,11 +67,21 @@ export class NumberSetting implements Setting<number>{
 				</SettingComponent>
 				
 			)
-    }
+	}
+	getSettingWithValue(value: number): Setting<number> {
+		return new NumberSetting(
+			this.name,
+			this.details,
+			this.defaultValue,
+			value,
+			this.minValue,
+			this.maxValue
+		)
+	}
 }
 
 export class BooleanSetting implements Setting<boolean>{
-		
+
     constructor(
         public name: string,
         public details: string,
@@ -97,11 +108,21 @@ export class BooleanSetting implements Setting<boolean>{
 				</SettingComponent>
 				
 			)
-    }
-    
+	}
+	
+	getSettingWithValue(value: boolean): Setting<boolean> {
+		return new BooleanSetting(
+			this.name,
+			this.details,
+			this.defaultValue,
+			value
+		)
+	}
+		
 }
 
 export class SelectionSetting implements Setting<any>{
+
 	
 	constructor(
 			public name: string,
@@ -117,6 +138,15 @@ export class SelectionSetting implements Setting<any>{
 							Options
 					</div>
 			)
+	}
+	getSettingWithValue(value: any): Setting<any> {
+		return new SelectionSetting(
+			this.name,
+			this.details,
+			this.defaultValue,
+			value,
+			this.options,
+		)
 	}
     
 }

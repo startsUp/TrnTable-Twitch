@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { Box, Typography, Button } from '@material-ui/core'
 export default function LoggedInCard(props){
     const { classes, settingsCallback, logoutCallback } = props
     return (

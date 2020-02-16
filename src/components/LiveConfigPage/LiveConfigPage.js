@@ -1,5 +1,5 @@
 import React from 'react'
-import Authentication from '../../util/Authentication/Authentication'
+import Authentication from '../../util/Twitch/Authentication'
 
 import './LiveConfigPage.css'
 

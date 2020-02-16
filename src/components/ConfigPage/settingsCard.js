@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { Typography, Box, List, Button } from '@material-ui/core'
 export default function SettingsCard(props){
     const { classes, settings, saveConfigCallback } = props
     return (
