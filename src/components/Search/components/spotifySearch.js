@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { SpotifyService } from '../../../util/Spotify/SpotifyService'
-import Error from '../searchErrors';
+import SpotifyService from '../../../util/Spotify/SpotifyService';
+import { Error } from '../searchErrors';
 import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
