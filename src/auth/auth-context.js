@@ -33,7 +33,7 @@ const validateToken = token => {
  */
 function AuthProvider(props) {
   const viewType = props.viewType
-  const twitch = Twitch.ext
+  const twitch = window.Twitch ? window.Twitch.ext : null
   const tokenUpdateCallback = props.onTokenChange
 
   const authToken = localStorage.getItem('token')

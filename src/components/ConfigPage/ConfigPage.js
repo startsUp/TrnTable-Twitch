@@ -98,7 +98,6 @@ export default function ConfigPage() {
 
 	var userSettings = settingsService.getUserSettings(config, role)
 	console.warn(userSettings)
-	const twitch = Twitch ? Twitch.ext : null
 	const [error, setError] = useState(Error.NONE);
     
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
