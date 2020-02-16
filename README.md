@@ -1,2 +1,2 @@
 ## Trntable Extension for Twitch
-Let viewers request music and vote on currently playing songs.
+React extension for twich that lets viewers request music and vote on currently playing songs.
