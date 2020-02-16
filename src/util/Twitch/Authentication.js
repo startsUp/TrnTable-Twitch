@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
 
 /**
  * Helper class for authentication against an EBS service. Allows the storage of a token to be accessed across componenents. 
@@ -53,7 +53,7 @@ export default class Authentication{
             if(decoded.role === 'broadcaster' || decoded.role === 'moderator'){
                 isMod = true
             }
-
+            opaque_id = decoded.opaque_user_id
             user_id = decoded.user_id
             role = decoded.role
         } catch (e) {
@@ -91,7 +91,7 @@ export default class Authentication{
             if(this.isAuthenticated()){
                 let headers={
                     'Content-Type':'application/json',
-                    'Authorization': `Bearer ${this.state.token}`
+                    'Authorization': `${this.state.token}`
                 }
     
                 fetch(url,
