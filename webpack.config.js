@@ -69,21 +69,19 @@ module.exports = (_env,argv)=> {
     entry,
     optimization: {
       minimize: false, // neccessary to pass Twitch's review process
+      minimize: false, // neccessary to pass    's review process
     },
     module: {
       rules: [
         {
           test: /\.(js|jsx)$/,
           exclude: /(node_modules|bower_components)/,
-          loader: 'babel-loader',
-        //   options: {
-        //     plugins: [
-        //       'transform-class-properties', 
-        //       'babel-plugin-transform-object-rest-spread',
-        //       'babel-plugin-transform-runtime',
-        //       'transform-es2015-modules-commonjs'
-        //     ]
-        //   }
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env', '@babel/preset-react']
+            }
+          }
         },
         {
           test: /\.tsx?$/,

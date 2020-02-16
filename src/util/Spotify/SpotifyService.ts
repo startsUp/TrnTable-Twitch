@@ -33,7 +33,7 @@ export class SpotifyService{
         window.addEventListener('message', event => {
             // IMPORTANT: check the origin of the data! 
             console.warn(event)
-            if (event.origin.startsWith('https://trntable.live')) { 
+            if (event.origin.startsWith(this.SPOTIFY_LOGIN_URL)) { 
                     // The data was sent from your site.
                     // Data sent with postMessage is stored in event.data:
                     newWindow.close()
