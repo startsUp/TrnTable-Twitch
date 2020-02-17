@@ -8,7 +8,7 @@ export default function SettingsCard(props){
                 Settings
             </Typography>
             <List>
-            {settings.BroadcasterSettings.map((setting, index) => setting.getComponent(classes, index))}
+            {settings.map((setting, index) => setting.getComponent(classes, index))}
             </List>
             <Button variant="outlined" size="small" color="primary" className={classes.button} onClick={saveConfigCallback}>
                 Save

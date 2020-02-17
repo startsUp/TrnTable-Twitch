@@ -1,23 +1,23 @@
-import * as Settings from './model/Setting'
+import { NumberSetting, BooleanSetting, SelectionSetting, Setting} from './model/Setting'
 import { UserSettings } from './model/UserSettings'
 import { Role } from '../../auth/roles/roles'
 
 export class SettingsService{
 	
 	readonly BroadcasterSettings = [
-			new Settings.NumberSetting(
+			new NumberSetting(
 				'Max Requests', 
 				'The maximum number of songs a viewer can request',
 				100,
 				100,
 				0,
 				100),
-			new Settings.BooleanSetting(
+			new BooleanSetting(
 					'Delete Playlist', 
 					'Delete stream playlist after every stream. Lets you start a new playlist for each stream.',
 					false, 
 					false),
-			new Settings.BooleanSetting(
+			new BooleanSetting(
 					'Auto add Requests', 
 					'Requested songs are automatically added to the playlist.',
 					false, 
@@ -32,33 +32,46 @@ export class SettingsService{
         }
     }
 
-	getUserSettings(config: string, userRole: Role){
+	getUserSettings(config: {content: string}, userRole: Role){
         // return default settings if no config json provided
         if (config === null || config === undefined) 
             return this.getDefaultUserSettings(userRole)
 
-		let {settings, role, playlistCreated, created, updated} = JSON.parse(config).content		
+		let {settings, role, playlistCreated, created, updated} = JSON.parse(config.content)		
 		return new UserSettings(settings, role, playlistCreated, created, updated)
 	}
 
-    toJSON(userSettings: UserSettings){
-        const { settings, role, playlistCreated, created, updated } = userSettings
-        let obj = {settings, role, playlistCreated, created, updated}
-        return JSON.stringify(obj)
+    /**
+     * Updates the user setting obj with the values in settings component
+     */
+    updateUserSettings(userSettings: UserSettings, settings: Setting<any>[]){
+        if(userSettings){
+            var settingsArray = []
+            settings.forEach(setting => {
+                settingsArray.push(setting.value)
+            })
+            userSettings.settings = settingsArray
+        }
     }
+
 	/**
 	 * Returns Array of Setting Objects for the user
 	 * @param userSettings UserSettings Object @see UserSettings
 	 */
 	getSettingComponents(userSettings: UserSettings){
-        var settingsObj = this.BroadcasterSettings.map((setting: Settings.Setting<any>, index: number) => {
-                if (userSettings.role === Role.BROADCASTER){
-                    return setting.getSettingWithValue(userSettings.settings[index])
-                }
-            })  
-			return settingsObj
-		}
-	
+        if (userSettings) {
+            var settingsObj = this.BroadcasterSettings.map((setting: Setting<any>, index: number) => {
+                    if (userSettings.role === Role.BROADCASTER){
+                        return setting.getSettingWithValue(userSettings.settings[index])
+                    }
+                })  
+            return settingsObj
+        }
+    }
+    
+    toJSON = (userSettings: UserSettings) => {
+        return JSON.stringify(userSettings)
+    }
 
 	updateSettings = (settingValues: string) => {
 		var settings = JSON.parse(settingValues);

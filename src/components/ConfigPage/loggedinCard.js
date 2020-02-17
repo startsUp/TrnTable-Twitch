@@ -5,17 +5,14 @@ export default function LoggedInCard(props){
     return (
         <Box p={3}>
             <Typography variant="h4" className={classes.hostTitle}>
-                Settings
+                All Setup!
             </Typography>
             <Typography>
-                All good to go! You are ready to start using TrnTable.
+                You are ready to start using TrnTable. Once you start the stream, viewers will be able to vote on currently playing songs and request new ones.
             </Typography>
             <Button variant="outlined" size="small" color="primary" className={classes.button} onClick={settingsCallback}>
                 Settings
             </Button>
-            <Typography>
-                To reset you account, you can logout. This will reset all your current session and settings.
-            </Typography>
             <Button variant="outlined" size="small" color="primary" className={classes.button} onClick={logoutCallback}>
                 Logout
             </Button>
