@@ -8,3 +8,18 @@ export enum Role{
     VIEWER,
     BROADCASTER
 }
+
+export const getRole = (roleDesc: string) => {
+    switch (roleDesc) {
+        case 'broadcaster':
+            return Role.BROADCASTER
+        case 'moderator':
+            return Role.BROADCASTER
+        case 'viewer':
+            return Role.VIEWER
+        case 'external':
+            return Role.VIEWER
+        default:
+            return Role.VIEWER
+    }
+}

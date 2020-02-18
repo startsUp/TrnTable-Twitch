@@ -66,7 +66,7 @@ function AuthProvider(props) {
 					
 					// get user data to check if it exist, only need to this in config view
 					if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
-					getBroadcasterData(auth.channelId)
+					  getBroadcasterData(auth.channelId)
 			
 					// update any parent props expecting token updates
 					if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
@@ -101,9 +101,13 @@ function AuthProvider(props) {
   // note, I'm not bothering to optimize this `value` with React.useMemo here
   // because this is the top-most component rendered in our app and it will very
   // rarely re-render/cause a performance problem.
-  return (
-    <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, twitch: { setConfig: setTwitchConfig }, data }} {...props} />
-  )
+  if (viewType === ViewType.CONFIG){
+    return (
+      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, twitch: { setConfig: setTwitchConfig }, data }} {...props} />
+    )
+  }
+  else
+    return <div></div>
 }
 const useAuth = () => React.useContext(AuthContext)
 export {AuthProvider, useAuth}
