@@ -11,8 +11,7 @@ export class SpotifyService{
 
     search = async (query: string) => {
         return fetch(`${this.SPOTIFY_API_URL}/search?q=${query}`)
-								.then(res => res.json())
-					
+								.then(res => res.json())			
     }
 
     popupCenter = (url: string, title: string, w: number, h: number) => {
