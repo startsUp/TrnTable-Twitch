@@ -57,10 +57,10 @@ export default class Authentication{
         let isMod = false
         let role = ""
         let user_id = ""
+        let channel_id = ""
 
         try {
             let decoded = jwt.decode(token)
-            console.warn(decoded)
             if(decoded.role === 'broadcaster' || decoded.role === 'moderator'){
                 isMod = true
             }
@@ -72,12 +72,13 @@ export default class Authentication{
             token=''
             opaque_id=''
         }
-
+        
         this.state={
             token,
             opaque_id,
             isMod,
             user_id,
+            channel_id,
             role
         }
     }
