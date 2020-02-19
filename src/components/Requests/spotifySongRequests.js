@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
@@ -6,6 +6,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import AddIcon from '@material-ui/icons/Add';
 import { Grid, Button, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
 import TrackList from '../Misc/trackList';
+import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -72,8 +73,18 @@ export default function SpotifySongRequests(props) {
 		const twitch = window.Twitch ? window.Twitch.ext : null
 		const auth = useAuth()
 		const currentTracks = [] // limit to 150, after 150 delete all from current playlist
-		const sessionService = new SpotifySessionService(twitch, auth.data.channelId)
-	
+		
+		// pass in the opaque id as this is the topic for listening to whispers
+		const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId())  
+		
+		const updateTrackList = () => { // called when new songs added
+
+		}
+		useEffect(()=>{
+			sessionService.listenForSongRequests(updateTrackList)
+		}, [])
+
+
 
     return( // TODO: FIX STYLING 
       <div className={classes.root}>
