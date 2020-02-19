@@ -12,9 +12,9 @@ export class SpotifySessionService{
             listen: PubsubListener
             unlisten: PubsubListener
         },
-        public channelId: string
+        public id: string
      ){
-        this.songRequestTopic = `whisper-${channelId}`
+        this.songRequestTopic = `whisper-${id}`
      }
 
     clearPlaylist = () => {
