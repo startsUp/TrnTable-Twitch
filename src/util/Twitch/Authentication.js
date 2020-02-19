@@ -10,11 +10,13 @@ export default class Authentication{
         this.state={
             token,
             opaque_id,
-            channel_id,
+            channel_id:0,
             user_id:false,
             isMod:false,
             role:""
         }
+        if (token) // update state
+            this.setToken(token)
     }
 
     isLoggedIn(){
@@ -43,6 +45,10 @@ export default class Authentication{
 
     getChannelId(){
         return this.state.channel_id
+    }
+
+    getRole(){
+        return this.state.role
     }
 
     // set the token in the Authentication componenent state

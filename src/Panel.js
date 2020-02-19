@@ -9,6 +9,7 @@ import { GraphQLAuth } from './auth/GraphQLAuth';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { AuthProvider } from './auth/auth-context';
+import { ViewType } from './util/Twitch/ViewType';
 
 ReactDOM.render(
 <MuiThemeProvider theme={ TrnTableTheme }>

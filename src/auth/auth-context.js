@@ -7,7 +7,9 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import jwt from 'jsonwebtoken'
 import { ViewType } from '../util/Twitch/ViewType' 
-import { Role } from './roles/roles';
+import { Role, getRole } from './roles/roles';
+import Dashboard from '../components/Dashboard/Dashboard';
+import ViewerDashboard from '../ViewerDashboard';
 const VERSION_NO = "0.0.1";
 
 const API_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api'
@@ -57,6 +59,7 @@ function AuthProvider(props) {
     setInitFetch(true)
   }
 
+
 	React.useEffect(() => {
 
 		twitch.onAuthorized(auth => {
@@ -74,12 +77,12 @@ function AuthProvider(props) {
 		})
     
 
-        // listen for configuration changes
-        twitch.configuration.onChanged(()=> {
-					setData(prev => { // prevent ovewrites
-							return {...prev, config: twitch.configuration.broadcaster}
-					})
-        })
+    // listen for configuration changes
+    twitch.configuration.onChanged(()=> {
+      setData(prev => { // prevent ovewrites
+          return {...prev, config: twitch.configuration.broadcaster}
+      })
+    })
 
     }, [])
 
@@ -95,19 +98,27 @@ function AuthProvider(props) {
 
   const spotify = new SpotifyService()
   const spotifyAuth = { login: spotify.handleLogin, logout: spotify.logout }
-
-  const register = () => {} // register the user
-  const logout = () => {} // clear the token in localStorage and the user data
-  // note, I'm not bothering to optimize this `value` with React.useMemo here
-  // because this is the top-most component rendered in our app and it will very
-  // rarely re-render/cause a performance problem.
+  var r = getRole(twitchAuth.getRole())
+  console.warn(r)
   if (viewType === ViewType.CONFIG){
     return (
       <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, twitch: { setConfig: setTwitchConfig }, data }} {...props} />
     )
   }
-  else
-    return <div></div>
+  else if (r === Role.BROADCASTER){ // TODO: Add Setting to allow moderators to control music
+    return (
+      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, data }} {...props}>
+        <Dashboard/>
+      </AuthContext.Provider>
+    )
+  }
+  else {
+    return (
+      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, data }} {...props}>
+        <ViewerDashboard/>
+      </AuthContext.Provider>
+    )
+  }
 }
 const useAuth = () => React.useContext(AuthContext)
 export {AuthProvider, useAuth}

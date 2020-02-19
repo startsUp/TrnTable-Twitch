@@ -15,6 +15,7 @@ import SpotifySearchResults from '../Search/components/spotifySearchResults';
 import SpotifyNowPlaying from '../NowPlaying/components/spotifyNowPlaying';
 import { Toolbar } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import LoadingCard from '../loader';
 
 
 function TabPanel(props) {
@@ -129,7 +130,7 @@ export default function ViewerTab() {
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
                 {trackSearchView === TrackSearchView.SEARCH && 
                   <SpotifySearch onResult={showTracks} onError={showError} onLoad={() => setTrackSearchView(TrackSearchView.LOADING)}/>}
-                {trackSearchView === TrackSearchView.LOADING && <div className={classes.loading}><CircularProgress /></div>}
+                {trackSearchView === TrackSearchView.LOADING && <div className={classes.loading}><LoadingCard /></div>}
                 {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} backToSearch={showSearch} error={error}/>}
                 {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}
           </TabPanel>

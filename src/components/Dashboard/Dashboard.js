@@ -17,6 +17,9 @@ import { Toolbar } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService';
 import { useAuth } from '../../auth/auth-context';
+import LoadingCard from '../loader';
+import TrackList from '../Misc/trackList';
+import SpotifySongRequests from '../Requests/spotifySongRequests';
 
 
 function TabPanel(props) {
@@ -72,25 +75,39 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TrackSearchView  = { SEARCH: 'search', RESULTS: 'results', ERROR: 'error', LOADING: 'loading'};
+const TracksView  = { REQUESTED: 'requests', ERROR: 'error', LOADING: 'loading'};
 
 
 export default function Dashboard() {
-  const twitch = window.Twitch ? window.Twitch.ext : null
-  const auth = useAuth()
-  const currentTracks = [] // limit to 150, after 150 delete all from current playlist
-  const sessionService = new SpotifySessionService(twitch, auth.data.channelId)
+  const classes = useStyles()
+ 
+  const theme = useTheme();
+  const [value, setValue] = React.useState(0);
+	const [tracksView, setTracksView] = React.useState(TracksView.REQUESTED);
+  const [results, setResults] = React.useState([]);
+  const [error, setError] = React.useState({errorMsg: ''});
 
-  useEffect(()=> {
-    if (twitch){
-        
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
+  const handleChangeIndex = index => {
+    setValue(index);
+  };
 
-    }
+  const showSearch = () => {
+    setTracksView(TracksView.SEARCH);
+  }
 
-  }, [])
-
+	const showTracks = tracks => {
+    setResults(tracks);
+    setTracksView(TracksView.RESULTS);
+  }
   
+  const showError = error => {
+    setError(error);
+    setTracksView(TracksView.ERROR);
+  }
 
   return (
     <div className={classes.root}>
@@ -103,7 +120,7 @@ export default function Dashboard() {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Request Songs" {...a11yProps(0)} />
+          <Tab label="Requested Songs" {...a11yProps(0)} />
           <Tab label="Now Playing" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
@@ -116,11 +133,7 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
-                {trackSearchView === TrackSearchView.SEARCH && 
-                  <SpotifySearch onResult={showTracks} onError={showError} onLoad={() => setTrackSearchView(TrackSearchView.LOADING)}/>}
-                {trackSearchView === TrackSearchView.LOADING && <div className={classes.loading}><CircularProgress /></div>}
-                {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} backToSearch={showSearch} error={error}/>}
-                {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}
+            <SpotifySongRequests/>
           </TabPanel>
         </div>   
         <div className={classes.swipeView}>
