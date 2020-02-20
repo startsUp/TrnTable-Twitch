@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import SpotifyService from '../../../util/Spotify/SpotifyService';
 import { Error } from '../searchErrors';
 import { Typography } from '@material-ui/core';
+import { SpotifyService } from '../../../auth/spotify-login';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,7 +50,7 @@ export default function SpotifySearch(props){
 		}
 
     const getSearchResults = (query) => {
-        const spotifyApi = new SpotifyService();
+        const spotifyApi = new SpotifyService()
         props.onLoad()
         spotifyApi.search(query)
 					.then(

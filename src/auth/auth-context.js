@@ -66,9 +66,7 @@ function AuthProvider(props) {
 			if (auth.token) {
 					twitchAuth.setToken(auth.token)
 					localStorage.setItem('token', auth.token)
-					setData(prev => {
-            return {...prev, twitch: twitchAuth}
-          })
+		
 					// get user data to check if it exist, only need to this in config view
 					if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
 					  getBroadcasterData(auth.channelId)
@@ -109,14 +107,14 @@ function AuthProvider(props) {
   }
   else if (r === Role.BROADCASTER){ // TODO: Add Setting to allow moderators to control music
     return (
-      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, data }} {...props}>
+      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, twitch: twitchAuth , data }} {...props}>
         <Dashboard/>
       </AuthContext.Provider>
     )
   }
   else {
     return (
-      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, data }} {...props}>
+      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, twitch: twitchAuth , data }} {...props}>
         <ViewerDashboard/>
       </AuthContext.Provider>
     )

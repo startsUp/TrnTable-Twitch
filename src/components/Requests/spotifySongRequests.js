@@ -7,6 +7,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { Grid, Button, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
 import TrackList from '../Misc/trackList';
 import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService'
+import { useAuth } from '../../auth/auth-context';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -75,7 +76,7 @@ export default function SpotifySongRequests(props) {
 		const currentTracks = [] // limit to 150, after 150 delete all from current playlist
 		
 		// pass in the opaque id as this is the topic for listening to whispers
-		const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId())  
+		const sessionService = new SpotifySessionService(twitch, auth.twitch.getUserId())  
 		
 		const updateTrackList = () => { // called when new songs added
 

@@ -14,6 +14,7 @@ export class SpotifySessionService{
         },
         public id: string
      ){
+        console.warn('--> ID', id)
         this.songRequestTopic = `whisper-${id}`
      }
 
