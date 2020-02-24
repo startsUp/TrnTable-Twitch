@@ -6,8 +6,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import AddIcon from '@material-ui/icons/Add';
 import { Grid, Button, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
 import TrackList from '../Misc/trackList';
-import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService'
-import { useAuth } from '../../auth/auth-context';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -71,26 +69,10 @@ const Error = (props) => (
 export default function SpotifySongRequests(props) {
     const classes = useStyles();
     const [checked, setChecked] = React.useState([]);
-		const twitch = window.Twitch ? window.Twitch.ext : null
-		const auth = useAuth()
-		const currentTracks = [] // limit to 150, after 150 delete all from current playlist
-		
-        // pass in the opaque id as this is the topic for listening to whispers
-        console.warn('Channel ID -->', auth.twitch.getChannelId())
-		const sessionService = new SpotifySessionService(twitch, auth.twitch.getUserId())  
-		
-		const updateTrackList = () => { // called when new songs added
-
-		}
-		useEffect(()=>{
-			sessionService.listenForSongRequests(updateTrackList)
-		}, [])
-
-
-
+		const currentTracks = props.requests
     return( // TODO: FIX STYLING 
       <div className={classes.root}>
-				<TrackList tracks={[]}/>
+				<TrackList tracks={currentTracks}/>
       </div>
     )   
 }

@@ -80,12 +80,29 @@ const TracksView  = { REQUESTED: 'requests', ERROR: 'error', LOADING: 'loading'}
 
 export default function Dashboard() {
   const classes = useStyles()
- 
+
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const [tracksView, setTracksView] = React.useState(TracksView.REQUESTED);
   const [results, setResults] = React.useState([]);
-  const [error, setError] = React.useState({errorMsg: ''});
+	const [error, setError] = React.useState({errorMsg: ''});
+	const [requests, setRequests] = React.useState([]);
+	const twitch = window.Twitch ? window.Twitch.ext : null
+	const auth = useAuth()
+	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId())  
+		
+	
+	// listen for requests here
+	useEffect(()=>{
+    sessionService.listenForSongRequests(updateTrackList)
+  }, [])
+
+
+  const updateTrackList = () => { // called when new songs added
+
+	}
+	
+  
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -133,7 +150,7 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
-            <SpotifySongRequests/>
+            <SpotifySongRequests requests={requests}/>
           </TabPanel>
         </div>   
         <div className={classes.swipeView}>

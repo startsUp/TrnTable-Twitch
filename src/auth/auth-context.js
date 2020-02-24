@@ -47,7 +47,7 @@ function AuthProvider(props) {
   // data - twitch configuration
   const [ initFetchDone, setInitFetch ] = useState(false)
   const [ data, setData ] =  useState(null)
-
+  const [ authorized, setAuthorized ] = useState(false)
 
   const getBroadcasterData = async (channelId) => {
     // fetch broadcaster data to make sure they are registered
@@ -64,6 +64,8 @@ function AuthProvider(props) {
 
 		twitch.onAuthorized(auth => {
 			if (auth.token) {
+          setAuthorized(true)
+          console.warn('onAuthorized --> ', auth)
 					twitchAuth.setToken(auth.token)
 					localStorage.setItem('token', auth.token)
 		
@@ -92,7 +94,7 @@ function AuthProvider(props) {
   }
 
   // 🚨 If initial calls still loading show generic loading card.
-  if (!initFetchDone && !data) {
+  if (!authorized || (!initFetchDone && !data)) {
     return <div style={{height: '100vh'}}><LoadingCard /></div>
   }
 
