@@ -67,20 +67,11 @@ const Error = (props) => (
 
 export default function SpotifySearchResults(props) {
     const classes = useStyles();
-    const [checked, setChecked] = React.useState([]);
+    const [checked, setChecked] = React.useState(-1);
     
     
     const handleToggle = value => () => {
-      const currentIndex = checked.indexOf(value);
-      const newChecked = [...checked];
-  
-      if (currentIndex === -1) {
-        newChecked.push(value);
-      } else {
-        newChecked.splice(currentIndex, 1);
-      }
-  
-      setChecked(newChecked);
+      setChecked(value);
     };
 
     return( // TODO: FIX STYLING 
@@ -121,7 +112,7 @@ export default function SpotifySearchResults(props) {
                               edge="end"
                               disabled={false}
                               onChange={handleToggle(index)}
-                              checked={checked.indexOf(index) !== -1}
+                              checked={checked === index}
                               inputProps={{ 'aria-labelledby': labelId }}
                             />
                           </ListItemSecondaryAction>        
