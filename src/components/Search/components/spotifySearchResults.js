@@ -67,32 +67,23 @@ const Error = (props) => (
 
 export default function SpotifySearchResults(props) {
     const classes = useStyles();
-    const [checked, setChecked] = React.useState([]);
+    const [checked, setChecked] = React.useState(-1);
     
     
     const handleToggle = value => () => {
-      const currentIndex = checked.indexOf(value);
-      const newChecked = [...checked];
-  
-      if (currentIndex === -1) {
-        newChecked.push(value);
-      } else {
-        newChecked.splice(currentIndex, 1);
-      }
-  
-      setChecked(newChecked);
+      setChecked(value);
     };
 
     return( // TODO: FIX STYLING 
       <div className={classes.root}>
       <div className={classes.header}>
-      <ArrowBackIcon onClick={props.backToSearch} className={classes.backIcon} color='primary' />
+      <ArrowBackIcon onClick={props.onNavigateBack} className={classes.backIcon} color='primary' />
         { props.error.errorMsg !== '' && 
           <Error {...props}/>
         }
        
             
-        <Button variant="outlined" size="small" color="primary" className={classes.requestButton} disabled={checked.length === 0}>
+        <Button variant="outlined" size="small" color="primary" onClick={() => props.onRequest(props.tracks[checked])} className={classes.requestButton} disabled={checked === -1}>
           Request
         </Button>
       </div>
@@ -121,7 +112,7 @@ export default function SpotifySearchResults(props) {
                               edge="end"
                               disabled={false}
                               onChange={handleToggle(index)}
-                              checked={checked.indexOf(index) !== -1}
+                              checked={checked === index } 
                               inputProps={{ 'aria-labelledby': labelId }}
                             />
                           </ListItemSecondaryAction>        

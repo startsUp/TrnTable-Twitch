@@ -75,7 +75,8 @@ export default function SpotifySongRequests(props) {
 		const auth = useAuth()
 		const currentTracks = [] // limit to 150, after 150 delete all from current playlist
 		
-		// pass in the opaque id as this is the topic for listening to whispers
+        // pass in the opaque id as this is the topic for listening to whispers
+        console.warn('Channel ID -->', auth.twitch.getChannelId())
 		const sessionService = new SpotifySessionService(twitch, auth.twitch.getUserId())  
 		
 		const updateTrackList = () => { // called when new songs added

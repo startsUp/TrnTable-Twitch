@@ -61,6 +61,7 @@ export default class Authentication{
 
         try {
             let decoded = jwt.decode(token)
+            console.log(decoded)
             if(decoded.role === 'broadcaster' || decoded.role === 'moderator'){
                 isMod = true
             }

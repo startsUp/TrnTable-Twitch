@@ -83,7 +83,7 @@ export default function Dashboard() {
  
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
-	const [tracksView, setTracksView] = React.useState(TracksView.REQUESTED);
+  const [tracksView, setTracksView] = React.useState(TracksView.REQUESTED);
   const [results, setResults] = React.useState([]);
   const [error, setError] = React.useState({errorMsg: ''});
 

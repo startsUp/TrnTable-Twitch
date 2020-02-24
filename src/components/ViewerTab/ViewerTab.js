@@ -16,7 +16,9 @@ import SpotifyNowPlaying from '../NowPlaying/components/spotifyNowPlaying';
 import { Toolbar } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LoadingCard from '../loader';
-
+import { useAuth } from '../../auth/auth-context';
+import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService';
+import { Track } from '../../util/Spotify/Model/Track'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -77,19 +79,29 @@ const TrackSearchView  = { SEARCH: 'search', RESULTS: 'results', ERROR: 'error',
 export default function ViewerTab() {
   const classes = useStyles();
   const theme = useTheme();
+  const twitch = window.Twitch ? window.Twitch.ext : null
+	const auth = useAuth()
+
+	
+	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId())  
+	
   const [value, setValue] = React.useState(0);
-	const [trackSearchView, setTrackSearchView] = React.useState(TrackSearchView.SEARCH);
+  const [trackSearchView, setTrackSearchView] = React.useState(TrackSearchView.SEARCH);
   const [results, setResults] = React.useState([]);
   const [error, setError] = React.useState({errorMsg: ''});
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+sessionService.listenForSongRequests(handleChange)
   const handleChangeIndex = index => {
     setValue(index);
   };
 
+  const sendSongRequest = track => {
+    sessionService.send(new Track(track.uri, track.name))
+    setTrackSearchView(TrackSearchView.SEARCH)
+  }
   const showSearch = () => {
     setTrackSearchView(TrackSearchView.SEARCH);
   }
@@ -131,7 +143,7 @@ export default function ViewerTab() {
                 {trackSearchView === TrackSearchView.SEARCH && 
                   <SpotifySearch onResult={showTracks} onError={showError} onLoad={() => setTrackSearchView(TrackSearchView.LOADING)}/>}
                 {trackSearchView === TrackSearchView.LOADING && <div className={classes.loading}><LoadingCard /></div>}
-                {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} backToSearch={showSearch} error={error}/>}
+                {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} onRequest={sendSongRequest} onNavigateBack={showSearch} error={error}/>}
                 {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}
           </TabPanel>
         </div>   
