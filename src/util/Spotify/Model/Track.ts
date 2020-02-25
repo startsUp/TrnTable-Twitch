@@ -1,6 +1,6 @@
 export class Track{
     constructor(
-        uri: string,
-        name: string
+        public uri: string,
+        public name: string
     ){}
 }

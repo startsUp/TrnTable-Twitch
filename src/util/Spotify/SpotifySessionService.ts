@@ -7,6 +7,7 @@ export class SpotifySessionService{
     
     public songRequestCallback: PubsubSend
     public songRequestTopic: string
+    readonly EBS_API  =  'https://us-central1-trntable-twitch.cloudfunctions.net/api'
 
     constructor(
         public twitch: {
@@ -26,8 +27,21 @@ export class SpotifySessionService{
      
     addTracks = () => {}
     
-    send = (track: Track) => {
-        this.twitch.send(this.songRequestTopic, "application/json", JSON.stringify(track))
+    sendSongRequest = (track: Track, success: Function,  error: Function) => {
+			if (track){
+				console.warn('requesting track =', track)
+				fetch(`${this.EBS_API}/request/${this.id}`, {
+					method: 'POST', // *GET, POST, PUT, DELETE, etc.
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': localStorage.getItem('token')
+					},
+					body: JSON.stringify(track) // body data type must match "Content-Type" header
+				})
+				.then(res => success(track))
+				.catch(err => error(err))
+			}
+			
     }
 
     listenForSongRequests = (callback: PubsubSend) => {
@@ -35,7 +49,7 @@ export class SpotifySessionService{
         if (!this.songRequestCallback){
             this.songRequestCallback = callback
             try {
-                this.twitch.listen(this.songRequestTopic, callback)
+                this.twitch.listen(this.songRequestTopic, (e,c,t) => console.log(e,c,t))
             } catch (error) {
                 console.error(error)
             }

@@ -98,8 +98,8 @@ export default function Dashboard() {
   }, [])
 
 
-  const updateTrackList = () => { // called when new songs added
-
+  const updateTrackList = (target, contentType, message) => { // called when new songs added
+		console.log(target, contentType, message)
 	}
 	
   
