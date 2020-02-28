@@ -49,7 +49,9 @@ export class SpotifySessionService{
         if (!this.songRequestCallback){
             this.songRequestCallback = callback
             try {
-                this.twitch.listen(this.songRequestTopic, (e,c,t) => console.log(e,c,t))
+                this.twitch.listen(this.songRequestTopic, (e,c,t) => {
+                    console.log(e,c,t)
+                })
             } catch (error) {
                 console.error(error)
             }

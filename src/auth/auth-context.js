@@ -68,7 +68,9 @@ function AuthProvider(props) {
           console.warn('onAuthorized --> ', auth)
 					twitchAuth.setToken(auth.token)
 					localStorage.setItem('token', auth.token)
-		
+          twitch.listen('broadcast', (e, c, t)=>{
+            console.log(e,c,t)
+          })
 					// get user data to check if it exist, only need to this in config view
 					if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
 					  getBroadcasterData(auth.channelId)
