@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
 	desc: {
 		textAlign: 'justify',
 		fontFamily: 'sofia_prolight',
-		padding: `${theme.spacing(2)}px 0 ${theme.spacing(5)}px 0`
+		padding: theme.spacing(2)
 	},
 	button: {
     	borderRadius: theme.spacing(2),
