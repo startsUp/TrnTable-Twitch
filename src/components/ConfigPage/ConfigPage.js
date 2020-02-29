@@ -15,8 +15,12 @@ import LoadingCard from '../loader'
 import { useAuth } from '../../auth/auth-context';
 import { ConfigStates } from './config-states'
 import { UserSettings } from './model/UserSettings'
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
-
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 const useStyles = makeStyles(theme => ({
   	root: {
 		height: '100vh',
@@ -47,7 +51,7 @@ const useStyles = makeStyles(theme => ({
 		alignItems: 'center'
 	},
 	hostCard: {
-		width: '450px',
+		width: '500px',
 		justifySelf: 'center',
 		padding: theme.spacing(1),
 		textAlign: 'center'
@@ -73,15 +77,17 @@ const useStyles = makeStyles(theme => ({
 		paddingRight: theme.spacing(8)
 	},
 	button: {
-    	borderRadius: theme.spacing(2),
-		fontFamily: 'sofia_problack',
-		justifySelf: 'center',
-		width: theme.spacing(15),
-		marginTop: theme.spacing(1)
-    },
-    loadingLogo: {
-        width: '5rem'
-    },
+		borderRadius: theme.spacing(2),
+		minWidth: theme.spacing(15),
+		marginTop: theme.spacing(1),
+		...theme.button
+	},
+	loadingLogo: {
+			width: '5rem'
+	},
+	resetBox: {
+		paddingTop: theme.spacing(5)
+	}
     
 })); 
 
@@ -94,12 +100,16 @@ export default function ConfigPage() {
 	const classes = useStyles();
 	
 	const auth = useAuth()
-	const { spotifyTokenSaved, config, role } = auth.data
+	const { spotifyConnected, config, role } = auth.data
+	console.warn(auth.data)
+	const getInitialState = () => {
+		return spotifyConnected ? config ? ConfigStates.LOGGEDIN : ConfigStates.SETTINGS : ConfigStates.LOGGEDOUT
+	}
 
-    var userSettings = settingsService.getUserSettings(config, role)
-	console.warn(userSettings)
-    var settingComponents = settingsService.getSettingComponents(userSettings)
-
+	var userSettings = settingsService.getUserSettings(config, role)
+	var settingComponents = settingsService.getSettingComponents(userSettings)
+	var [configState, setConfigState] = useState(getInitialState())
+	
 	const [error, setError] = useState(Error.NONE);
     
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
@@ -107,7 +117,9 @@ export default function ConfigPage() {
 		localStorage.setItem('spotifyUser',spotifyUser);
 	}
 
-
+	useEffect(()=> {
+		setConfigState(getInitialState())
+	}, [auth.data])
 	// const getUserInfoAndSave = () => {
 	// 	return spotifyApi.getMe({}, (err, data)=>{
 	// 		if(err) console.log(err);
@@ -131,7 +143,8 @@ export default function ConfigPage() {
         var jsonSettings = settingsService.toJSON(userSettings)
 
         //set twitch config
-        auth.twitch.setConfig(jsonSettings)
+				auth.twitch.setConfig(jsonSettings)
+				setConfigState(ConfigStates.LOGGEDIN)
     }
 	
 
@@ -143,16 +156,16 @@ export default function ConfigPage() {
 		setDefaultConfiguration()
 	}
 
-	var configState = ConfigStates.LOADING
-	if (auth.data.hasOwnProperty('spotifyTokenSaved') && auth.data.hasOwnProperty('config')){
-		if (spotifyTokenSaved){
-			configState = ConfigStates.LOGGEDIN
-			if (!config) configState = ConfigStates.SETTINGS 
-		}
-		else
-			configState = ConfigStates.LOGGEDOUT
+	const handleAccountReset = () => {
+		auth.resetAccount(
+			(success) => {
+				setConfigState(ConfigStates.LOGGEDOUT);
+			},
+			(error) => {
+				setError(Error.RESETFAIL)
+			}
+		)
 	}
-	
 
   return (
 	<div className={classes.root}>
@@ -164,10 +177,17 @@ export default function ConfigPage() {
 						<Typography variant="h5" className={classes.title} color='primary'>TrnTable</Typography>
 					</div>
 					<Divider/>
-					{ configState === ConfigStates.LOADING && <LoadingCard/>}
 					{ configState === ConfigStates.LOGGEDOUT && <Login callback={popupCallback}/> }
 					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} settings={settingComponents} saveConfigCallback={updateConfig}/>}
-					{ configState === ConfigStates.LOGGEDIN && error === Error.NONE && <LoggedInCard classes={classes} />}	
+					{ configState === ConfigStates.LOGGEDIN && error === Error.NONE && <LoggedInCard classes={classes} 
+						settingsCallback={()=> setConfigState(ConfigStates.SETTINGS)} 
+						resetCallback={handleAccountReset} />
+					}	
+					<Snackbar open={error !== Error.NONE} autoHideDuration={3000} onClose={() => setError(Error.NONE)}>
+						<Alert onClose={() => setError(Error.NONE)} severity="error">
+							{error.errorMsg}
+						</Alert>
+					</Snackbar>
 				</Paper>
 			</div>
 		</div>
