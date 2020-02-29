@@ -52,7 +52,7 @@ function AuthProvider(props) {
     const token = await twitchAuth.makeCall(`${API_URL}/broadcaster/${channelId}`).then(res=>res.text())  
     
     setData(prev => { // prevent overwrites from other setData calls 
-        return {...prev, spotifyTokenSaved: (token !== null || token !== undefined), role: Role.BROADCASTER}
+        return {...prev, spotifyConnected: (token !== null || token !== undefined), role: Role.BROADCASTER}
     })
     setInitFetch(true)
   }
