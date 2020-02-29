@@ -31,4 +31,8 @@ export const TrnTableTheme = createMuiTheme({
             cover: 'rgba(25, 36, 26, 0.8)' // 9th midpoint 
         }
   },
+  button: {
+    fontFamily: 'sofia_problack',
+    justifySelf: 'center',
+  },
  });
