@@ -50,10 +50,11 @@ function AuthProvider(props) {
 
   const getBroadcasterData = async (channelId) => {
     // fetch broadcaster data to make sure they are registered
-    const token = await twitchAuth.makeCall(`${API_URL}/broadcaster/${channelId}`).then(res=>res.text())  
-    console.log('token -> ', token.length)
-    setData(prev => { // prevent overwrites from other setData calls 
-        return {...prev, spotifyConnected: (token !== null && token !== undefined && token.length > 0), role: Role.BROADCASTER}
+    const token = await twitchAuth.makeCall(`${API_URL}/broadcaster/${channelId}`).then(res=>res.json())  
+    console.log('token ->', token)
+    const spotifyToken = token.access_token || null
+    setData(prev => { // prevent overwrites from ot her setData calls 
+        return {...prev, spotifyToken, role: Role.BROADCASTER}
     })
   }
 
@@ -107,7 +108,7 @@ function AuthProvider(props) {
   // 🚨 If initial calls still loading show generic loading card.
   if (!authorized ||  !data || 
       // for different viewtypes, show loading card until appropriate data is available
-      (viewType === ViewType.CONFIG && (!data.hasOwnProperty('spotifyConnected') || !data.hasOwnProperty('config')) )
+      (viewType === ViewType.CONFIG && (!data.hasOwnProperty('spotifyToken') || !data.hasOwnProperty('config')) )
   ) {
     return <div style={{height: '100vh'}}><LoadingCard /></div>
   }
@@ -133,14 +134,14 @@ function AuthProvider(props) {
   }
   else if (r === Role.BROADCASTER){ // TODO: Add Setting to allow moderators to control music
     return (
-      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, twitch: twitchAuth , data }} {...props}>
+      <AuthContext.Provider value={{ twitch: twitchAuth , data }} {...props}>
         <Dashboard/>
       </AuthContext.Provider>
     )
   }
   else {
     return (
-      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, twitch: twitchAuth , data }} {...props}>
+      <AuthContext.Provider value={{ twitch: twitchAuth , data }} {...props}>
         <ViewerDashboard/>
       </AuthContext.Provider>
     )

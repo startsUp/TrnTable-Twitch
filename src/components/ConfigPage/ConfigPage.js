@@ -100,10 +100,10 @@ export default function ConfigPage() {
 	const classes = useStyles();
 	
 	const auth = useAuth()
-	const { spotifyConnected, config, role } = auth.data
+	const { spotifyToken, config, role } = auth.data
 	console.warn(auth.data)
 	const getInitialState = () => {
-		return spotifyConnected ? config ? ConfigStates.LOGGEDIN : ConfigStates.SETTINGS : ConfigStates.LOGGEDOUT
+		return spotifyToken ? config ? ConfigStates.LOGGEDIN : ConfigStates.SETTINGS : ConfigStates.LOGGEDOUT
 	}
 
 	var userSettings = settingsService.getUserSettings(config, role)
@@ -120,17 +120,7 @@ export default function ConfigPage() {
 	useEffect(()=> {
 		setConfigState(getInitialState())
 	}, [auth.data])
-	// const getUserInfoAndSave = () => {
-	// 	return spotifyApi.getMe({}, (err, data)=>{
-	// 		if(err) console.log(err);
-	// 		else{
-	// 			console.log(data)
-	// 			setSpotifyId(data.id);
-	// 			setSpotifyUser(data.display_name ? data.display_name : 'Your');
-	// 			saveSpotifyInfo(data.id,data.display_name);
-	// 		}
-	// 	})
-	// }
+
 	const setDefaultConfiguration = () => {
 		setConfig(settingsService.getJSONConfig())
     }
@@ -143,14 +133,13 @@ export default function ConfigPage() {
         var jsonSettings = settingsService.toJSON(userSettings)
 
         //set twitch config
-				auth.twitch.setConfig(jsonSettings)
-				setConfigState(ConfigStates.LOGGEDIN)
+		auth.twitch.setConfig(jsonSettings)
+		setConfigState(ConfigStates.LOGGEDIN)
     }
 	
 
 	const popupCallback = async (tokens) => {
 		console.info({tokens}) 
-		spotifyApi.setAccessToken(tokens.accessToken)
 		// getUserInfoAndSave()
 		//setTwitchConfiguration()
 		setDefaultConfiguration()
@@ -178,7 +167,7 @@ export default function ConfigPage() {
 					</div>
 					<Divider/>
 					{ configState === ConfigStates.LOGGEDOUT && <Login callback={popupCallback}/> }
-					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} settings={settingComponents} saveConfigCallback={updateConfig}/>}
+					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} configSet={config} settings={settingComponents} saveConfigCallback={updateConfig}/>}
 					{ configState === ConfigStates.LOGGEDIN && error === Error.NONE && <LoggedInCard classes={classes} 
 						settingsCallback={()=> setConfigState(ConfigStates.SETTINGS)} 
 						resetCallback={handleAccountReset} />

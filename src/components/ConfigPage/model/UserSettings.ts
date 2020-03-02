@@ -5,7 +5,7 @@ export class UserSettings{
 	constructor(
         public settings: any [],
         public role: Role,
-        public playlistCreated: boolean,
+        public playlistId: string,
         public created: Date,
         public updated: Date,
     ){}
