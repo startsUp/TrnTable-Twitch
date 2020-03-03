@@ -17,6 +17,7 @@ import { ConfigStates } from './config-states'
 import { UserSettings } from './model/UserSettings'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { useSpotify } from '../../util/Spotify/spotify-context';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -100,8 +101,11 @@ export default function ConfigPage() {
 	const classes = useStyles();
 	
 	const auth = useAuth()
-	const { spotifyToken, config, role } = auth.data
-	console.warn(auth.data)
+	const [spotify, refreshSpotifyToken] = useSpotify()
+	const spotifyToken = spotify.getAccessToken()
+
+	const { config, role } = auth.data
+
 	const getInitialState = () => {
 		return spotifyToken ? config ? ConfigStates.LOGGEDIN : ConfigStates.SETTINGS : ConfigStates.LOGGEDOUT
 	}
@@ -155,7 +159,7 @@ export default function ConfigPage() {
 			}
 		)
 	}
-
+  console.log('spot token', spotifyToken)
   return (
 	<div className={classes.root}>
 		<div className={classes.cover}> 

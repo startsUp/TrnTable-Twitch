@@ -11,8 +11,6 @@ import { Role, getRole } from './roles/roles';
 import Dashboard from '../components/Dashboard/Dashboard';
 import ViewerDashboard from '../ViewerDashboard';
 const VERSION_NO = "0.0.1";
-
-const API_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api'
 const AuthContext = React.createContext()
 
 /**
@@ -36,7 +34,6 @@ const validateToken = token => {
 function AuthProvider(props) {
   const viewType = props.viewType
   const twitch = window.Twitch ? window.Twitch.ext : null
-  const tokenUpdateCallback = props.onTokenChange
 
   const authToken = localStorage.getItem('token')
   const isTokenValid = validateToken(authToken) 
@@ -48,43 +45,39 @@ function AuthProvider(props) {
   const [ data, setData ] =  useState(null)
   const [ authorized, setAuthorized ] = useState(false)
 
-  const getBroadcasterData = async (channelId) => {
-    // fetch broadcaster data to make sure they are registered
-    const token = await twitchAuth.makeCall(`${API_URL}/broadcaster/${channelId}`).then(res=>res.json())  
-    console.log('token ->', token)
-    const spotifyToken = token.access_token || null
-    setData(prev => { // prevent overwrites from ot her setData calls 
-        return {...prev, spotifyToken, role: Role.BROADCASTER}
+  const setAuthData = () => {
+    setData(prev => { // prevent ovewrites
+      return {
+        ...prev, 
+        channelId: twitchAuth.getChannelId(),
+        role: getRole(twitchAuth.getRole()),
+        userId: twitchAuth.getOpaqueId()
+      } 
     })
   }
-
 
 	React.useEffect(() => {
 
 		twitch.onAuthorized(auth => {
 			if (auth.token) {
           setAuthorized(true)
-					twitchAuth.setToken(auth.token)
-					localStorage.setItem('token', auth.token)
-          // twitch.listen('whisper-'+auth.userId, (e, c, t)=>{
-          //   console.log(e,c,t)
-          // })
+          
+          localStorage.setItem('token', auth.token)
+          twitchAuth.setToken(auth.token)
+          setAuthData() // set role, channelid and user id
+
 					// get user data to check if it exist, only need to this in config view
 					if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()){
             if (twitch.configuration.broadcaster){
               setData(prev => { // prevent ovewrites
-                return {...prev, config: twitch.configuration.broadcaster}
+                return {...prev, config: twitch.configuration.broadcaster} 
               })
             }
-					  getBroadcasterData(auth.channelId)
           } 
 			
-					// update any parent props expecting token updates
-					if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
 			}
 		})
     
-
     // listen for configuration changes
     twitch.configuration.onChanged(()=> {
       setData(prev => { // prevent ovewrites
@@ -102,13 +95,14 @@ function AuthProvider(props) {
       twitch.configuration.set("broadcaster", '', config);
   }
 
-  
-  
+  const makeAuthorizedCall = (url, method="GET") => {
+    return twitchAuth.makeCall(url, method)
+  }
 
   // 🚨 If initial calls still loading show generic loading card.
   if (!authorized ||  !data || 
       // for different viewtypes, show loading card until appropriate data is available
-      (viewType === ViewType.CONFIG && (!data.hasOwnProperty('spotifyToken') || !data.hasOwnProperty('config')) )
+      (viewType === ViewType.CONFIG && !data.hasOwnProperty('config') )
   ) {
     return <div style={{height: '100vh'}}><LoadingCard /></div>
   }
@@ -129,7 +123,7 @@ function AuthProvider(props) {
         .catch(err => onError(err))
     }
     return (
-      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, resetAccount: reset, twitch: { setConfig: setTwitchConfig }, data }} {...props} />
+      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, makeAuthorizedCall: makeAuthorizedCall, resetAccount: reset, twitch: { setConfig: setTwitchConfig }, data }} {...props} />
     )
   }
   else if (r === Role.BROADCASTER){ // TODO: Add Setting to allow moderators to control music

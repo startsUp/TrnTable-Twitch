@@ -13,8 +13,8 @@ export class SettingsService{
 				0,
 				100),
 			new BooleanSetting(
-					'Delete Playlist', 
-					'Delete stream playlist after every stream. Lets you start a new playlist for each stream.',
+					'Keep requests after stream', 
+					'Keep all requests for the next time you go live. If off, this will delete  stream playlist after every stream. Lets you start a new playlist for each stream.',
 					false, 
 					false),
 			new BooleanSetting(

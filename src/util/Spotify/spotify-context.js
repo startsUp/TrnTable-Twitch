@@ -1,33 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import LoadingCard from '../components/loader'
-import { SpotifyLogin } from './spotify-login'
-import { SpotifyService } from '../util/Spotify/SpotifyService'
-import Authentication from '../util/Twitch/Authentication';
-import { useLazyQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-import jwt from 'jsonwebtoken'
-import { ViewType } from '../util/Twitch/ViewType' 
-import { Role } from './roles/roles';
-import { SpotifyWebApi } from 'spotify-web-api-js'
+import SpotifyWebApi from 'spotify-web-api-js'
+import { useAuth } from '../../auth/auth-context';
 
-const VERSION_NO = "0.0.1";
-
+const API_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api'
 const SpotifyContext = React.createContext()
-
-
-
 /**
- * Auth Provider for auth context. This handles login/logout and fetching of user data
+ * Spotify Provider. This handles spotify token and api fetching.
  * @param {Object} props 
  */
 function SpotifyProvider(props) {
   const auth = useAuth()
   const api  = new SpotifyWebApi();
+
+  const refreshSpotifyToken = async (id) => {
+    // fetch broadcaster data to make sure they are registered
+    const token = await auth.makeAuthorizedCall(`${API_URL}/broadcaster/${id}`).then(res=>res.json())  
+    console.log('token ->', token.access_token)
+    const spotifyToken = token.access_token || null
+    api.setAccessToken(spotifyToken)
+  }
+
   useEffect(()=>{
-    api.setAccessToken(auth.data.spotifyToken)
-  }, [auth.data])
+    if (auth.data.channelId)
+      refreshSpotifyToken(auth.data.channelId)
+  }, [auth.data.channelId])
+
   return (
-    <SpotifyContext.Provider value={} />
+    <SpotifyContext.Provider value={[api, refreshSpotifyToken]} {...props}/>
   )
 }
 const useSpotify = () => React.useContext(SpotifyContext)
