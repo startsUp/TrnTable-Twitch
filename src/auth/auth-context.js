@@ -62,23 +62,23 @@ function AuthProvider(props) {
 
 	React.useEffect(() => {
 
-		twitch.onAuthorized(auth => {
-			if (auth.token) {
-          setAuthorized(true)
-          console.warn('onAuthorized --> ', auth)
-					twitchAuth.setToken(auth.token)
-					localStorage.setItem('token', auth.token)
-          twitch.listen('broadcast', (e, c, t)=>{
-            console.log(e,c,t)
-          })
-					// get user data to check if it exist, only need to this in config view
-					if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
-					  getBroadcasterData(auth.channelId)
+		// twitch.onAuthorized(auth => {
+		// 	if (auth.token) {
+        //   setAuthorized(true)
+        //   console.warn('onAuthorized --> ', auth)
+		// 			twitchAuth.setToken(auth.token)
+		// 			localStorage.setItem('token', auth.token)
+        //   twitch.listen('broadcast', (e, c, t)=>{
+        //     console.log(e,c,t)
+        //   })
+		// 			// get user data to check if it exist, only need to this in config view
+		// 			if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()) 
+		// 			  getBroadcasterData(auth.channelId)
 			
-					// update any parent props expecting token updates
-					if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
-			}
-		})
+		// 			// update any parent props expecting token updates
+		// 			if (tokenUpdateCallback) tokenUpdateCallback(auth.token)
+		// 	}
+		// })
     
 
     // listen for configuration changes
