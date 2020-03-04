@@ -10,7 +10,7 @@ export default class Authentication{
         this.state={
             token,
             opaque_id,
-            channel_id:0,
+            channel_id:"",
             user_id:false,
             isMod:false,
             role:""

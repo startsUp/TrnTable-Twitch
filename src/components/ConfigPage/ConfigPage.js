@@ -15,8 +15,13 @@ import LoadingCard from '../loader'
 import { useAuth } from '../../auth/auth-context';
 import { ConfigStates } from './config-states'
 import { UserSettings } from './model/UserSettings'
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { useSpotify } from '../../util/Spotify/spotify-context';
 
-
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 const useStyles = makeStyles(theme => ({
   	root: {
 		height: '100vh',
@@ -38,6 +43,9 @@ const useStyles = makeStyles(theme => ({
 		position: 'sticky',
 		top: '0px'
 	},
+	inline: {
+		display: 'inline-grid'
+	},
 	grid: {
 		display: 'grid',
 		paddingTop: theme.spacing(10),
@@ -47,7 +55,7 @@ const useStyles = makeStyles(theme => ({
 		alignItems: 'center'
 	},
 	hostCard: {
-		width: '450px',
+		width: '500px',
 		justifySelf: 'center',
 		padding: theme.spacing(1),
 		textAlign: 'center'
@@ -66,22 +74,30 @@ const useStyles = makeStyles(theme => ({
 	numberSetting:{
 		width: '30px'
 	},
+	formControl: {
+		marginRight: '0'
+	},
 	settingStyle: {
 		maxWidth: theme.spacing(9),
 	},
 	listItem: {
 		paddingRight: theme.spacing(8)
 	},
+	listItemPadded: {
+		paddingRight: theme.spacing(12)
+	},
 	button: {
-    	borderRadius: theme.spacing(2),
-		fontFamily: 'sofia_problack',
-		justifySelf: 'center',
-		width: theme.spacing(15),
-		marginTop: theme.spacing(1)
-    },
-    loadingLogo: {
-        width: '5rem'
-    },
+		borderRadius: theme.spacing(2),
+		minWidth: theme.spacing(15),
+		marginTop: theme.spacing(1),
+		...theme.button
+	},
+	loadingLogo: {
+			width: '5rem'
+	},
+	resetBox: {
+		paddingTop: theme.spacing(5)
+	}
     
 })); 
 
@@ -94,12 +110,18 @@ export default function ConfigPage() {
 	const classes = useStyles();
 	
 	const auth = useAuth()
-	const { spotifyTokenSaved, config, role } = auth.data
+	const [spotify, spotifyToken, refreshSpotifyToken] = useSpotify()
 
-    var userSettings = settingsService.getUserSettings(config, role)
-	console.warn(userSettings)
-    var settingComponents = settingsService.getSettingComponents(userSettings)
+	const { config, role } = auth.data
 
+	const getInitialState = () => {
+		return spotifyToken ? config ? ConfigStates.LOGGEDIN : ConfigStates.SETTINGS : ConfigStates.LOGGEDOUT
+	}
+
+	var userSettings = settingsService.getUserSettings(config, role)
+	var settingComponents = settingsService.getSettingComponents(userSettings)
+	var [configState, setConfigState] = useState(getInitialState())
+	
 	const [error, setError] = useState(Error.NONE);
     
 	const saveSpotifyInfo = (spotifyId, spotifyUser) => {
@@ -107,18 +129,10 @@ export default function ConfigPage() {
 		localStorage.setItem('spotifyUser',spotifyUser);
 	}
 
+	useEffect(()=> {
+		setConfigState(getInitialState())
+	}, [auth.data,spotifyToken])
 
-	// const getUserInfoAndSave = () => {
-	// 	return spotifyApi.getMe({}, (err, data)=>{
-	// 		if(err) console.log(err);
-	// 		else{
-	// 			console.log(data)
-	// 			setSpotifyId(data.id);
-	// 			setSpotifyUser(data.display_name ? data.display_name : 'Your');
-	// 			saveSpotifyInfo(data.id,data.display_name);
-	// 		}
-	// 	})
-	// }
 	const setDefaultConfiguration = () => {
 		setConfig(settingsService.getJSONConfig())
     }
@@ -131,29 +145,29 @@ export default function ConfigPage() {
         var jsonSettings = settingsService.toJSON(userSettings)
 
         //set twitch config
-        auth.twitch.setConfig(jsonSettings)
+		auth.twitch.setConfig(jsonSettings)
+		setConfigState(ConfigStates.LOGGEDIN)
     }
 	
 
 	const popupCallback = async (tokens) => {
 		console.info({tokens}) 
-		spotifyApi.setAccessToken(tokens.accessToken)
 		// getUserInfoAndSave()
 		//setTwitchConfiguration()
 		setDefaultConfiguration()
 	}
 
-	var configState = ConfigStates.LOADING
-	if (auth.data.hasOwnProperty('spotifyTokenSaved') && auth.data.hasOwnProperty('config')){
-		if (spotifyTokenSaved){
-			configState = ConfigStates.LOGGEDIN
-			if (!config) configState = ConfigStates.SETTINGS 
-		}
-		else
-			configState = ConfigStates.LOGGEDOUT
+	const handleAccountReset = () => {
+		auth.resetAccount(
+			(success) => {
+				setConfigState(ConfigStates.LOGGEDOUT);
+			},
+			(error) => {
+				setError(Error.RESETFAIL)
+			}
+		)
 	}
-	
-
+  console.log('spot token', spotifyToken)
   return (
 	<div className={classes.root}>
 		<div className={classes.cover}> 
@@ -164,10 +178,17 @@ export default function ConfigPage() {
 						<Typography variant="h5" className={classes.title} color='primary'>TrnTable</Typography>
 					</div>
 					<Divider/>
-					{ configState === ConfigStates.LOADING && <LoadingCard/>}
 					{ configState === ConfigStates.LOGGEDOUT && <Login callback={popupCallback}/> }
-					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} settings={settingComponents} saveConfigCallback={updateConfig}/>}
-					{ configState === ConfigStates.LOGGEDIN && error === Error.NONE && <LoggedInCard classes={classes} />}	
+					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} configSet={config} settings={settingComponents} saveConfigCallback={updateConfig}/>}
+					{ configState === ConfigStates.LOGGEDIN && error === Error.NONE && <LoggedInCard classes={classes} 
+						settingsCallback={()=> setConfigState(ConfigStates.SETTINGS)} 
+						resetCallback={handleAccountReset} />
+					}	
+					<Snackbar open={error !== Error.NONE} autoHideDuration={3000} onClose={() => setError(Error.NONE)}>
+						<Alert onClose={() => setError(Error.NONE)} severity="error">
+							{error.errorMsg}
+						</Alert>
+					</Snackbar>
 				</Paper>
 			</div>
 		</div>

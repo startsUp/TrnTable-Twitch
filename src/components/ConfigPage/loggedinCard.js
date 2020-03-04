@@ -1,21 +1,28 @@
 import React from 'react'
 import { Box, Typography, Button } from '@material-ui/core'
 export default function LoggedInCard(props){
-    const { classes, settingsCallback, logoutCallback } = props
+    const { classes, settingsCallback, resetCallback } = props
     return (
-        <Box p={3}>
-            <Typography variant="h4" className={classes.hostTitle}>
-                All Setup!
-            </Typography>
-            <Typography>
-                You are ready to start using TrnTable. Once you start the stream, viewers will be able to vote on currently playing songs and request new ones.
-            </Typography>
-            <Button variant="outlined" size="small" color="primary" className={classes.button} onClick={settingsCallback}>
-                Settings
-            </Button>
-            <Button variant="outlined" size="small" color="primary" className={classes.button} onClick={logoutCallback}>
-                Logout
-            </Button>
-        </Box> 
+			<Box p={3}>
+				<Typography variant="h4" className={classes.hostTitle}>
+						All Setup!
+				</Typography>
+				<Typography>
+						You are ready to start using TrnTable. Once you start the stream, viewers will be able to vote on currently playing songs and request new ones.
+				</Typography>
+
+				<Box p={2} className={classes.resetBox}>
+					<Typography>Change the current TrnTable settings</Typography>
+					<Button variant="outlined" size="small" color="primary" className={classes.button} onClick={settingsCallback}>
+							Settings
+					</Button>
+				</Box>
+				<Box p={2} className={classes.resetBox}>
+					<Typography>Logout to reset playlist and use a different account.</Typography>
+					<Button variant="outlined" size="small" color="primary" className={classes.button} onClick={resetCallback}>
+							Reset Account
+					</Button>
+				</Box>
+			</Box> 
     )
 }

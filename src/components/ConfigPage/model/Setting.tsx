@@ -16,7 +16,7 @@ export interface Setting<T>{
 	getComponent(props: {settingStyle: {}}, id: number): any
 	getSettingWithValue(value: T): Setting<T>
 }
-const SettingComponent = props => {
+export const SettingComponent = props => {
 	return (
 		<ListItem>
 			<ListItemText className={props.listItem} primary={props.name} secondary={props.details} />

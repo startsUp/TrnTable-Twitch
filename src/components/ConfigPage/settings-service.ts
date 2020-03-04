@@ -13,8 +13,8 @@ export class SettingsService{
 				0,
 				100),
 			new BooleanSetting(
-					'Delete Playlist', 
-					'Delete stream playlist after every stream. Lets you start a new playlist for each stream.',
+					'Keep requests after stream', 
+					'Keep all requests for the next time you go live. If off, this will delete  stream playlist after every stream. Lets you start a new playlist for each stream.',
 					false, 
 					false),
 			new BooleanSetting(
@@ -28,7 +28,7 @@ export class SettingsService{
 
     getDefaultUserSettings(userRole: Role){
         if(userRole === Role.BROADCASTER){
-            return new UserSettings(this.BroadcasterSettings.map(s=>s.defaultValue), userRole, false, new Date(), new Date())
+            return new UserSettings(this.BroadcasterSettings.map(s=>s.defaultValue), userRole, null, new Date(), new Date())
         }
     }
 
@@ -37,8 +37,8 @@ export class SettingsService{
         if (config === null || config === undefined) 
             return this.getDefaultUserSettings(userRole)
 
-		let {settings, role, playlistCreated, created, updated} = JSON.parse(config.content)		
-		return new UserSettings(settings, role, playlistCreated, created, updated)
+		let {settings, role, playlistId, created, updated} = JSON.parse(config.content)		
+		return new UserSettings(settings, role, playlistId, created, updated)
 	}
 
     /**

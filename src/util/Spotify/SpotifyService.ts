@@ -1,12 +1,28 @@
 
 export class SpotifyService{
     readonly SPOTIFY_API_URL = 'https://jukebox-2952e.firebaseapp.com';
-    readonly SPOTIFY_LOGIN_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api';
+    readonly SPOTIFY_AUTH_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api';
     tokens: {}
     constructor(){}
 
-    handleLogin = () => {
-        this.popupCenter(`${this.SPOTIFY_LOGIN_URL}/login`, 'Spotify Auth', 350, 550);
+    handleLogin = (callback: Function) => {
+        var newWindow = this.popupCenter(`${this.SPOTIFY_AUTH_URL}/login?token=${localStorage.getItem('token')}`, 'Spotify Auth', 350, 550);
+        var timer = setInterval(function() { 
+            if(newWindow.closed) {
+                clearInterval(timer);
+                callback();
+            }
+        }, 1000);
+    }
+
+    logout = async () => {
+        return fetch(`${this.SPOTIFY_AUTH_URL}/reset`, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify({}) // body data type must match "Content-Type" header
+        })
     }
 
     search = async (query: string) => {
@@ -25,24 +41,26 @@ export class SpotifyService{
         var systemZoom = width / window.screen.availWidth;
         var left = (width - w) / 2 / systemZoom + dualScreenLeft
         var top = (height - h) / 2 / systemZoom + dualScreenTop
-        var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w / systemZoom + ', height=' + h / systemZoom + ', top=' + top + ', left=' + left);
+        return window.open(url, title, 'scrollbars=yes, width=' + w / systemZoom + ', height=' + h / systemZoom + ', top=' + top + ', left=' + left);
         
-        // Puts focus on the newWindow
-        //  if (window.focus) newWindow.focus();
-        window.addEventListener('message', event => {
-            // IMPORTANT: check the origin of the data! 
-            console.warn(event)
-            if (event.origin.startsWith(this.SPOTIFY_LOGIN_URL)) { 
-                    // The data was sent from your site.
-                    // Data sent with postMessage is stored in event.data:
-                    newWindow.close()
-                    this.tokens = event.data
-            } else {
-                    // The data was NOT sent from your site! 
-                    // Be careful! Do not use it. This else branch is
-                    // here just for clarity, you usually shouldn't need it.
-                    return; 
-            } 
-        }); 
+    
+    
+        // // Puts focus on the newWindow
+        // //  if (window.focus) newWindow.focus();
+        // window.addEventListener('message', event => {
+        //     // IMPORTANT: check the origin of the data! 
+        //     console.warn(event)
+        //     if (event.origin.startsWith(this.SPOTIFY_AUTH_URL)) { 
+        //             // The data was sent from your site.
+        //             // Data sent with postMessage is stored in event.data:
+        //             newWindow.close()
+        //             this.tokens = event.data
+        //     } else {
+        //             // The data was NOT sent from your site! 
+        //             // Be careful! Do not use it. This else branch is
+        //             // here just for clarity, you usually shouldn't need it.
+        //             return; 
+        //     } 
+        // }); 
     }
 }
