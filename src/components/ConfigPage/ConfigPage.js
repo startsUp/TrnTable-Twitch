@@ -43,6 +43,9 @@ const useStyles = makeStyles(theme => ({
 		position: 'sticky',
 		top: '0px'
 	},
+	inline: {
+		display: 'inline-grid'
+	},
 	grid: {
 		display: 'grid',
 		paddingTop: theme.spacing(10),
@@ -71,11 +74,17 @@ const useStyles = makeStyles(theme => ({
 	numberSetting:{
 		width: '30px'
 	},
+	formControl: {
+		marginRight: '0'
+	},
 	settingStyle: {
 		maxWidth: theme.spacing(9),
 	},
 	listItem: {
 		paddingRight: theme.spacing(8)
+	},
+	listItemPadded: {
+		paddingRight: theme.spacing(12)
 	},
 	button: {
 		borderRadius: theme.spacing(2),
@@ -101,8 +110,7 @@ export default function ConfigPage() {
 	const classes = useStyles();
 	
 	const auth = useAuth()
-	const [spotify, refreshSpotifyToken] = useSpotify()
-	const spotifyToken = spotify.getAccessToken()
+	const [spotify, spotifyToken, refreshSpotifyToken] = useSpotify()
 
 	const { config, role } = auth.data
 
@@ -123,7 +131,7 @@ export default function ConfigPage() {
 
 	useEffect(()=> {
 		setConfigState(getInitialState())
-	}, [auth.data])
+	}, [auth.data,spotifyToken])
 
 	const setDefaultConfiguration = () => {
 		setConfig(settingsService.getJSONConfig())

@@ -61,7 +61,7 @@ function AuthProvider(props) {
 		twitch.onAuthorized(auth => {
 			if (auth.token) {
           setAuthorized(true)
-          
+          console.log(auth.token)
           localStorage.setItem('token', auth.token)
           twitchAuth.setToken(auth.token)
           setAuthData() // set role, channelid and user id
