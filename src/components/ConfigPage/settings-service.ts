@@ -13,8 +13,8 @@ export class SettingsService{
 				0,
 				100),
 			new BooleanSetting(
-					'Keep requests after stream', 
-					'Keep all requests for the next time you go live. If off, this will delete  stream playlist after every stream. Lets you start a new playlist for each stream.',
+					'Keep already played songs', 
+					'You can turn on this option to retain old requests that were added to the playlists. Limit is 10,000.',
 					false, 
 					false),
 			new BooleanSetting(
