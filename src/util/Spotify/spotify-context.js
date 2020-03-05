@@ -19,14 +19,14 @@ function SpotifyProvider(props) {
   const [token, setToken] = useState(null)
   const [fetch, fetchDone] = useState(false)
   
-  const refreshSpotifyToken = async (id) => {
+  const refreshSpotifyToken = async (id=auth.data.channelId) => {
     // fetch broadcaster data to make sure they are registered
     const token = await auth.makeAuthorizedCall(`${API_URL}/broadcaster/${id}`).then(res=>res.json())  
     console.log('token ->', token.access_token)
     const spotifyToken = token.access_token || null
     setToken(spotifyToken)
     fetchDone(true)
-    return token
+    return spotifyToken
   }
 
   useEffect(()=>{

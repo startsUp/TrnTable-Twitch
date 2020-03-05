@@ -39,10 +39,6 @@ export const PlaylistSelect = (props) => {
         setOption(!option)
     }
 
-    const handleSelectionChange = e => {
-        console.log(e)
-    }
-
 	return(
 		<List>
 			<SettingComponent key='playlistSelect' 
@@ -96,7 +92,7 @@ export const PlaylistSelect = (props) => {
                 >
                { 
                     playlists.map((item, index) => 
-                        <MenuItem value={index+1}>
+                        <MenuItem key={item.id} value={index+1}>
                             {item.name}
                         </MenuItem>
                     )
@@ -106,40 +102,5 @@ export const PlaylistSelect = (props) => {
         </div>
         }
 		</List>
-			
-	
-		// <Box>
-		// 	<Typography color="textPrimary">
-		// 		Your requests will go into a playlist. You can either create a new or use an existing 
-		// 	</Typography>
-		// 	<Setting
-		// 	<FormControlLabel
-    //     control={
-    //       <Checkbox
-    //         checked={option === PLAYLIST_OPTION.CREATE}
-		// 			onChange={() => 
-		// 					setOption(option === PLAYLIST_OPTION.CREATE ? PLAYLIST_OPTION.EXISTING : PLAYLIST_OPTION.CREATE
-		// 				)}
-    //         value="checkedB"
-    //         color="primary"
-    //       />
-    //     }
-    //     label="Create New"
-    //   />
-
-		// <FormControlLabel
-    //     control={
-    //       <Checkbox
-    //         checked={option === PLAYLIST_OPTION.EXISTING}
-    //         onChange={() => 
-		// 					setOption(option === PLAYLIST_OPTION.EXISTING ? PLAYLIST_OPTION.CREATE : PLAYLIST_OPTION.EXISTING
-		// 				)}
-    //         value="checkedB"
-    //         color="primary"
-    //       />
-    //     }
-    //     label="Use Existing"
-    //   />
-		// </Box>
 	)
 }
