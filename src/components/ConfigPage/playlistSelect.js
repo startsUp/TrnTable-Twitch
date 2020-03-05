@@ -1,33 +1,47 @@
-import React, { useState } from "react"
-import { Typography, Box, List, Button, Checkbox, FormControlLabel	 } from '@material-ui/core'
+import React, { useState, useEffect } from "react"
+import { Typography, Box, List, Button, Checkbox, FormControlLabel, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core'
 import { SettingComponent } from './model/Setting'
 import { useSpotify } from "../../util/Spotify/spotify-context"
-const PLAYLIST_OPTION = { CREATE: 0, EXISTING: 1}
+import SpotifyWebApi from 'spotify-web-api-js'
+
+const PLAYLIST_OPTION = { CREATE: true, EXISTING: false}
+const spotify  = new SpotifyWebApi();
+
 export const PlaylistSelect = (props) => {
 	const [option, setOption] = useState(PLAYLIST_OPTION.CREATE)
-	const [spotify, token, refreshToken] = useSpotify()
+    const [token, refreshToken] = useSpotify()
+    
 	const { classes } = props
-	const [playlists, setPlaylists] = useState([])
+    const [playlists, setPlaylists] = useState([])
+    const [selected, setSelected] = useState(0)
 
 	const fetchPlaylists = (retry) => {
 		spotify.getUserPlaylists()
 		.then(data => {
-			console.log(data)
+			setPlaylists(data.items ? data.items : [])
 		}, 
 		err => {
 			if (err.status === 401 && retry < 3){
-				refreshToken().then(() => {
+				refreshToken().then(token => {
+                    spotify.setAccessToken(token)
 					fetchPlaylists(retry+1)
 				})
 			}
 		})
-	}
+    }
+    
 	useEffect(() =>{
+        spotify.setAccessToken(token)
 		fetchPlaylists(1)
-	},[])
+    },[])
+    
 	const handleOptionChange = () => {
-		spotify.getPlaylist
-	}
+        setOption(!option)
+    }
+
+    const handleSelectionChange = e => {
+        console.log(e)
+    }
 
 	return(
 		<List>
@@ -66,9 +80,31 @@ export const PlaylistSelect = (props) => {
 					}
 					label="Existing"
 				/>
+            
 			</div>
-
+            
 		</SettingComponent>
+        { option === PLAYLIST_OPTION.EXISTING && 
+            <div style={{textAlign: 'end'}}>
+            <FormControl variant="filled" size="small" style={{width: '150px'}} >
+                <InputLabel id="demo-simple-select-filled-label">Playlist</InputLabel>
+                <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                value={selected}
+                onChange={e => setSelected(e.target.value)}
+                >
+               { 
+                    playlists.map((item, index) => 
+                        <MenuItem value={index+1}>
+                            {item.name}
+                        </MenuItem>
+                    )
+                }   
+                </Select>
+            </FormControl>
+        </div>
+        }
 		</List>
 			
 	

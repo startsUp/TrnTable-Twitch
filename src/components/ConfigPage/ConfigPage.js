@@ -58,7 +58,8 @@ const useStyles = makeStyles(theme => ({
 		width: '500px',
 		justifySelf: 'center',
 		padding: theme.spacing(1),
-		textAlign: 'center'
+        textAlign: 'center',
+        marginBottom: theme.spacing(5)
 	},
 	titleContainer: {
 		display: 'inline-flex',
