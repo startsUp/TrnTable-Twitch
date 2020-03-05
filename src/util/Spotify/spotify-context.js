@@ -8,13 +8,14 @@ import LoadingCard from '../../components/loader';
 
 const API_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api'
 const SpotifyContext = React.createContext()
+const api  = new SpotifyWebApi();
 /**
  * Spotify Provider. This handles spotify token and api fetching.
  * @param {Object} props 
  */
 function SpotifyProvider(props) {
   const auth = useAuth()
-  const api  = new SpotifyWebApi();
+  
   const [token, setToken] = useState(null)
   const [fetch, fetchDone] = useState(false)
   
@@ -25,7 +26,7 @@ function SpotifyProvider(props) {
     const spotifyToken = token.access_token || null
     setToken(spotifyToken)
     fetchDone(true)
-    api.setAccessToken(spotifyToken)
+    return token
   }
 
   useEffect(()=>{
@@ -36,7 +37,7 @@ function SpotifyProvider(props) {
 
   if (fetch){    
     return (
-      <SpotifyContext.Provider value={[api, token, refreshSpotifyToken]} {...props}/>
+      <SpotifyContext.Provider value={[token, refreshSpotifyToken]} {...props}/>
     )
   }
   else {
