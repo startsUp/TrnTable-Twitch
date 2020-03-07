@@ -17,7 +17,7 @@
     "react-player-controls": "^1.0.0-beta.0",
     "react-scripts": "^3.3.0",
     "react-swipeable-views": "^0.13.3",
-    "spotify-web-api-js": "^0.22.1"
+    "spotify-web-api-js": "^1.2.0"
   },
   "scripts": {
     "test": "jest",
