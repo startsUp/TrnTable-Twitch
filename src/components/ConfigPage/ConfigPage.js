@@ -104,14 +104,15 @@ const useStyles = makeStyles(theme => ({
 
 
 
+const spotifyApi = new SpotifyWebApi();
 
 export default function ConfigPage() {
-	const spotifyApi = new SpotifyWebApi();
+	
 	const settingsService = new SettingsService();
 	const classes = useStyles();
 	
 	const auth = useAuth()
-	const [spotify, spotifyToken, refreshSpotifyToken] = useSpotify()
+	const [spotifyToken, api, makeCall] = useSpotify()
 
 	const { config, role } = auth.data
 
@@ -138,16 +139,44 @@ export default function ConfigPage() {
 		setConfig(settingsService.getJSONConfig())
     }
     
-    const updateConfig = () => {
+    const updateConfig = async () => {
         // update user settings
         settingsService.updateUserSettings(userSettings, settingComponents)
 
         // convert to json
-        var jsonSettings = settingsService.toJSON(userSettings)
+        
 
-        //set twitch config
-		auth.twitch.setConfig(jsonSettings)
-		setConfigState(ConfigStates.LOGGEDIN)
+        // create trntable playlist if it doesn't exist
+        if (!userSettings.extensionPlaylistId){
+            makeCall(api.getMe, [], 
+                data => {
+                    makeCall(api.createPlaylist, [data.id, {name: 'Twitch Song Requests'}], 
+                    (playlist) => {
+                        // set twitch config
+                        console.log('playlist created', playlist)
+                        userSettings.extensionPlaylistId = playlist.id
+                        
+                        // get json string and set config
+                        var jsonSettings = settingsService.toJSON(userSettings)
+                        auth.twitch.setConfig(jsonSettings)
+                        setConfigState(ConfigStates.LOGGEDIN)
+                    },
+                    (err) => {
+
+                    })
+                },
+                err => {
+                    console.error(err)
+                }
+            )
+        }
+        else { 
+            var jsonSettings = settingsService.toJSON(userSettings)
+            auth.twitch.setConfig(jsonSettings)
+            setConfigState(ConfigStates.LOGGEDIN)
+        }
+        
+        
     }
 	
 

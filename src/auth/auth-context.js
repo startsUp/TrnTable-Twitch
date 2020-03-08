@@ -80,6 +80,7 @@ function AuthProvider(props) {
     
     // listen for configuration changes
     twitch.configuration.onChanged(()=> {
+        console.log('config changed', twitch.configuration)
       setData(prev => { // prevent ovewrites
           return {...prev, config: twitch.configuration.broadcaster}
       })
@@ -89,8 +90,12 @@ function AuthProvider(props) {
 
 
   const setTwitchConfig = (config) => {
-    if (config)
-      twitch.configuration.set("broadcaster", VERSION_NO, config);
+    if (config){
+        twitch.configuration.set("broadcaster", VERSION_NO, config);
+        setData(prev => { // prevent ovewrites
+            return {...prev, config: {content: config, segment: "broadcaster", version: VERSION_NO}}
+        })
+    }
     else
       twitch.configuration.set("broadcaster", '', config);
   }

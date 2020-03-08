@@ -34,9 +34,14 @@ export const PlaylistSelect = (props) => {
 		// spotify.setAccessToken(token)
 		fetchPlaylists(PLAYLIST_LIMIT, 0, data => {
 				var playlists = []  
-				if (props.configSet) { // settings were saved before                
-						setSelected(data.findIndex(p => (p.id === props.userSettings.playlistId)))
-						playlists = data.filter(p => p.id !== props.userSettings.extensionPlaylistId)
+				if (props.configSet) { // settings were saved before  
+					if (props.userSettings.extensionPlaylistId !== props.userSettings.playlistId)
+						setOption(PLAYLIST_OPTION.EXISTING)
+					let selectIndex = data.findIndex(p => (p.id === props.userSettings.playlistId))              
+					setSelected(selectIndex !== -1 ? selectIndex : 0)
+					playlists = data.filter(p => p.id !== props.userSettings.extensionPlaylistId)
+						
+							
 				}
 				else{
 						playlists = data
@@ -46,9 +51,10 @@ export const PlaylistSelect = (props) => {
 	}, [])
     
 	const handleOptionChange = () => {
+		if (playlists.length > 0){
 			props.userSettings.playlistId = option === PLAYLIST_OPTION.CREATE ? playlists[selected].id : null
-			setOption(!option)
-			console.log(props.userSettings)
+		}
+		setOption(!option)
 	}
     
 	const updateSelected = (e) => {

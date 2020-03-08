@@ -18,7 +18,6 @@ function SpotifyProvider(props) {
   
   const [token, setToken] = useState(null)
   const [fetch, fetchDone] = useState(false)
-  
   const updateToken = (token) => {
     api.setAccessToken(token)
     setToken(token)
@@ -58,7 +57,6 @@ function SpotifyProvider(props) {
   useEffect(()=>{
     if (auth.data.channelId){
       refreshSpotifyToken(auth.data.channelId)
-        .then()
     }
   }, [auth.data.channelId])
 
