@@ -117,7 +117,7 @@ function AuthProvider(props) {
   var r = getRole(twitchAuth.getRole())
   console.warn(r)
   if (viewType === ViewType.CONFIG){
-    const spotifyLogin = () => spotify.handleLogin(() => getBroadcasterData(twitchAuth.getChannelId()))
+    const spotifyLogin = () => spotify.handleLogin(() => setAuthData())
     const spotifyAuth = { login: spotifyLogin, logout: spotify.logout }
     const reset = (onSuccess, onError) => {
       spotifyAuth.logout()
