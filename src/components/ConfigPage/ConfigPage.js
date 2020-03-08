@@ -155,7 +155,8 @@ export default function ConfigPage() {
                         // set twitch config
                         console.log('playlist created', playlist)
                         userSettings.extensionPlaylistId = playlist.id
-                        
+                        if (!userSettings.playlistId)
+                            userSettings.playlistId = playlist.id
                         // get json string and set config
                         var jsonSettings = settingsService.toJSON(userSettings)
                         auth.twitch.setConfig(jsonSettings)

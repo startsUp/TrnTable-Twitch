@@ -37,11 +37,9 @@ export const PlaylistSelect = (props) => {
 				if (props.configSet) { // settings were saved before  
 					if (props.userSettings.extensionPlaylistId !== props.userSettings.playlistId)
 						setOption(PLAYLIST_OPTION.EXISTING)
-					let selectIndex = data.findIndex(p => (p.id === props.userSettings.playlistId))              
-					setSelected(selectIndex !== -1 ? selectIndex : 0)
 					playlists = data.filter(p => p.id !== props.userSettings.extensionPlaylistId)
-						
-							
+					let selectIndex = playlists.findIndex(p => (p.id === props.userSettings.playlistId))              
+					setSelected(selectIndex !== -1 ? selectIndex : 0)
 				}
 				else{
 						playlists = data
