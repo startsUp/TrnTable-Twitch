@@ -50,7 +50,7 @@ export const PlaylistSelect = (props) => {
     
 	const handleOptionChange = () => {
 		if (playlists.length > 0){
-			props.userSettings.playlistId = option === PLAYLIST_OPTION.CREATE ? playlists[selected].id : null
+			props.userSettings.playlistId = option === PLAYLIST_OPTION.CREATE ? playlists[selected].id : props.userSettings.extensionPlaylistId
 		}
 		setOption(!option)
 	}
