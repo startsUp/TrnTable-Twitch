@@ -11,16 +11,6 @@ import { gql } from 'apollo-boost';
 import { AuthProvider } from './auth/auth-context';
 import { ViewType } from './util/Twitch/ViewType';
 
-var twitch = window.Twitch.ext
-twitch.onAuthorized(auth => {
-if (twitch.viewer) {
-    // setTimeout(setupListener(), 1000)
-    console.log(twitch.viewer)
-    twitch.listen(`whisper-${twitch.viewer.opaqueId}`, (t,c,m)=> {})
-            // get user data to check if it exist, only need to this in config view
-}
-})
-
 
 ReactDOM.render(
 <MuiThemeProvider theme={ TrnTableTheme }>

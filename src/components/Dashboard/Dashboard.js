@@ -94,8 +94,7 @@ export default function Dashboard() {
 	
 	// listen for requests here
 	useEffect(()=>{
-    // sessionService.listenForSongRequests(updateTrackList)
-    
+		sessionService.listenForSongRequests(updateTrackList)
   }, [])
 
 

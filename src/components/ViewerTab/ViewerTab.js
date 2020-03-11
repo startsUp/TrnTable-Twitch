@@ -88,8 +88,8 @@ export default function ViewerTab() {
   const classes = useStyles();
   const theme = useTheme();
   const twitch = window.Twitch ? window.Twitch.ext : null
-	const auth = useAuth()	
-	const sessionService = new SpotifySessionService(twitch, auth.twitch.getChannelId())  
+  const auth = useAuth()	
+  const sessionService = new SpotifySessionService(twitch, auth.twitch.getChannelId())  
   
   const [toast, showToast] = React.useState(false)
   const [value, setValue] = React.useState(0);
