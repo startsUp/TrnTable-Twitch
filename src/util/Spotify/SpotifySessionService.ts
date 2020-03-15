@@ -1,5 +1,5 @@
 import { Track } from "./Model/Track"
-import { Request } from "./Model/Request"
+import { Request, RequestType } from "./Model/Request"
 import { SpotifyService } from "./SpotifyService"
 
 type PubsubSend = (target: string, contentType: string, message: (object | string)) => any
@@ -39,7 +39,7 @@ export class SpotifySessionService{
                     'Content-Type': 'application/json',
                     'Authorization': localStorage.getItem('token')
                 },
-                body: JSON.stringify(new Request('track', track)) // body data type must match "Content-Type" header
+                body: JSON.stringify(new Request(RequestType.TRACK, track)) // body data type must match "Content-Type" header
             })
             .then(res => success(track))
             .catch(err => error(err))
@@ -47,13 +47,18 @@ export class SpotifySessionService{
 			
     }
 
-    listenForSongRequests = (callback: PubsubSend) => {
+    parseRequest = (target: string, contentType: string, message: (object | string)) : Request => {
+        let req = JSON.parse(message.toString())
+        return new Request(req.type, req.content)
+    }   
+     
+    listenForSongRequests = (callback: (req: Request) => any) => {
         console.warn('Listening to requests on --> ', this.songRequestTopic)
         if (!this.songRequestCallback){
-            this.songRequestCallback = callback
-            this.twitch.listen(this.songRequestTopic, (t,c,m) => {
-                this.songRequestCallback(t, c, m)
-            })
+            this.songRequestCallback = (t, c, m) => {
+                callback(this.parseRequest(t, c, m))
+            }
+            this.twitch.listen(this.songRequestTopic, this.songRequestCallback)
         }
     }
 

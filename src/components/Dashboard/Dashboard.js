@@ -21,6 +21,7 @@ import LoadingCard from '../loader';
 import { TrackList } from '../Misc/trackList';
 import SpotifySongRequests from '../Requests/spotifySongRequests';
 import { Track } from '../../util/Spotify/Model/Track';
+import { RequestType } from '../../util/Spotify/Model/Request';
 
 
 function TabPanel(props) {
@@ -100,11 +101,9 @@ export default function Dashboard() {
   }, [])
 
 
-	const updateTrackList = (target, contentType, message) => { // called when new songs added
-		console.log(target, contentType, message)
-		let msg = JSON.parse(message)
-		if(msg.type === 'track'){
-			var track = new Track(msg.content.id, msg.content.name, msg.content.album, msg.content.image, msg.content, artists);
+	const updateTrackList = (request) => { // called when new songs added
+		if(request.type === RequestType.TRACK){
+			var track = request.track
 			addRequest(track)
 		}
 	}
