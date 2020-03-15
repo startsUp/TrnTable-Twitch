@@ -5,6 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import AddIcon from '@material-ui/icons/Add';
 import { Grid, Button, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
+import TrackList from '../../Misc/trackList';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -67,11 +68,11 @@ const Error = (props) => (
 
 export default function SpotifySearchResults(props) {
     const classes = useStyles();
-    const [checked, setChecked] = React.useState(-1);
+    const [selected, setSelected] = React.useState(-1);
     
     
-    const handleToggle = value => () => {
-      setChecked(value);
+    const handleChange = values => {
+      setSelected(values[0]); // TODO: Support multiple song requests
     };
 
     return( // TODO: FIX STYLING 
@@ -83,48 +84,13 @@ export default function SpotifySearchResults(props) {
         }
        
             
-        <Button variant="outlined" size="small" color="primary" onClick={() => props.onRequest(props.tracks[checked])} className={classes.requestButton} disabled={checked === -1}>
+        <Button variant="outlined" size="small" color="primary" onClick={() => props.onRequest(props.tracks[selected])} className={classes.requestButton} disabled={selected === -1 || selected === null || selected === undefined }>
           Request
         </Button>
       </div>
-					<List className={classes.results}>
-					{   props.error.errorMsg === '' &&
-							props.tracks.map((track,index) => {
-                  const labelId = `checkbox-request-song-label-${index}`;
-									return(
-                    <React.Fragment key={track.id}>
-                      <ListItem alignItems="flex-start" >
-                          <ListItemAvatar>
-                          <Avatar alt={track.album.name}/* TO DO: CHECK if right way to access album name*/
-                            variant="rounded" src={track.album.images[0].url} 
-                            className={classes.albumImage}
-                           />
-                          </ListItemAvatar>
-                          <ListItemText
-                            primaryTypographyProps={{color: 'textPrimary'}}
-                            classes={{secondary: classes.artistName}}
-                            primary={track.name}
-                            secondary={track.artists.map(artist => artist.name).join(", ")}
-                            className={classes.listItem}
-                          />
-                          <ListItemSecondaryAction>
-                            <Checkbox
-                              edge="end"
-                              disabled={false}
-                              onChange={handleToggle(index)}
-                              checked={checked === index } 
-                              inputProps={{ 'aria-labelledby': labelId }}
-                            />
-                          </ListItemSecondaryAction>        
-                      </ListItem>
-                    </React.Fragment>
-										
-									)
-							})
-					}
-          
-					</List>
-          
+        <TrackList tracks={props.tracks} emptyMsg="No Songs Found" hint="" maxSelection={1} onChange={handleChange}/>  
       </div>
     )   
 }
+
+

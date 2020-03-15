@@ -1,3 +1,4 @@
+import { Track } from "./Model/Track";
 
 export class SpotifyService{
     readonly SPOTIFY_API_URL = 'https://jukebox-2952e.firebaseapp.com';
@@ -13,6 +14,18 @@ export class SpotifyService{
                 callback();
             }
         }, 1000);
+    }
+
+    getTrackObjects = (tracks: any[]) => {
+        if(tracks){
+            return tracks.map(track => {
+                return new Track(track.id, track.name, track.album, track.album.images[0].url, track.artists.map((artist: {name: string}) => artist.name).join(", "))
+            })
+        }
+    }
+
+    getTrackObject = (track: {}) => {
+        return this.getTrackObjects([track])[0]
     }
 
     logout = async () => {

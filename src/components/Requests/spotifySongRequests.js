@@ -72,8 +72,7 @@ export default function SpotifySongRequests(props) {
 		const currentTracks = props.requests
     return( // TODO: FIX STYLING 
       <div className={classes.root}>
-				<TrackList tracks={currentTracks} emptyMsg="No Songs Requested" 
-         hint="Once your viewers request songs, they will show up here." />
+        <TrackList tracks={currentTracks} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." />
       </div>
     )   
 }

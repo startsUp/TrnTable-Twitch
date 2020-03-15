@@ -20,6 +20,7 @@ import { useAuth } from '../../auth/auth-context';
 import LoadingCard from '../loader';
 import TrackList from '../Misc/trackList';
 import SpotifySongRequests from '../Requests/spotifySongRequests';
+import { Track } from '../../util/Spotify/Model/Track';
 
 
 function TabPanel(props) {
@@ -76,7 +77,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TracksView  = { REQUESTED: 'requests', ERROR: 'error', LOADING: 'loading'};
-
+const MAX_SONGS_BEFORE_DELETING_OLD = 200; // after this limit has been reached, the older songs will be deleted from the request list 
+const BATCH_ADD_LIMIT = 5;
 
 export default function Dashboard() {
   const classes = useStyles()
@@ -98,10 +100,20 @@ export default function Dashboard() {
   }, [])
 
 
-  const updateTrackList = (target, contentType, message) => { // called when new songs added
+	const updateTrackList = (target, contentType, message) => { // called when new songs added
 		console.log(target, contentType, message)
+		let msg = JSON.parse(message)
+		if(msg.type === 'track'){
+			var track = new Track(msg.content.id, msg.content.name, msg.content.album, msg.content.image, msg.content, artists);
+			addRequest(track)
+		}
 	}
 	
+	const addRequest = (track) => {
+		setRequests(prev => {
+			[...prev, track]
+		})
+	}
   
 
   const handleChange = (event, newValue) => {

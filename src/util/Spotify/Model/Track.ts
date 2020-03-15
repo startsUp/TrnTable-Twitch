@@ -1,6 +1,10 @@
 export class Track{
     constructor(
-        public uri: string,
-        public name: string
+        public id: string,
+        public name: string,
+        public album: string,
+        public image: string,
+        public artists: string
     ){}
+
 }
