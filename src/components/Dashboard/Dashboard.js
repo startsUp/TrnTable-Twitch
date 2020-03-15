@@ -103,15 +103,13 @@ export default function Dashboard() {
 
 	const updateTrackList = (request) => { // called when new songs added
 		if(request.type === RequestType.TRACK){
-			var track = request.track
+			var track = request.content
 			addRequest(track)
 		}
 	}
 	
 	const addRequest = (track) => {
-		setRequests(prev => {
-			[...prev, track]
-		})
+		setRequests(prev => [...prev, track])
 	}
   
 
