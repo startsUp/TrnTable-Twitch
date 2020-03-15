@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import * as React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import { Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
+import { Track } from '../../util/Spotify/Model/Track';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,22 +44,28 @@ const Error = (props) => (
   </Box>
 )
 
-export default function TrackList(props) {
+export function TrackList(props: {tracks: Track[], maxSelection: number, onChange: Function, emptyMsg: string, hint: string}) {
     const classes = useStyles();
     const [checked, setChecked] = React.useState([]);
     const { tracks } = props
     
     const handleToggle = value => () => {
-      const currentIndex = checked.indexOf(value);
-      const newChecked = [...checked];
-  
-      if (currentIndex === -1) {
-        newChecked.push(value);
-      } else {
-        newChecked.splice(currentIndex, 1);
-      }
-  
-      setChecked(newChecked);
+			
+			const currentIndex = checked.indexOf(value);
+			const newChecked = [...checked];
+	
+			if (currentIndex === -1) {
+				newChecked.push(value);
+				if(props.maxSelection && newChecked.length > props.maxSelection){
+					newChecked.splice(0, 1); // delete the first element
+				}
+			} else {
+				newChecked.splice(currentIndex, 1);
+			}
+			setChecked(newChecked);
+			if(props.onChange){
+				props.onChange(newChecked)
+			}
     };
 
     return( // TODO: FIX STYLING 
@@ -78,7 +85,7 @@ export default function TrackList(props) {
 						<ListItem alignItems="flex-start" >
 								<ListItemAvatar>
 								<Avatar alt={track.album.name}/* TO DO: CHECK if right way to access album name*/
-									variant="rounded" src={track.album.images[0].url} 
+									variant="rounded" src={track.image} 
 									className={classes.albumImage}
 									/>
 								</ListItemAvatar>
@@ -86,7 +93,7 @@ export default function TrackList(props) {
 									primaryTypographyProps={{color: 'textPrimary'}}
 									classes={{secondary: classes.artistName}}
 									primary={track.name}
-									secondary={track.artists.map(artist => artist.name).join(", ")}
+									secondary={track.artists}
 									className={classes.listItem}
 								/>
 								<ListItemSecondaryAction>
