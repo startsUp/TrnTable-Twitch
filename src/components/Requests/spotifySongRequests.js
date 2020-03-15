@@ -5,7 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import AddIcon from '@material-ui/icons/Add';
 import { Grid, Button, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
-import TrackList from '../Misc/trackList';
+import { TrackList } from '../Misc/trackList';
 
 const useStyles = makeStyles(theme => ({
   root: {

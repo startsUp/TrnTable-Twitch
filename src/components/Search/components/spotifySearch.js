@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { Error } from '../searchErrors';
 import { Typography } from '@material-ui/core';
-import { SpotifyService } from '../../../auth/spotify-login';
+import { SpotifyService } from '../../../util/Spotify/SpotifyService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,6 +34,7 @@ export function SearchInput(props) {
 
 
 export default function SpotifySearch(props){
+		const spotifyService = new SpotifyService()
     const onSearch = (e) => {
         e.preventDefault();
         const query = document.getElementById('spotify-search-input').value
@@ -50,14 +51,13 @@ export default function SpotifySearch(props){
 		}
 
     const getSearchResults = (query) => {
-        const spotifyApi = new SpotifyService()
+        
         props.onLoad()
-        spotifyApi.search(query)
+        spotifyService.search(query)
 					.then(
-						(result) => {
-              const tracks = result.body.tracks;
-              if (tracks.items.length > 0){
-                showResults(tracks.items)
+						(tracks) => {
+              if (tracks.length > 0){
+                showResults(tracks)
               }
               else{
                 showError(Error.NOTRACKSFOUND);

@@ -1,6 +1,6 @@
 import { Track } from "./Model/Track"
 import { Request } from "./Model/Request"
-import { SpotifyService } from "../../auth/spotify-login"
+import { SpotifyService } from "./SpotifyService"
 
 type PubsubSend = (target: string, contentType: string, message: (object | string)) => any
 type PubsubListener = (target: string, callback: PubsubSend) => Promise<any>

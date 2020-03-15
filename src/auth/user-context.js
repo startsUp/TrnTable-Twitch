@@ -1,6 +1,5 @@
 import React from 'react'
 import LoadingCard from '../components/loader'
-import { SpotifyLogin } from './spotify-login'
 import SpotifyService from '../util/Spotify/SpotifyService'
 import { gql } from 'apollo-boost';
 import Authentication from '../util/Twitch/Authentication'

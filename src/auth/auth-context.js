@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import LoadingCard from '../components/loader'
-import { SpotifyLogin } from './spotify-login'
-import { SpotifyService } from '../util/Spotify/SpotifyService'
+import { SpotifyLogin } from './SpotifyLogin'
 import Authentication from '../util/Twitch/Authentication';
 import { useLazyQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -113,7 +112,7 @@ function AuthProvider(props) {
   }
 
   
-  const spotify = new SpotifyService()
+  const spotify = new SpotifyLogin()
   var r = getRole(twitchAuth.getRole())
   console.warn(r)
   if (viewType === ViewType.CONFIG){
