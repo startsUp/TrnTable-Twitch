@@ -9,7 +9,12 @@ export class SpotifyService{
         console.log('Getting Track objects -->', tracks)
         if(tracks){
             var trackObjs = tracks.map(track => {
-                return new Track(track.id, track.name, track.album, track.album.images[0].url, track.artists.map((artist: {name: string}) => artist.name).join(", "))
+                if (track){
+                    return new Track(track.id, track.name, track.album, track.album.images[0].url, track.artists.map((artist: {name: string}) => artist.name).join(", "))
+                }
+                else{
+                    return null
+                }
             })
             return trackObjs
         }

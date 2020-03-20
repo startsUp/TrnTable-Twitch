@@ -66,24 +66,32 @@ export class SpotifySessionService{
         var endTime = Number(new Date()) + (timeout || 2000);
         var t = null;
         var interval = 3000;
-        var prevData = null;
+        var prevTrack: Track = null;
         var checkNowPlaying = (retries: number) => {
             console.log('Making Call (Polling)')
             makeCall(call, [], 
                 (data: any) => {
                     console.log('Got data -> ', data)
                     callback(data)
-                    if (!data){
+                    if (!data || !data.is_playing ){
+                        // delay poll
                         interval = Math.round(Math.random()*10000) + 5000
                         t = setTimeout(checkNowPlaying, interval)
                     }
                     else{
-                        prevData = data;
+                        let curTrack = this.spotifyService.getTrackObject(data.item)
+                        let interval = 3000
+                        // increase interval if track is same (user isn't changing songs manually)
+                        if (curTrack && prevTrack && curTrack.id === prevTrack.id)
+                            interval = 5500
                         
-                        // TODO: increase interval if data returned is the same (user isn't changing songs manually)
-                        // TODO: decrease interval if data returned is different (user might be changing songs)
-                        interval = 3000
+                        // if (curTrack && prevTrack && curTrack.id !== prevTrack.id)    // decrease interval if data returned is different (user might be changing songs)
+                        //     interval = 2000
+
+                        prevTrack = curTrack
                         t = setTimeout(checkNowPlaying, interval)
+                        
+                        
                     }
                 },
                 (err: any) => {
