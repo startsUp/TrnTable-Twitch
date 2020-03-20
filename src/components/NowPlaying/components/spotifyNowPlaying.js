@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     maxHeight: '500px'
 	},
 	icon: {
-		cursor: 'pointer'
+		cursor: 'pointer',
 	},
   albumImage: {
     width: theme.spacing(10),
@@ -86,7 +86,8 @@ const Vote = { NONE: 1, LIKE: 2, DISLIKE: 3}
 export default function SpotifyNowPlaying(props) {
     const classes = useStyles();
     const [vote, setVote] = React.useState(Vote.NONE);
-    
+		const [spotifyToken, api, makeCall] = useSpotify()
+		
     const track = {
       artists: [{
         external_urls: {spotify: "https://open.spotify.com/artist/7gP3bB2nilZXLfPHJhMdvc"},

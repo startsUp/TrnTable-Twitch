@@ -22,6 +22,7 @@ import { TrackList } from '../Misc/trackList';
 import SpotifySongRequests from '../Requests/spotifySongRequests';
 import { Track } from '../../util/Spotify/Model/Track';
 import { RequestType } from '../../util/Spotify/Model/Request';
+import { useSpotify } from '../../util/Spotify/spotify-context';
 
 
 function TabPanel(props) {
@@ -92,14 +93,27 @@ export default function Dashboard() {
 	const [requests, setRequests] = React.useState([]);
 	const twitch = window.Twitch ? window.Twitch.ext : null
 	const auth = useAuth()
+	const [token, spotify, makeCall] = useSpotify()
 	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId())  
 		
 	
 	// listen for requests here
-	useEffect(()=>{
+	useEffect(() => {
 		sessionService.listenForSongRequests(updateTrackList)
-  }, [])
+		var stopPolling = sessionService.pollNowPlaying(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
+		return () => {
+			stopPolling()
+		}
+	}, [])
 
+
+
+	const updateNowPlaying = (track) => {
+		console.log('Got Now Playing data ->', track)
+	}
+	const nowPlayingError = (err) => {
+		console.warn('Now playing error', err)
+	}
 
 	const updateTrackList = (request) => { // called when new songs added
 		if(request.type === RequestType.TRACK){

@@ -9,6 +9,7 @@ import { ViewType } from '../util/Twitch/ViewType'
 import { Role, getRole } from './roles/roles';
 import Dashboard from '../components/Dashboard/Dashboard';
 import ViewerDashboard from '../ViewerDashboard';
+import { SpotifyProvider } from '../util/Spotify/spotify-context';
 const VERSION_NO = "0.0.1";
 const AuthContext = React.createContext()
 
@@ -132,8 +133,10 @@ function AuthProvider(props) {
   }
   else if (r === Role.BROADCASTER){ // TODO: Add Setting to allow moderators to control music
     return (
-      <AuthContext.Provider value={{ twitch: twitchAuth , data }} {...props}>
-        <Dashboard/>
+      <AuthContext.Provider value={{ twitch: twitchAuth , data, makeAuthorizedCall: makeAuthorizedCall }} {...props}>
+          <SpotifyProvider>
+            <Dashboard/>
+          </SpotifyProvider>
       </AuthContext.Provider>
     )
   }
