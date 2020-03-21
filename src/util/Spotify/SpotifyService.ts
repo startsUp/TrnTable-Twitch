@@ -6,7 +6,6 @@ export class SpotifyService{
     constructor(){}
 
     getTrackObjects = (tracks: any[]) => {
-        console.log('Getting Track objects -->', tracks)
         if(tracks){
             var trackObjs = tracks.map(track => {
                 if (track){

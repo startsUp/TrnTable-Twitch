@@ -2,8 +2,8 @@ import { Track } from "./Model/Track"
 import { Request, RequestType } from "./Model/Request"
 import { SpotifyService } from "./SpotifyService"
 import * as SpotifyWebApi from 'spotify-web-api-js'
-type PubsubSend = (target: string, contentType: string, message: (object | string)) => any
-type PubsubListener = (target: string, callback: PubsubSend) => Promise<any>
+export type PubsubSend = (target: string, contentType: string, message: (object | string)) => any
+export type PubsubListener = (target: string, callback: PubsubSend) => void
 
 export class SpotifySessionService{
     
@@ -18,9 +18,8 @@ export class SpotifySessionService{
             unlisten: PubsubListener
         },
         public id: string,// may be null for viewers that opt out of sharing identity,
-        public spotifyService: SpotifyService,
+        public spotifyService: SpotifyService = new SpotifyService(),
      ){
-        console.warn('--> ID', id)
         this.songRequestTopic = `whisper-${id}`
      }
 
@@ -53,7 +52,6 @@ export class SpotifySessionService{
     }   
      
     listenForSongRequests = (callback: (req: Request) => any) => {
-        console.warn('Listening to requests on --> ', this.songRequestTopic)
         if (!this.songRequestCallback){
             this.songRequestCallback = (t, c, m) => {
                 callback(this.parseRequest(t, c, m))
@@ -62,21 +60,19 @@ export class SpotifySessionService{
         }
     }
 
-    pollNowPlaying = (call: Function, makeCall: Function, callback: Function, errback: Function, timeout: number) => {
+    pollApi = (call: () => Promise<any>, makeCall: ((apiCall: () => Promise<any>, args: Array<any>, onData: Function, onErr: Function) => void), callback: Function, errback: Function, timeout: number) => {
         var endTime = Number(new Date()) + (timeout || 2000);
         var t = null;
         var interval = 3000;
         var prevTrack: Track = null;
-        var checkNowPlaying = (retries: number) => {
-            console.log('Making Call (Polling)')
+        var poll = (retries: number) => {
             makeCall(call, [], 
                 (data: any) => {
-                    console.log('Got data -> ', data)
                     callback(data)
                     if (!data || !data.is_playing ){
                         // delay poll
                         interval = Math.round(Math.random()*10000) + 5000
-                        t = setTimeout(checkNowPlaying, interval)
+                        t = setTimeout(poll, interval)
                     }
                     else{
                         let curTrack = this.spotifyService.getTrackObject(data.item)
@@ -89,14 +85,12 @@ export class SpotifySessionService{
                         //     interval = 2000
 
                         prevTrack = curTrack
-                        t = setTimeout(checkNowPlaying, interval)
+                        t = setTimeout(poll, interval)
                         
                         
                     }
                 },
                 (err: any) => {
-                    console.log('Got error -> ', err)
-                    console.log('clearing timeout')
                     clearTimeout(t)
                     if (Number(new Date()) > endTime){
                         errback(new Error('Timed Out'))
@@ -107,8 +101,7 @@ export class SpotifySessionService{
                 }
             )
         }
-        console.log('Starting Poll, polling every 1 sec')
-        checkNowPlaying(1);
+        poll(1);
         // t = 
         return () => clearTimeout(t)
     }

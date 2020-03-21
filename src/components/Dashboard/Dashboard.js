@@ -100,7 +100,7 @@ export default function Dashboard() {
 	// listen for requests here
 	useEffect(() => {
 		sessionService.listenForSongRequests(updateTrackList)
-		var stopPolling = sessionService.pollNowPlaying(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
+		var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
 		return () => {
 			stopPolling()
 		}
