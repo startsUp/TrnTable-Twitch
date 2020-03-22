@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core'
-const classes = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({
     root: {
         textAlign: 'center',
         paddingTop: theme.spacing(1),
@@ -13,6 +13,7 @@ const classes = makeStyles(theme => ({
     },
 }))
 export const TextWithTitle = (props: {title: string, text: string}) => {
+    const classes = useStyles()
     const { title, text } = props
     return(
         <div className={classes.root}>
