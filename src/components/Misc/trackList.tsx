@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import { Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
 import { Track } from '../../util/Spotify/Model/Track';
+import { TextWithTitle } from './TextWithTitle';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -16,15 +17,6 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     boxSizing: 'border-box',
     paddingLeft: '8px'
-  },
-  emptyList: {
-    textAlign: 'center',
-    paddingTop: theme.spacing(1),
-    padding: theme.spacing(3)
-  },
-  emptyListTitle: {
-    textDecoration: 'underline',
-    fontFamily: 'sofia_problack',
   },
   artistName:{
     fontSize: '0.75rem'
@@ -71,13 +63,7 @@ export function TrackList(props: {tracks: Track[], maxSelection: number, onChang
     return( // TODO: FIX STYLING 
 
 			<List className={classes.results}>
-      { tracks.length === 0 && props.emptyMsg && props.hint && 
-      <div className={classes.emptyList}>
-        <Typography variant="h6" color="textPrimary" className={classes.emptyListTitle}>{props.emptyMsg}</Typography>
-        <Typography variant="body2" color="textSecondary">{props.hint}</Typography>
-      </div>
-       
-      }
+            { tracks.length === 0 && props.emptyMsg && props.hint && <TextWithTitle title={props.emptyMsg} text={props.hint} />}
 			{ tracks.map((track,index) => {
 				const labelId = `checkbox-request-song-label-${index}`;
 				return(
