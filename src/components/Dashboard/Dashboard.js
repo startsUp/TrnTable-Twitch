@@ -94,6 +94,8 @@ export default function Dashboard() {
 	const twitch = window.Twitch ? window.Twitch.ext : null
 	const auth = useAuth()
 	const [token, spotify, makeCall] = useSpotify()
+	const [nowPlaying, setNowPlaying] = React.useState({track: null, isPlaying: false})
+	const [votes, setVotes] = React.useState({likes: 0, dislikes: 0})
 	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId())  
 		
 	
@@ -109,10 +111,12 @@ export default function Dashboard() {
 
 
 	const updateNowPlaying = (track) => {
-		console.log('Got Now Playing data ->', track)
+		setVotes({likes: 0, dislikes: 0}) // reset likes and dislikes on track change
+		setNowPlaying(track)
 	}
+
 	const nowPlayingError = (err) => {
-		console.warn('Now playing error', err)
+		setError({errorMsg: 'Error updating now playing'})
 	}
 
 	const updateTrackList = (request) => { // called when new songs added
@@ -179,7 +183,7 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>   
           <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
-            <SpotifyNowPlaying/> 
+            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role}/> 
           </TabPanel>
         </div>   
       </SwipeableViews>

@@ -60,7 +60,7 @@ export class SpotifySessionService{
         }
     }
 
-    pollApi = (call: () => Promise<any>, makeCall: ((apiCall: () => Promise<any>, args: Array<any>, onData: Function, onErr: Function) => void), callback: Function, errback: Function, timeout: number) => {
+    pollApi = (call: () => Promise<any>, makeCall: ((apiCall: () => Promise<any>, args: Array<any>, onData: Function, onErr: Function) => void), callback: (track: (Track | null)) => any, errback: Function, timeout: number) => {
         var endTime = Number(new Date()) + (timeout || 2000);
         var t = null;
         var interval = 3000;
@@ -68,7 +68,8 @@ export class SpotifySessionService{
         var poll = (retries: number) => {
             makeCall(call, [], 
                 (data: any) => {
-                    callback(data)
+                    
+                    callback(data.item ? this.spotifyService.getTrackObject(data.item) : null)
                     if (!data || !data.is_playing ){
                         // delay poll
                         interval = Math.round(Math.random()*10000) + 5000
@@ -86,8 +87,6 @@ export class SpotifySessionService{
 
                         prevTrack = curTrack
                         t = setTimeout(poll, interval)
-                        
-                        
                     }
                 },
                 (err: any) => {

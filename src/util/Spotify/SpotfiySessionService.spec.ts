@@ -65,7 +65,7 @@ test('Callback should receieve the correct data', () => {
     var callback = jest.fn((data) => console.log('Data Recieved'))
     var stop = sessionService.pollApi(apiMock, makeCallMock, callback, () => {}, 3000);
     expect(callback).toHaveBeenCalledTimes(1)
-    expect(callback.mock.calls[0][0].item.id).toBe(spotifyData.now_playing_track_playing_first.item.id)
+    expect(callback.mock.calls[0][0].id).toBe(spotifyData.now_playing_track_playing_first.item.id)
 })
 
 test('Polling should happen in intervals of 3000 for changing songs', () => {
