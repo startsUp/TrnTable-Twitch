@@ -97,12 +97,12 @@ export default function SpotifyNowPlaying(props) {
     const [vote, setVote] = React.useState(Vote.NONE);
     console.log(props)
     const handleVote = (newVote) => { 
-			if (props.role !== Role.BROADCASTER){ // disabled if role === Broadcaster
-				if (vote === newVote)
-					setVote(Vote.NONE)
-				else
-					setVote(newVote);
-			}
+        if (props.role !== Role.BROADCASTER){ // disabled if role === Broadcaster
+            if (vote === newVote)
+                setVote(Vote.NONE)
+            else
+                setVote(newVote);
+        }
     }
 
 

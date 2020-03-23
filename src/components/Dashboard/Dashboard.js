@@ -21,7 +21,6 @@ import LoadingCard from '../loader';
 import { TrackList } from '../Misc/trackList';
 import SpotifySongRequests from '../Requests/spotifySongRequests';
 import { Track } from '../../util/Spotify/Model/Track';
-import { RequestType } from '../../util/Spotify/Model/Request';
 import { useSpotify } from '../../util/Spotify/spotify-context';
 
 
@@ -120,10 +119,8 @@ export default function Dashboard() {
 	}
 
 	const updateTrackList = (request) => { // called when new songs added
-		if(request.type === RequestType.TRACK){
-			var track = request.content
-			addRequest(track)
-		}
+        var track = request.content
+        addRequest(track)
 	}
 	
 	const addRequest = (track) => {

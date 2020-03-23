@@ -1,5 +1,5 @@
 import { Track } from "./Model/Track"
-import { Request, RequestType } from "./Model/Request"
+import { PubSubMessage } from "../Twitch/Model/PubSubMessage"
 import { SpotifyService } from "./SpotifyService"
 import * as SpotifyWebApi from 'spotify-web-api-js'
 export type PubsubSend = (target: string, contentType: string, message: (object | string)) => any
@@ -38,7 +38,7 @@ export class SpotifySessionService{
                     'Content-Type': 'application/json',
                     'Authorization': localStorage.getItem('token')
                 },
-                body: JSON.stringify(new Request(RequestType.TRACK, track)) // body data type must match "Content-Type" header
+                body: JSON.stringify(new PubSubMessage(track)) // body data type must match "Content-Type" header
             })
             .then(res => success(track))
             .catch(err => error(err))
@@ -46,15 +46,15 @@ export class SpotifySessionService{
 			
     }
 
-    parseRequest = (target: string, contentType: string, message: (object | string)) : Request => {
+    parsePubSubMessage = (target: string, contentType: string, message: (object | string)) : PubSubMessage<any> => {
         let req = JSON.parse(message.toString())
-        return new Request(req.type, req.content)
+        return new PubSubMessage(req.content)
     }   
      
-    listenForSongRequests = (callback: (req: Request) => any) => {
+    listenForSongRequests = (callback: (req: PubSubMessage<any>) => any) => {
         if (!this.songRequestCallback){
             this.songRequestCallback = (t, c, m) => {
-                callback(this.parseRequest(t, c, m))
+                callback(this.parsePubSubMessage(t, c, m))
             }
             this.twitch.listen(this.songRequestTopic, this.songRequestCallback)
         }
