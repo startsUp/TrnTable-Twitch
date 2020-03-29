@@ -18,6 +18,8 @@ import { UserSettings } from './model/UserSettings'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useSpotify } from '../../util/Spotify/spotify-context';
+import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService';
+import { PubSubMessage } from '../../util/Twitch/Model/PubSubMessage';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -108,7 +110,8 @@ const spotifyApi = new SpotifyWebApi();
 
 export default function ConfigPage() {
 	
-	const settingsService = new SettingsService();
+    const settingsService = new SettingsService();
+    const sessionService = new SpotifySessionService();
 	const classes = useStyles();
 	
 	const auth = useAuth()
@@ -151,20 +154,21 @@ export default function ConfigPage() {
             makeCall(api.getMe, [], 
                 data => {
                     makeCall(api.createPlaylist, [data.id, {name: 'Twitch Song Requests'}], 
-                    (playlist) => {
-                        // set twitch config
-                        console.log('playlist created', playlist)
-                        userSettings.extensionPlaylistId = playlist.id
-                        if (!userSettings.playlistId)
-                            userSettings.playlistId = playlist.id
-                        // get json string and set config
-                        var jsonSettings = settingsService.toJSON(userSettings)
-                        auth.twitch.setConfig(jsonSettings)
-                        setConfigState(ConfigStates.LOGGEDIN)
-                    },
-                    (err) => {
-
-                    })
+                        (playlist) => {
+                            // set twitch config
+                            console.log('playlist created', playlist)
+                            userSettings.extensionPlaylistId = playlist.id
+                            if (!userSettings.playlistId)
+                                userSettings.playlistId = playlist.id
+                            // get json string and set config
+                            var jsonSettings = settingsService.toJSON(userSettings)
+                            auth.twitch.setConfig(jsonSettings)
+                            broadcastSettingsUpdate(userSettings)
+                            setConfigState(ConfigStates.LOGGEDIN)
+                        },
+                        (err) => {
+                            
+                        })
                 },
                 err => {
                     console.error(err)
@@ -174,13 +178,17 @@ export default function ConfigPage() {
         else { 
             var jsonSettings = settingsService.toJSON(userSettings)
             auth.twitch.setConfig(jsonSettings)
+            broadcastSettingsUpdate(userSettings)
             setConfigState(ConfigStates.LOGGEDIN)
         }
         
         
     }
-	
 
+    const broadcastSettingsUpdate = (userSettings) => {
+        sessionService.sendPubSubMessage(new PubSubMessage(userSettings))
+    }
+	
 	const popupCallback = async (tokens) => {
 		console.info({tokens}) 
 		// getUserInfoAndSave()

@@ -10,7 +10,7 @@ export class SpotifySessionService{
     public songRequestCallback: PubsubSend
     public songRequestTopic: string
     readonly EBS_API  =  'https://us-central1-trntable-twitch.cloudfunctions.net/api'
-
+    readonly jsonType = 'application/json'
     constructor(
         public twitch: {
             send: PubsubSend,
@@ -35,7 +35,7 @@ export class SpotifySessionService{
             fetch(`${this.EBS_API}/request/${this.id}`, {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': this.jsonType,
                     'Authorization': localStorage.getItem('token')
                 },
                 body: JSON.stringify(new PubSubMessage(track)) // body data type must match "Content-Type" header
@@ -60,6 +60,17 @@ export class SpotifySessionService{
         }
     }
 
+    /**
+     * Sends Pub sub message to the specified target or if target not specified, broadcasts it
+     */
+    sendPubSubMessage = (message: PubSubMessage<any>, target?: string) => {
+        if (target) {
+            this.twitch.send(target, this.jsonType, JSON.stringify(message.content))
+        }
+        else
+            this.twitch.send("broadcast", this.jsonType, JSON.stringify(message.content))
+    }
+    
     pollApi = (call: () => Promise<any>, makeCall: ((apiCall: () => Promise<any>, args: Array<any>, onData: Function, onErr: Function) => void), callback: (track: (Track | null)) => any, errback: Function, timeout: number) => {
         var endTime = Number(new Date()) + (timeout || 2000);
         var t = null;
