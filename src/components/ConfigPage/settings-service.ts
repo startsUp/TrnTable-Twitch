@@ -21,7 +21,7 @@ export class SettingsService{
 					'Auto add Requests', 
 					'Requested songs are automatically added to the playlist.',
 					false, 
-					false),
+                    false),
 	]
 
 	constructor(){}
