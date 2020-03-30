@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -92,11 +92,11 @@ export default function ViewerTab() {
   const auth = useAuth()	
   const sessionService = new SpotifySessionService(twitch, auth.twitch.getChannelId())  
   
-  const [toast, showToast] = React.useState(false)
-  const [value, setValue] = React.useState(0);
-  const [trackSearchView, setTrackSearchView] = React.useState(TrackSearchView.SEARCH);
-  const [results, setResults] = React.useState([]);
-  const [error, setError] = React.useState({errorMsg: ''});
+  const [toast, showToast] = useState(false)
+  const [value, setValue] = useState(0);
+  const [trackSearchView, setTrackSearchView] = useState(TrackSearchView.SEARCH);
+  const [results, setResults] = useState([]);
+  const [error, setError] = useState({errorMsg: ''});
 
   const songRequestSuccess = res => {
     showToast(true)
@@ -108,9 +108,7 @@ export default function ViewerTab() {
   // listen for pubsub messages
 	useEffect(() => {
 		var stopListeningForBroadcasts = sessionService.listenForBroadcasts(onBroadcastRecieved)
-		var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
 		return () => {
-			stopPolling()
 			stopListeningForBroadcasts()
 		}
 	}, [])
