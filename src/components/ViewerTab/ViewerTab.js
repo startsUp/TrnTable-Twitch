@@ -21,6 +21,7 @@ import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService'
 import { Track } from '../../util/Spotify/Model/Track'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { UserSettings } from '../ConfigPage/model/UserSettings';
 
 
 function Alert(props) {
@@ -104,6 +105,20 @@ export default function ViewerTab() {
     console.err(err)
   }
   
+  // listen for pubsub messages
+	useEffect(() => {
+		var stopListeningForBroadcasts = sessionService.listenForBroadcasts(onBroadcastRecieved)
+		var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
+		return () => {
+			stopPolling()
+			stopListeningForBroadcasts()
+		}
+	}, [])
+
+	const onBroadcastRecieved = (pubsubMsg) => {
+		if(pubsubMsg.content instanceof UserSettings)
+			handleSettingsChange(pubsubMsg.content)
+	}
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

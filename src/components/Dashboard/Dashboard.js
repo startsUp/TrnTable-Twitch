@@ -82,12 +82,12 @@ const MAX_SONGS_BEFORE_DELETING_OLD = 200; // after this limit has been reached,
 const BATCH_ADD_LIMIT = 5;
 
 export default function Dashboard() {
-  const classes = useStyles()
+    const classes = useStyles()
 
-  const theme = useTheme();
-  const [value, setValue] = React.useState(0);
-  const [tracksView, setTracksView] = React.useState(TracksView.REQUESTED);
-  const [results, setResults] = React.useState([]);
+    const theme = useTheme();
+    const [value, setValue] = React.useState(0);
+    const [tracksView, setTracksView] = React.useState(TracksView.REQUESTED);
+    const [results, setResults] = React.useState([]);
 	const [error, setError] = React.useState({errorMsg: ''});
 	const [requests, setRequests] = React.useState([]);
 	const twitch = window.Twitch ? window.Twitch.ext : null

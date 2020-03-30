@@ -60,6 +60,13 @@ export class SpotifySessionService{
         }
     }
 
+    listenForBroadcasts = (callback: (msg: PubSubMessage<any>) => any) => {
+        let cb: PubsubSend = (t, c, m) => {
+            callback(this.parsePubSubMessage(t, c, m))
+        }
+        this.twitch.listen("broadcast", cb)
+        return () => this.twitch.unlisten("broadcast", cb)
+    }
     /**
      * Sends Pub sub message to the specified target or if target not specified, broadcasts it
      */
@@ -70,7 +77,7 @@ export class SpotifySessionService{
         else
             this.twitch.send("broadcast", this.jsonType, JSON.stringify(message.content))
     }
-    
+
     pollApi = (call: () => Promise<any>, makeCall: ((apiCall: () => Promise<any>, args: Array<any>, onData: Function, onErr: Function) => void), callback: (track: (Track | null)) => any, errback: Function, timeout: number) => {
         var endTime = Number(new Date()) + (timeout || 2000);
         var t = null;
