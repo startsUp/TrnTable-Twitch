@@ -22,6 +22,7 @@ import { TrackList } from '../Misc/trackList';
 import SpotifySongRequests from '../Requests/spotifySongRequests';
 import { Track } from '../../util/Spotify/Model/Track';
 import { useSpotify } from '../../util/Spotify/spotify-context';
+import { PubSubMessage } from '../../util/Twitch/Model/PubSubMessage';
 
 
 function TabPanel(props) {
@@ -82,12 +83,12 @@ const MAX_SONGS_BEFORE_DELETING_OLD = 200; // after this limit has been reached,
 const BATCH_ADD_LIMIT = 5;
 
 export default function Dashboard() {
-    const classes = useStyles()
+  const classes = useStyles()
 
-    const theme = useTheme();
-    const [value, setValue] = React.useState(0);
-    const [tracksView, setTracksView] = React.useState(TracksView.REQUESTED);
-    const [results, setResults] = React.useState([]);
+  const theme = useTheme();
+  const [value, setValue] = React.useState(0);
+  const [tracksView, setTracksView] = React.useState(TracksView.REQUESTED);
+  const [results, setResults] = React.useState([]);
 	const [error, setError] = React.useState({errorMsg: ''});
 	const [requests, setRequests] = React.useState([]);
 	const twitch = window.Twitch ? window.Twitch.ext : null
@@ -110,7 +111,11 @@ export default function Dashboard() {
 
 
 	const updateNowPlaying = (track) => {
-		setVotes({likes: 0, dislikes: 0}) // reset likes and dislikes on track change
+		//broadcast a song change
+		sessionService.sendPubSubMessage(new PubSubMessage(track))
+
+		// reset likes and dislikes on track change
+		setVotes({likes: 0, dislikes: 0}) 
 		setNowPlaying(track)
 	}
 
