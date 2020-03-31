@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Box, Typography } from '@material-ui/core';
-import { Avatar } from '@material-ui/core';
+import { Avatar, Paper } from '@material-ui/core';
 import { getThemeProps } from '@material-ui/styles';
 import ThumbDownRoundedIcon from '@material-ui/icons/ThumbDownRounded';
 import ThumbUpRoundedIcon from '@material-ui/icons/ThumbUpRounded';
@@ -14,9 +14,11 @@ const useStyles = makeStyles(theme => ({
     display: 'grid',
     justifyContent: 'center',
     justifyItems: 'center',
+    padding: theme.spacing(2),
     paddingTop: theme.spacing(1),
     gridGap: theme.spacing(2),
-    maxHeight: '500px'
+    maxHeight: '500px',
+
 	},
 	nowPlaying: {
 		display: 'contents', 
@@ -33,14 +35,15 @@ const useStyles = makeStyles(theme => ({
   voting: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    justifyItems: 'center',
     width: '100%'
   },
   like: {
-    paddingLeft: theme.spacing(3)
+    paddingLeft: theme.spacing(3),
+    justifySelf: 'start'
   },
   dislike: {
-    paddingRight: theme.spacing(3)
+    paddingRight: theme.spacing(3),
+    justifySelf: 'end'
   },
   vote: {
     fill: 'none',
@@ -75,10 +78,12 @@ const NowPlaying = props => {
 	const {classes, track} = props
 	return(
 		<div className={classes.nowPlaying}>
-			<Avatar alt={track.album.name}
-				variant="rounded" src={track.album.images[0].url} 
-				className={classes.albumImage}
-			/>
+      <Box boxShadow={3}>
+        <Avatar alt={track.album.name}
+          variant="rounded" src={track.album.images[0].url} 
+          className={classes.albumImage}
+        />
+      </Box>
 			<div>
 				<Typography variant="h6" color='textPrimary' align='center'>{track.name}</Typography>
 				<Typography variant="body2" color='textSecondary' align='center'>{track.artists}</Typography>

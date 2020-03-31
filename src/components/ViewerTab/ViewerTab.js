@@ -69,11 +69,22 @@ const useStyles = makeStyles(theme => ({
     height: '100vh',
     overflow: 'hidden',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   scrollView: {
     overflow: 'auto',
-    height: 'inherit'
+    height: 'inherit',
+    '&::-webkit-scrollbar': {
+      width: '0.2em'
+    },
+    '&::-webkit-scrollbar-track': {
+      boxShadow: 'inset 0 0 6px rgba(255,255,255,0.01)',
+      webkitBoxShadow: 'inset 0 0 6px rgba(255,255,255,0.01)'
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'rgba(25,20,20,.2)',
+      outline: '1px solid grey'
+    }
   },
   loading: {
     display: 'grid',
