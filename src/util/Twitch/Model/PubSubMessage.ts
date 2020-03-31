@@ -1,5 +1,12 @@
-export class PubSubMessage<T>{
+
+export enum PubSubMessageType {
+    TRACK = 0,
+    SETTINGS
+}
+export class PubSubMessage{
+    
     constructor(
-        public content: T
+        public content: any, 
+        public type: PubSubMessageType
     ){}
 }

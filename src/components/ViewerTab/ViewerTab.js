@@ -22,6 +22,7 @@ import { Track } from '../../util/Spotify/Model/Track'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { UserSettings } from '../ConfigPage/model/UserSettings';
+import { PubSubMessageType, PubSubMessage } from '../../util/Twitch/Model/PubSubMessage';
 
 
 function Alert(props) {
@@ -97,6 +98,7 @@ export default function ViewerTab() {
   const [trackSearchView, setTrackSearchView] = useState(TrackSearchView.SEARCH);
   const [results, setResults] = useState([]);
   const [error, setError] = useState({errorMsg: ''});
+  const [nowPlaying, setNowPlaying] = React.useState(null)
 
   const songRequestSuccess = res => {
     showToast(true)
@@ -114,9 +116,16 @@ export default function ViewerTab() {
 	}, [])
 
 	const onBroadcastRecieved = (pubsubMsg) => {
-		if(pubsubMsg.content instanceof UserSettings)
-			handleSettingsChange(pubsubMsg.content)
-	}
+		if(pubsubMsg.type === PubSubMessageType.SETTINGS)
+      handleSettingsChange(pubsubMsg.content)
+    if(pubsubMsg.type === PubSubMessageType.TRACK)
+      handleNowPlayingUpdate(pubsubMsg.content)
+  }
+  
+  const handleNowPlayingUpdate = (nowPlayingTrack) => {
+    setNowPlaying(nowPlayingTrack)
+  }
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -126,7 +135,6 @@ export default function ViewerTab() {
   };
 
   const sendSongRequest = track => {
-    console.log(track)
     sessionService.sendSongRequest(track, songRequestSuccess, songRequestFail)
     setTrackSearchView(TrackSearchView.SEARCH)
   }
@@ -186,7 +194,7 @@ export default function ViewerTab() {
         <div className={classes.swipeView}>
           <Toolbar/>   
           <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
-            <SpotifyNowPlaying/> 
+            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role}/> 
           </TabPanel>
         </div>   
       </SwipeableViews>

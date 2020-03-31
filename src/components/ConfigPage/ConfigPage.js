@@ -19,7 +19,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useSpotify } from '../../util/Spotify/spotify-context';
 import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService';
-import { PubSubMessage } from '../../util/Twitch/Model/PubSubMessage';
+import { PubSubMessage, PubSubMessageType } from '../../util/Twitch/Model/PubSubMessage';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -186,7 +186,7 @@ export default function ConfigPage() {
     }
 
     const broadcastSettingsUpdate = (userSettings) => {
-        sessionService.sendPubSubMessage(new PubSubMessage(userSettings))
+        sessionService.sendPubSubMessage(new PubSubMessage(userSettings, PubSubMessageType.SETTINGS))
     }
 	
 	const popupCallback = async (tokens) => {

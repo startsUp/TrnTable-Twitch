@@ -90,14 +90,16 @@ const Refresh = props => (
 	<RefreshIcon className={props.iconStyle} color='primary' onClick={props.onClick}/>
 )
 const Vote = { NONE: 1, LIKE: 2, DISLIKE: 3}
-const NO_SONG_PLAYING_MSG = 'No songs being played right now. When you play a song from spotify it will appear here.'
-
+const getEmptyMsg = (role)=> {
+    return `No songs being played right now. When ${role === Role.BROADCASTER ? 'you play' : 'the streamer plays'} a song from spotify it will appear here.`
+}
 export default function SpotifyNowPlaying(props) {
     const classes = useStyles();
     const [vote, setVote] = React.useState(Vote.NONE);
-    console.log(props)
+    const role = props.role ? props.role : Role.VIEWER
+
     const handleVote = (newVote) => { 
-        if (props.role !== Role.BROADCASTER){ // disabled if role === Broadcaster
+        if (role !== Role.BROADCASTER){ // disabled if role === Broadcaster
             if (vote === newVote)
                 setVote(Vote.NONE)
             else
@@ -109,7 +111,7 @@ export default function SpotifyNowPlaying(props) {
     return(
         <div className={classes.root}>
             {/* <Refresh iconStyle={classes.icon} onClick={() => console.log('reresh')}/> */}
-            { !props.nowPlaying && <TextWithTitle title='Not Available' text={NO_SONG_PLAYING_MSG}/>}
+            { !props.nowPlaying && <TextWithTitle title='Not Available' text={getEmptyMsg(role)}/>}
             { props.nowPlaying && <NowPlaying classes={classes} track={props.nowPlaying}/> }
             { props.nowPlaying && props.role &&
                 <Votes classes={classes} vote={vote} handleVote={handleVote}/>

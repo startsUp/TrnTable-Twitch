@@ -1,5 +1,5 @@
 import { Track } from "./Model/Track"
-import { PubSubMessage } from "../Twitch/Model/PubSubMessage"
+import { PubSubMessage, PubSubMessageType } from "../Twitch/Model/PubSubMessage"
 import { SpotifyService } from "./SpotifyService"
 import * as SpotifyWebApi from 'spotify-web-api-js'
 export type PubsubSend = (target: string, contentType: string, message: (object | string)) => any
@@ -38,7 +38,7 @@ export class SpotifySessionService{
                     'Content-Type': this.jsonType,
                     'Authorization': localStorage.getItem('token')
                 },
-                body: JSON.stringify(new PubSubMessage(track)) // body data type must match "Content-Type" header
+                body: JSON.stringify(new PubSubMessage(track, PubSubMessageType.TRACK)) // body data type must match "Content-Type" header
             })
             .then(res => success(track))
             .catch(err => error(err))
@@ -46,12 +46,12 @@ export class SpotifySessionService{
 			
     }
 
-    parsePubSubMessage = (target: string, contentType: string, message: (object | string)) : PubSubMessage<any> => {
+    parsePubSubMessage = (target: string, contentType: string, message: (object | string)) : PubSubMessage => {
         let req = JSON.parse(message.toString())
-        return new PubSubMessage(req.content)
+        return new PubSubMessage(req.content, req.type)
     }   
      
-    listenForSongRequests = (callback: (req: PubSubMessage<any>) => any) => {
+    listenForSongRequests = (callback: (req: PubSubMessage) => any) => {
         if (!this.songRequestCallback){
             this.songRequestCallback = (t, c, m) => {
                 callback(this.parsePubSubMessage(t, c, m))
@@ -60,7 +60,7 @@ export class SpotifySessionService{
         }
     }
 
-    listenForBroadcasts = (callback: (msg: PubSubMessage<any>) => any) => {
+    listenForBroadcasts = (callback: (msg: PubSubMessage) => any) => {
         let cb: PubsubSend = (t, c, m) => {
             callback(this.parsePubSubMessage(t, c, m))
         }
@@ -70,12 +70,12 @@ export class SpotifySessionService{
     /**
      * Sends Pub sub message to the specified target or if target not specified, broadcasts it
      */
-    sendPubSubMessage = (message: PubSubMessage<any>, target?: string) => {
+    sendPubSubMessage = (message: PubSubMessage, target?: string) => {
         if (target) {
-            this.twitch.send(target, this.jsonType, JSON.stringify(message.content))
+            this.twitch.send(target, this.jsonType, JSON.stringify(message))
         }
         else
-            this.twitch.send("broadcast", this.jsonType, JSON.stringify(message.content))
+            this.twitch.send("broadcast", this.jsonType, JSON.stringify(message))
     }
 
     pollApi = (call: () => Promise<any>, makeCall: ((apiCall: () => Promise<any>, args: Array<any>, onData: Function, onErr: Function) => void), callback: (track: (Track | null)) => any, errback: Function, timeout: number) => {

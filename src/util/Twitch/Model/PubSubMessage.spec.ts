@@ -1,16 +1,15 @@
-import { PubSubMessage } from './PubSubMessage'
+import { PubSubMessage, PubSubMessageType } from './PubSubMessage'
 
 test('Should return the correct type of', () => {
-    var pbm = new PubSubMessage("hello")
-    expect(typeof pbm.content).toBe(typeof 'string')
+    var pbm = new PubSubMessage({}, PubSubMessageType.TRACK)
+    expect(pbm.type).toBe(PubSubMessageType.TRACK)
+
+    var pbm = new PubSubMessage({}, PubSubMessageType.SETTINGS)
+    expect(pbm.type).toBe(PubSubMessageType.SETTINGS)
 })
 
-class Test{
-    constructor(public name: string){}
-}
-
 test('Should work with JSON serialization/deserialization', () => {
-    var pbm = new PubSubMessage(new Test('test'))
-    var deserialized = JSON.parse(JSON.stringify(pbm))
-    expect(typeof deserialized.content).toBe(typeof (new Test('test')))
+    var pbm = new PubSubMessage({}, PubSubMessageType.SETTINGS)
+    
+    expect(JSON.parse(JSON.stringify(pbm)).type).toBe(PubSubMessageType.SETTINGS)
 })

@@ -22,7 +22,7 @@ import { TrackList } from '../Misc/trackList';
 import SpotifySongRequests from '../Requests/spotifySongRequests';
 import { Track } from '../../util/Spotify/Model/Track';
 import { useSpotify } from '../../util/Spotify/spotify-context';
-import { PubSubMessage } from '../../util/Twitch/Model/PubSubMessage';
+import { PubSubMessage, PubSubMessageType } from '../../util/Twitch/Model/PubSubMessage';
 
 
 function TabPanel(props) {
@@ -94,7 +94,7 @@ export default function Dashboard() {
 	const twitch = window.Twitch ? window.Twitch.ext : null
 	const auth = useAuth()
 	const [token, spotify, makeCall] = useSpotify()
-	const [nowPlaying, setNowPlaying] = React.useState({track: null, isPlaying: false})
+	const [nowPlaying, setNowPlaying] = React.useState(null)
 	const [votes, setVotes] = React.useState({likes: 0, dislikes: 0})
 	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId())  
 		
@@ -112,7 +112,9 @@ export default function Dashboard() {
 
 	const updateNowPlaying = (track) => {
 		//broadcast a song change
-		sessionService.sendPubSubMessage(new PubSubMessage(track))
+		if(track){
+			sessionService.sendPubSubMessage(new PubSubMessage(track, PubSubMessageType.TRACK))
+		}
 
 		// reset likes and dislikes on track change
 		setVotes({likes: 0, dislikes: 0}) 
