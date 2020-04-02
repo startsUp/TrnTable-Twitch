@@ -15,24 +15,26 @@ export const TrnTableTheme = createMuiTheme({
         body2: {
             fontFamily: 'sofia_prolight',
         },
-   },
-   palette: {
-        type: 'dark',
-        primary: {
-            main: '#1ED660',
-            contrastText: "#fff"
-        },
-        secondary: {
-            main: '#FFFFFF'
-        },
-        background: {
-            paper: '#191414',
-            default: "#191414",
-            cover: 'rgba(25, 36, 26, 0.8)' // 9th midpoint 
-        }
-  },
-  button: {
-    fontFamily: 'sofia_problack',
-    justifySelf: 'center',
-  },
+    },
+    palette: {
+            type: 'dark',
+            primary: {
+                main: '#1ED660',
+                contrastText: "#fff"
+            },
+            secondary: {
+                main: '#FFFFFF'
+            },
+            background: {
+                paper: '#191414',
+                default: "#191414",
+                cover: 'rgba(25, 36, 26, 0.8)' // 9th midpoint 
+            }
+    },
+    button: {
+        borderRadius: '16px',
+        fontFamily: 'sofia_problack',
+        justifySelf: 'center',
+        cursor: 'pointer',
+    },
  });

@@ -4,7 +4,13 @@ import { Role } from '../../auth/roles/roles'
 
 export class SettingsService{
 	
-	readonly BroadcasterSettings = [
+	readonly BroadcasterSettings: Setting<any>[] = [
+            new BooleanSetting(
+                'Stop taking Requests',
+                'Turning this on will stop song requests temporarily',
+                false,
+                false
+            ),
 			new NumberSetting(
 				'Max Requests', 
 				'The maximum number of songs a viewer can request',
@@ -29,6 +35,19 @@ export class SettingsService{
     getDefaultUserSettings(userRole: Role){
         if(userRole === Role.BROADCASTER){
             return new UserSettings(this.BroadcasterSettings.map(s=>s.defaultValue), userRole, null, null, new Date(), new Date())
+        }
+    }
+
+    getUpdatedSettings(config: {content: string}, role: Role, settingName: string, newSettingValue: any): UserSettings{
+        var userSettings = this.getUserSettings(config, role)
+        if(role === Role.BROADCASTER){
+            var newSettingValues = userSettings.settings.map((settingValue, index) => {
+                if(settingName === this.BroadcasterSettings[0].name)
+                    return newSettingValue
+                else
+                    return settingValue
+            })
+            return userSettings
         }
     }
 

@@ -178,16 +178,13 @@ export default function ConfigPage() {
         else { 
             var jsonSettings = settingsService.toJSON(userSettings)
             auth.twitch.setConfig(jsonSettings)
-            broadcastSettingsUpdate(userSettings)
+            sessionService.broadcastSettingsUpdate(userSettings, true)
             setConfigState(ConfigStates.LOGGEDIN)
         }
         
         
     }
 
-    const broadcastSettingsUpdate = (userSettings) => {
-        sessionService.sendPubSubMessage(new PubSubMessage(userSettings, PubSubMessageType.SETTINGS))
-    }
 	
 	const popupCallback = async (tokens) => {
 		console.info({tokens}) 

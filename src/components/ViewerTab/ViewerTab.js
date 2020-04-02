@@ -110,7 +110,7 @@ export default function ViewerTab() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState({errorMsg: ''});
   const [nowPlaying, setNowPlaying] = React.useState(null)
-
+	const [settings, setSettings] = React.useState()
   const songRequestSuccess = res => {
     showToast(true)
   }
@@ -132,7 +132,11 @@ export default function ViewerTab() {
     if(pubsubMsg.type === PubSubMessageType.TRACK)
       handleNowPlayingUpdate(pubsubMsg.content)
   }
-  
+	
+	const handleSettingsChange = () => {
+		
+	}
+	
   const handleNowPlayingUpdate = (nowPlayingTrack) => {
     setNowPlaying(nowPlayingTrack)
   }

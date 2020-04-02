@@ -2,6 +2,7 @@ import { Track } from "./Model/Track"
 import { PubSubMessage, PubSubMessageType } from "../Twitch/Model/PubSubMessage"
 import { SpotifyService } from "./SpotifyService"
 import * as SpotifyWebApi from 'spotify-web-api-js'
+import { UserSettings } from "../../components/ConfigPage/model/UserSettings"
 export type PubsubSend = (target: string, contentType: string, message: (object | string)) => any
 export type PubsubListener = (target: string, callback: PubsubSend) => void
 
@@ -127,5 +128,11 @@ export class SpotifySessionService{
        if (this.songRequestCallback){
            this.twitch.unlisten(this.songRequestTopic, this.songRequestCallback)
        }
+    }
+
+    broadcastSettingsUpdate = (userSettings: UserSettings, updateTwice: boolean) => {
+        this.sendPubSubMessage(new PubSubMessage(userSettings,PubSubMessageType.SETTINGS))
+        if(updateTwice)
+            setTimeout(() => this.broadcastSettingsUpdate(userSettings, false), 300)
     }
 }

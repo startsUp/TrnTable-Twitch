@@ -23,6 +23,8 @@ import SpotifySongRequests from '../Requests/spotifySongRequests';
 import { Track } from '../../util/Spotify/Model/Track';
 import { useSpotify } from '../../util/Spotify/spotify-context';
 import { PubSubMessage, PubSubMessageType } from '../../util/Twitch/Model/PubSubMessage';
+import { SettingsService } from '../ConfigPage/settings-service';
+import { Role } from '../../auth/roles/roles';
 
 
 function TabPanel(props) {
@@ -107,42 +109,44 @@ export default function Dashboard() {
 	const [token, spotify, makeCall] = useSpotify()
 	const [nowPlaying, setNowPlaying] = React.useState(null)
 	const [votes, setVotes] = React.useState({likes: 0, dislikes: 0})
-	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId())  
-		
-	
+	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId()) 
+	const settingsService = new SettingsService() 
+	const { config } = auth.data
+
+	var userSettings = settingsService.getUserSettings(config, role)
 	// listen for requests here
 	useEffect(() => {
 		sessionService.listenForSongRequests(updateTrackList)
 		var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
 		return () => {
-			stopPolling()
+				stopPolling()
 		}
 	}, [])
 
 
 
 	const updateNowPlaying = (track) => {
-		//broadcast a song change
-		if(track){
-			sessionService.sendPubSubMessage(new PubSubMessage(track, PubSubMessageType.TRACK))
-		}
+			//broadcast a song change
+			if(track){
+					sessionService.sendPubSubMessage(new PubSubMessage(track, PubSubMessageType.TRACK))
+			}
 
-		// reset likes and dislikes on track change
-		setVotes({likes: 0, dislikes: 0}) 
-		setNowPlaying(track)
+			// reset likes and dislikes on track change
+			setVotes({likes: 0, dislikes: 0}) 
+			setNowPlaying(track)
 	}
 
 	const nowPlayingError = (err) => {
-		setError({errorMsg: 'Error updating now playing'})
+			setError({errorMsg: 'Error updating now playing'})
 	}
 
 	const updateTrackList = (request) => { // called when new songs added
-        var track = request.content
-        addRequest(track)
+			var track = request.content
+			addRequest(track)
 	}
-	
+
 	const addRequest = (track) => {
-		setRequests(prev => [...prev, track])
+			setRequests(prev => [...prev, track])
 	}
   
 
@@ -166,6 +170,12 @@ export default function Dashboard() {
   const showError = error => {
     setError(error);
     setTracksView(TracksView.ERROR);
+  }
+
+  const setRequestTaking = (stop) => {
+		var updatedUserSettings = settingsService.getUpdatedSettings(config, Role.BROADCASTER, 'Stop taking Requests', stop)
+		auth.updateConfig(settingsService.toJSON(updatedUserSettings))
+		sessionService.broadcastSettingsUpdate(updatedUserSettings, true)
   }
 
   return (
@@ -192,7 +202,7 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
-            <SpotifySongRequests requests={requests}/>
+            <SpotifySongRequests requests={requests} setRequestTakingStatus={stopTakingRequests}/>
           </TabPanel>
         </div>   
         <div className={classes.swipeView}>

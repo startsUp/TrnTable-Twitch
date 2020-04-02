@@ -44,18 +44,22 @@ const useStyles = makeStyles(theme => ({
     top: theme.spacing(1),
     right: theme.spacing(1)
   },
-  requestButton: {
-    borderRadius: theme.spacing(2),
-    justifySelf: 'end',
-    fontFamily: 'sofia_problack',
-  },
+  stopRequestButton: {
+		color: theme.palette.error.light,
+		borderColor: theme.palette.error.light,
+		...theme.button
+	},
+	resumeRequestButton: {
+		color: theme.palette.primary.main,
+		borderColor: theme.palette.primary.main,
+		...theme.button
+	},
   header: {
     position: 'sticky',
     top: '0px',
     backgroundColor: 'rgba(25,20,20,0.95)',
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    padding: '5px',
+    padding: '8px',
     zIndex: '10'
   }
 }));
@@ -67,12 +71,26 @@ const Error = (props) => (
 )
 
 export default function SpotifySongRequests(props) {
-    const classes = useStyles();
-    const [checked, setChecked] = React.useState([]);
-    const currentTracks = props.requests
-    return( // TODO: FIX STYLING 
-      <div className={classes.root}>
-        <TrackList tracks={currentTracks} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." />
-      </div>
-    )   
+	const classes = useStyles();
+	const [checked, setChecked] = React.useState([]);
+	const currentTracks = props.requests
+	const [isTakingRequests, setRequestStatus] = React.useState(true);
+
+	const handleStatusChange = () => {
+		const willTakeRequests = !isTakingRequests
+		props.setRequestTakingStatus(willTakeRequests)
+	}
+	return( // TODO: FIX STYLING 
+		<div className={classes.root}>
+			{
+				currentTracks && currentTracks.length > 0 &&
+				<div className={classes.header}>
+					<Button variant="outlined" size="small" onClick={handleStatusChange} className={isTakingRequests ? classes.stopRequestButton : classes.resumeRequestButton}>
+						{ isTakingRequests ? 'Stop Requests' : 'Start Requests' }
+					</Button>
+				</div>
+			}
+			<TrackList tracks={currentTracks} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." />
+		</div>
+	)   
 }
