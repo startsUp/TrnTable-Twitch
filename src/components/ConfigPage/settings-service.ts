@@ -3,7 +3,7 @@ import { UserSettings } from './model/UserSettings'
 import { Role } from '../../auth/roles/roles'
 
 export class SettingsService{
-	
+    readonly BroadcasterSettingsMap = {'Stop taking Requests': 0, 'Max Requests': 1, 'Keep already played songs': 2, 'Auto add Requests': 3};
 	readonly BroadcasterSettings: Setting<any>[] = [
             new BooleanSetting(
                 'Stop taking Requests',
@@ -32,7 +32,7 @@ export class SettingsService{
 
 	constructor(){}
 
-    getDefaultUserSettings(userRole: Role){
+    getDefaultUserSettings(userRole: Role) : UserSettings{
         if(userRole === Role.BROADCASTER){
             return new UserSettings(this.BroadcasterSettings.map(s=>s.defaultValue), userRole, null, null, new Date(), new Date())
         }
@@ -51,7 +51,10 @@ export class SettingsService{
         }
     }
 
-	getUserSettings(config: {content: string}, userRole: Role){
+    getSessionSettings(config: {content: string}) : UserSettings{
+        return this.getUserSettings(config, Role.BROADCASTER)
+    }
+	getUserSettings(config: {content: string}, userRole: Role) : UserSettings{
         // return default settings if no config json provided
         if (config === null || config === undefined) 
             return this.getDefaultUserSettings(userRole)
@@ -97,6 +100,10 @@ export class SettingsService{
 		settings.forEach((s,i) => {
 			this.BroadcasterSettings[i].value = s.value;
 		});
-	}
+    }
+    
+    getSettingValue(userSettings: UserSettings, settingName: string){
+        return userSettings.settings[this.BroadcasterSettingsMap[settingName]]
+    }
 
 }

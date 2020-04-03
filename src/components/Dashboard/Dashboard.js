@@ -113,7 +113,7 @@ export default function Dashboard() {
 	const settingsService = new SettingsService() 
 	const { config } = auth.data
 
-	var userSettings = settingsService.getUserSettings(config, role)
+  var userSettings = settingsService.getUserSettings(config, Role.BROADCASTER)
 	// listen for requests here
 	useEffect(() => {
 		sessionService.listenForSongRequests(updateTrackList)
@@ -202,7 +202,7 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
-            <SpotifySongRequests requests={requests} setRequestTakingStatus={stopTakingRequests}/>
+            <SpotifySongRequests requests={requests} setRequestTakingStatus={setRequestTaking}/>
           </TabPanel>
         </div>   
         <div className={classes.swipeView}>

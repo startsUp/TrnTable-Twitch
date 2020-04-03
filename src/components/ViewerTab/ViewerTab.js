@@ -23,6 +23,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { UserSettings } from '../ConfigPage/model/UserSettings';
 import { PubSubMessageType, PubSubMessage } from '../../util/Twitch/Model/PubSubMessage';
+import { SettingsService } from '../ConfigPage/settings-service';
+import { Role } from '../../auth/roles/roles';
 
 
 function Alert(props) {
@@ -95,22 +97,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TrackSearchView  = { SEARCH: 'search', RESULTS: 'results', ERROR: 'error', LOADING: 'loading'};
-
+const SettingMap = {isTakingRequests: 'Stop taking Requests'}
 
 export default function ViewerTab() {
   const classes = useStyles();
   const theme = useTheme();
   const twitch = window.Twitch ? window.Twitch.ext : null
-  const auth = useAuth()	
+  const auth = useAuth()
+  const { config } = auth.data
   const sessionService = new SpotifySessionService(twitch, auth.twitch.getChannelId())  
-  
+  const settingsService = new SettingsService()
+  const sessionSettings = settingsService.getSessionSettings(config)
   const [toast, showToast] = useState(false)
   const [value, setValue] = useState(0);
   const [trackSearchView, setTrackSearchView] = useState(TrackSearchView.SEARCH);
   const [results, setResults] = useState([]);
   const [error, setError] = useState({errorMsg: ''});
   const [nowPlaying, setNowPlaying] = React.useState(null)
-	const [settings, setSettings] = React.useState()
+  const [settings, setSettings] = React.useState({
+    isTakingRequests: !settingsService.getSettingValue(sessionSettings, SettingMap.isTakingRequests)
+  })
+  console.log(settings, sessionSettings, config)
   const songRequestSuccess = res => {
     showToast(true)
   }
@@ -133,8 +140,10 @@ export default function ViewerTab() {
       handleNowPlayingUpdate(pubsubMsg.content)
   }
 	
-	const handleSettingsChange = () => {
-		
+	const handleSettingsChange = (sessionSettings) => {
+		setSettings({
+      isTakingRequests: !settingsService(sessionSettings, SettingMap.isTakingRequests)
+    })
 	}
 	
   const handleNowPlayingUpdate = (nowPlayingTrack) => {
@@ -200,10 +209,10 @@ export default function ViewerTab() {
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
                 {trackSearchView === TrackSearchView.SEARCH && 
-                  <SpotifySearch onResult={showTracks} onError={showError} onLoad={() => setTrackSearchView(TrackSearchView.LOADING)}/>}
+                  <SpotifySearch isTakingRequests={settings.isTakingRequests} onResult={showTracks} onError={showError} onLoad={() => setTrackSearchView(TrackSearchView.LOADING)}/>}
                 {trackSearchView === TrackSearchView.LOADING && <div className={classes.loading}><LoadingCard /></div>}
-                {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} onRequest={sendSongRequest} onNavigateBack={showSearch} error={error}/>}
-                {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error}/>}
+                {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results}  onRequest={sendSongRequest} onNavigateBack={showSearch} error={error}/>}
+                {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error} />}
           </TabPanel>
         </div>   
         <div className={classes.swipeView}>

@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import { Error } from '../searchErrors';
 import { Typography } from '@material-ui/core';
 import { SpotifyService } from '../../../util/Spotify/SpotifyService';
+import { TextWithTitle } from '../../Misc/TextWithTitle';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,15 +19,18 @@ const useStyles = makeStyles(theme => ({
 
 export function SearchInput(props) {
   const classes = useStyles();
-
+  const { isTakingRequests } = props
   return (
     <div>
-      <form className={classes.root} noValidate autoComplete="off" onKeyPress={(e)=>(e.key==='Enter' && props.submit(e))}>
+      { isTakingRequests ?
+        <form className={classes.root} noValidate autoComplete="off" onKeyPress={(e)=>(e.key==='Enter' && props.submit(e))}>
             <TextField id="spotify-search-input" label="Search For Song" 
             InputLabelProps={{
               classes: {root: classes.spotifySearch}
             }}/>
-      </form>
+        </form> :
+        <TextWithTitle title="Not Taking Requests" text="The streamer has disabled requests temporarily."/>
+      }
     </div>
     
   );
