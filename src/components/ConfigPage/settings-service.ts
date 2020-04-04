@@ -42,11 +42,12 @@ export class SettingsService{
         var userSettings = this.getUserSettings(config, role)
         if(role === Role.BROADCASTER){
             var newSettingValues = userSettings.settings.map((settingValue, index) => {
-                if(settingName === this.BroadcasterSettings[0].name)
+                if(settingName === this.BroadcasterSettings[index].name)
                     return newSettingValue
                 else
                     return settingValue
             })
+            userSettings.settings = newSettingValues
             return userSettings
         }
     }
