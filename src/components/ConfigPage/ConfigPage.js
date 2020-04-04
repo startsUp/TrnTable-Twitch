@@ -163,7 +163,7 @@ export default function ConfigPage() {
                             // get json string and set config
                             var jsonSettings = settingsService.toJSON(userSettings)
                             auth.twitch.setConfig(jsonSettings)
-                            broadcastSettingsUpdate(userSettings)
+                            sessionService.broadcastSettingsUpdate(userSettings, true)
                             setConfigState(ConfigStates.LOGGEDIN)
                         },
                         (err) => {

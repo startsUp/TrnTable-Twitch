@@ -133,7 +133,7 @@ function AuthProvider(props) {
   }
   else if (r === Role.BROADCASTER){ // TODO: Add Setting to allow moderators to control music
     return (
-      <AuthContext.Provider value={{ twitch: twitchAuth, updateConfig: { setTwitchConfig }, data, makeAuthorizedCall: makeAuthorizedCall }} {...props}>
+      <AuthContext.Provider value={{ twitch: twitchAuth, updateConfig: setTwitchConfig, data, makeAuthorizedCall: makeAuthorizedCall }} {...props}>
           <SpotifyProvider>
             <Dashboard/>
           </SpotifyProvider>

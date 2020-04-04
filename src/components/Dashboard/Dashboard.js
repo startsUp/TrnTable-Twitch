@@ -172,7 +172,8 @@ export default function Dashboard() {
     setTracksView(TracksView.ERROR);
   }
 
-  const setRequestTaking = (stop) => {
+  const setRequestTaking = (willTakeRequests) => {
+		const stop = !willTakeRequests
 		var updatedUserSettings = settingsService.getUpdatedSettings(config, Role.BROADCASTER, 'Stop taking Requests', stop)
 		auth.updateConfig(settingsService.toJSON(updatedUserSettings))
 		sessionService.broadcastSettingsUpdate(updatedUserSettings, true)

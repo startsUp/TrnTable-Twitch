@@ -77,7 +77,8 @@ export default function SpotifySongRequests(props) {
 	const [isTakingRequests, setRequestStatus] = React.useState(true);
 
 	const handleStatusChange = () => {
-		const willTakeRequests = !isTakingRequests
+    const willTakeRequests = !isTakingRequests
+    setRequestStatus(willTakeRequests)
 		props.setRequestTakingStatus(willTakeRequests)
 	}
 	return( // TODO: FIX STYLING 
