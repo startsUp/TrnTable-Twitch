@@ -1,7 +1,8 @@
 
 export enum PubSubMessageType {
     TRACK = 0,
-    SETTINGS
+    SETTINGS,
+    VOTE
 }
 export class PubSubMessage{
     

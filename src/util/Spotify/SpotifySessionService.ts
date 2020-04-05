@@ -3,6 +3,9 @@ import { PubSubMessage, PubSubMessageType } from "../Twitch/Model/PubSubMessage"
 import { SpotifyService } from "./SpotifyService"
 import * as SpotifyWebApi from 'spotify-web-api-js'
 import { UserSettings } from "../../components/ConfigPage/model/UserSettings"
+import { debounce } from '../Misc/debounce'
+import { VoteType, Vote } from "./Model/Vote"
+
 export type PubsubSend = (target: string, contentType: string, message: (object | string)) => any
 export type PubsubListener = (target: string, callback: PubsubSend) => void
 
@@ -129,6 +132,19 @@ export class SpotifySessionService{
            this.twitch.unlisten(this.songRequestTopic, this.songRequestCallback)
        }
     }
+
+    sendVote = debounce((vote: Vote, onSuccess: Function, onError: Function) => {
+        fetch(`${this.EBS_API}/request/${this.id}`, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': this.jsonType,
+                'Authorization': localStorage.getItem('token')
+            },
+            body: JSON.stringify(new PubSubMessage(vote, PubSubMessageType.VOTE)) // body data type must match "Content-Type" header
+        })
+        .then(res => onSuccess())
+        .catch(err => onError(err))
+    },(Math.random()*500)+3000 /*Timeout*/, false)
 
     broadcastSettingsUpdate = (userSettings: UserSettings, updateTwice: boolean) => {
         this.sendPubSubMessage(new PubSubMessage(userSettings,PubSubMessageType.SETTINGS))

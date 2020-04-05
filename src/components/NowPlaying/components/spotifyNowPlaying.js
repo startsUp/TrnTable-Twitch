@@ -8,6 +8,8 @@ import ThumbUpRoundedIcon from '@material-ui/icons/ThumbUpRounded';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { Role } from '../../../auth/roles/roles';
 import { TextWithTitle } from '../../Misc/TextWithTitle';
+import { VoteType } from '../../../util/Spotify/Model/Vote';
+import { SpotifySessionService } from '../../../util/Spotify/SpotifySessionService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -63,11 +65,11 @@ const Votes = props => {
 	return(
 		<Box className={classes.voting}>
 			<div className={classes.dislike}>
-				<ThumbDownRoundedIcon className={vote === Vote.DISLIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.DISLIKE)}/>
+				<ThumbDownRoundedIcon className={vote === VoteType.DISLIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(VoteType.DISLIKE)}/>
 				{/* <Typography className={classes.voteCount} variant="body2" color={vote === Vote.DISLIKE ? 'primary' : 'secondary'}>3.3k</Typography> */}
 			</div>
 			<div className={classes.like}>
-				<ThumbUpRoundedIcon className={vote === Vote.LIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(Vote.LIKE)}/>
+				<ThumbUpRoundedIcon className={vote === VoteType.LIKE ? classes.selectedVote : classes.vote} onClick={() => handleVote(VoteType.LIKE)}/>
 				{/* <Typography className={classes.voteCount} variant="body2" color={vote === Vote.LIKE ? 'primary' : 'secondary'}>3.3k</Typography> */}
 			</div>
 		</Box>
@@ -100,15 +102,21 @@ const getEmptyMsg = (role)=> {
 }
 export default function SpotifyNowPlaying(props) {
     const classes = useStyles();
-    const [vote, setVote] = React.useState(Vote.NONE);
+    const [vote, setVote] = React.useState(VoteType.NONE);
     const role = props.role ? props.role : Role.VIEWER
+    const [voteSet, voteSetStatus] = React.useState(false)
 
+    const sessionService = new SpotifySessionService()
     const handleVote = (newVote) => { 
         if (role !== Role.BROADCASTER){ // disabled if role === Broadcaster
-            if (vote === newVote)
-                setVote(Vote.NONE)
-            else
-                setVote(newVote);
+            if (vote === newVote){
+              sessionService.sendVote(new Vote(newVote, props.nowPlaying.id), () => voteSetStatus(true), () => {}) 
+              setVote(VoteType.NONE)
+            }
+            else{
+              sessionService.sendVote(new Vote(newVote, props.nowPlaying.id), () => voteSetStatus(true), () => {}) 
+              setVote(newVote);
+            }
         }
     }
 
