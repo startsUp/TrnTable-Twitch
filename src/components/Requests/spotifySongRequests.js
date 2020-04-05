@@ -87,7 +87,7 @@ export default function SpotifySongRequests(props) {
 				currentTracks && currentTracks.length > 0 &&
 				<div className={classes.header}>
 					<Button variant="outlined" size="small" onClick={handleStatusChange} className={isTakingRequests ? classes.stopRequestButton : classes.resumeRequestButton}>
-						{ isTakingRequests ? 'Stop Requests' : 'Start Requests' }
+						{ isTakingRequests ? 'Stop Requests' : 'Resume Requests' }
 					</Button>
 				</div>
 			}

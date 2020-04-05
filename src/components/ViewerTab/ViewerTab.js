@@ -142,7 +142,7 @@ export default function ViewerTab() {
 	
 	const handleSettingsChange = (sessionSettings) => {
 		setSettings({
-      isTakingRequests: !settingsService(sessionSettings, SettingMap.isTakingRequests)
+      isTakingRequests: !settingsService.getSettingValue(sessionSettings, SettingMap.isTakingRequests)
     })
 	}
 	
@@ -218,7 +218,7 @@ export default function ViewerTab() {
         <div className={classes.swipeView}>
           <Toolbar/>   
           <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
-            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role}/> 
+            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} sessionService={sessionService}/> 
           </TabPanel>
         </div>   
       </SwipeableViews>
