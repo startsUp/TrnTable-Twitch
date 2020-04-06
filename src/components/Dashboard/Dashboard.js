@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -25,6 +25,7 @@ import { useSpotify } from '../../util/Spotify/spotify-context';
 import { PubSubMessage, PubSubMessageType } from '../../util/Twitch/Model/PubSubMessage';
 import { SettingsService } from '../ConfigPage/settings-service';
 import { Role } from '../../auth/roles/roles';
+import { VoteType } from '../../util/Spotify/Model/Vote';
 
 
 function TabPanel(props) {
@@ -99,49 +100,70 @@ export default function Dashboard() {
   const classes = useStyles()
 
   const theme = useTheme();
-  const [value, setValue] = React.useState(0);
-  const [tracksView, setTracksView] = React.useState(TracksView.REQUESTED);
-  const [results, setResults] = React.useState([]);
-	const [error, setError] = React.useState({errorMsg: ''});
-	const [requests, setRequests] = React.useState([]);
+  const [value, setValue] = useState(0);
+  const [tracksView, setTracksView] = useState(TracksView.REQUESTED);
+  const [results, setResults] = useState([]);
+	const [error, setError] = useState({errorMsg: ''});
+	const [requests, setRequests] = useState([]);
 	const twitch = window.Twitch ? window.Twitch.ext : null
 	const auth = useAuth()
 	const [token, spotify, makeCall] = useSpotify()
-	const [nowPlaying, setNowPlaying] = React.useState(null)
-	const [votes, setVotes] = React.useState({likes: 0, dislikes: 0})
+  const nowPlayingRef = useRef(null)
+  const [nowPlaying, setNowPlaying] = useState(null)
+	const [votes, setVotes] = useState({likes: 0, dislikes: 0})
 	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId()) 
 	const settingsService = new SettingsService() 
 	const { config } = auth.data
 
   var userSettings = settingsService.getUserSettings(config, Role.BROADCASTER)
-	// listen for requests here
+  // listen for requests here
 	useEffect(() => {
-		sessionService.listenForSongRequests(updateTrackList)
-		var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
-		return () => {
-				stopPolling()
-		}
+    var stopListeningForMessages = sessionService.listenForPubSubMessages(handlePubSubMessage) 
+    var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
+    return () => {
+      stopListeningForMessages()
+      stopPolling()
+    }
 	}, [])
 
+  function handlePubSubMessage(pubSubMessage){
+    if (pubSubMessage.type === PubSubMessageType.TRACK)
+      updateTrackList(pubSubMessage.content)
+    if (pubSubMessage.type === PubSubMessageType.VOTE)
+      handleVote(pubSubMessage.content)
+  }
 
+	function updateNowPlaying(track){
+    // closure prevents this function to get latest nowPlaying value, hence use useRef
+    const currentTrack = nowPlayingRef.current
+    
+    if((track && currentTrack && track.id !== currentTrack.id) || (track === null || currentTrack === null))
+      setVotes({likes: 0, dislikes: 0}) // reset likes and dislikes on track change       
+    
+      //broadcast a song change
+    sessionService.sendPubSubMessage(new PubSubMessage(track, PubSubMessageType.TRACK))
 
-	const updateNowPlaying = (track) => {
-			//broadcast a song change
-			if(track){
-					sessionService.sendPubSubMessage(new PubSubMessage(track, PubSubMessageType.TRACK))
-			}
-
-			// reset likes and dislikes on track change
-			setVotes({likes: 0, dislikes: 0}) 
-			setNowPlaying(track)
+    setNowPlaying(track) // update state
+    nowPlayingRef.current = track // update ref
 	}
+
+  function handleVote(vote){
+    // closure prevents this function to get latest nowPlaying value, hence use useRef
+    const currentTrack = nowPlayingRef.current
+
+    if(vote && currentTrack && currentTrack.id === vote.trackId){
+      setVotes(prev => ({
+        likes: prev.likes + vote.likeIncrement,
+        dislikes: prev.dislikes + vote.dislikeIncrement
+     }))
+    }
+  }
 
 	const nowPlayingError = (err) => {
 			setError({errorMsg: 'Error updating now playing'})
 	}
 
-	const updateTrackList = (request) => { // called when new songs added
-			var track = request.content
+	const updateTrackList = (track) => { // called when new songs added
 			addRequest(track)
 	}
 
@@ -172,13 +194,13 @@ export default function Dashboard() {
     setTracksView(TracksView.ERROR);
   }
 
-  const setRequestTaking = (willTakeRequests) => {
+  function setRequestTaking(willTakeRequests){
 		const stop = !willTakeRequests
 		var updatedUserSettings = settingsService.getUpdatedSettings(config, Role.BROADCASTER, 'Stop taking Requests', stop)
 		auth.updateConfig(settingsService.toJSON(updatedUserSettings))
 		sessionService.broadcastSettingsUpdate(updatedUserSettings, true)
   }
-
+  console.log('nowplaying -->', nowPlaying)
   return (
     <div className={classes.root}>
       <AppBar position="fixed" color="default">
@@ -209,7 +231,7 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>   
           <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
-            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role}/> 
+            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} likes={votes.likes} dislikes={votes.dislikes}/> 
           </TabPanel>
         </div>   
       </SwipeableViews>
