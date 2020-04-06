@@ -5,7 +5,8 @@ export enum VoteType {
 }
 export class Vote {
     constructor(
-        public type: VoteType,
-        public trackId: string
+        public trackId: string,
+        public likeIncrement: number,
+        public dislikeIncrement: number
     ){}
 }

@@ -11,8 +11,8 @@ export type PubsubListener = (target: string, callback: PubsubSend) => void
 
 export class SpotifySessionService{
     
-    public songRequestCallback: PubsubSend
-    public songRequestTopic: string
+    public pubSubCallback: PubsubSend
+    public pubSubTopic: string
     readonly EBS_API  =  'https://us-central1-trntable-twitch.cloudfunctions.net/api'
     readonly jsonType = 'application/json'
     constructor(
@@ -24,7 +24,7 @@ export class SpotifySessionService{
         public id: string,// may be null for viewers that opt out of sharing identity,
         public spotifyService: SpotifyService = new SpotifyService(),
      ){
-        this.songRequestTopic = `whisper-${id}`
+        this.pubSubTopic = `whisper-${id}`
      }
 
     clearPlaylist = () => {
@@ -55,13 +55,12 @@ export class SpotifySessionService{
         return new PubSubMessage(req.content, req.type)
     }   
      
-    listenForSongRequests = (callback: (req: PubSubMessage) => any) => {
-        if (!this.songRequestCallback){
-            this.songRequestCallback = (t, c, m) => {
-                callback(this.parsePubSubMessage(t, c, m))
-            }
-            this.twitch.listen(this.songRequestTopic, this.songRequestCallback)
+    listenForPubSubMessages = (callback: (req: PubSubMessage) => any) => {
+        var pubSubCallback = (t, c, m) => {
+            callback(this.parsePubSubMessage(t, c, m))
         }
+        this.twitch.listen(this.pubSubTopic, pubSubCallback)
+        return () => this.twitch.unlisten(this.pubSubTopic, pubSubCallback)
     }
 
     listenForBroadcasts = (callback: (msg: PubSubMessage) => any) => {
@@ -127,15 +126,10 @@ export class SpotifySessionService{
         return () => clearTimeout(t)
     }
 
-    stopListeningForSongRequests = () => {
-       if (this.songRequestCallback){
-           this.twitch.unlisten(this.songRequestTopic, this.songRequestCallback)
-       }
-    }
-
     sendVote = debounce((vote: Vote, onSuccess: Function, onError: Function) => {
-        fetch(`${this.EBS_API}/request/${this.id}`, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        console.warn('Sending Vote:', vote)
+        fetch(`${this.EBS_API}/vote/${this.id}`, {
+            method: 'POST',
             headers: {
                 'Content-Type': this.jsonType,
                 'Authorization': localStorage.getItem('token')

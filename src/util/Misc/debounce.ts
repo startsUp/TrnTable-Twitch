@@ -1,5 +1,5 @@
 
-export function debounce(func: Function, wait: number, immediate: boolean) {
+export function debounce(func: Function, wait: number, immediate?: boolean) {
 	var timeout: NodeJS.Timeout;
 	return function() {
 		var context = this, args = arguments;

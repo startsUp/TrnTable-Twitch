@@ -25,6 +25,7 @@ import { UserSettings } from '../ConfigPage/model/UserSettings';
 import { PubSubMessageType, PubSubMessage } from '../../util/Twitch/Model/PubSubMessage';
 import { SettingsService } from '../ConfigPage/settings-service';
 import { Role } from '../../auth/roles/roles';
+import { VoteType, Vote } from '../../util/Spotify/Model/Vote';
 
 
 function Alert(props) {
@@ -105,7 +106,7 @@ export default function ViewerTab() {
   const twitch = window.Twitch ? window.Twitch.ext : null
   const auth = useAuth()
   const { config } = auth.data
-  const sessionService = new SpotifySessionService(twitch, auth.twitch.getChannelId())  
+  const [sessionService, setSessionService] = useState(new SpotifySessionService(twitch, auth.twitch.getChannelId()))  
   const settingsService = new SettingsService()
   const sessionSettings = settingsService.getSessionSettings(config)
   const [toast, showToast] = useState(false)
@@ -114,10 +115,11 @@ export default function ViewerTab() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState({errorMsg: ''});
   const [nowPlaying, setNowPlaying] = React.useState(null)
+  const [vote, setVote] = React.useState(VoteType.NONE)
+  const [sentVote, setSentVote] = React.useState(new Vote('', 0, 0))
   const [settings, setSettings] = React.useState({
     isTakingRequests: !settingsService.getSettingValue(sessionSettings, SettingMap.isTakingRequests)
   })
-  console.log(settings, sessionSettings, config)
   const songRequestSuccess = res => {
     showToast(true)
   }
@@ -125,6 +127,25 @@ export default function ViewerTab() {
     console.err(err)
   }
   
+  const handleVote = (newVote) => { 
+    var voteUpdate = null
+    var likeIncrement = sentVote.likeIncrement === 1 ? -1 : 0
+    var dislikeIncrement = sentVote.dislikeIncrement === 1 ? -1 : 0
+    var trackId = nowPlaying ? nowPlaying.id : ''
+    if (vote === newVote){ // dismiss last vote
+      voteUpdate = new Vote(trackId, likeIncrement, dislikeIncrement)
+      setVote(VoteType.NONE) // update ui right away
+    }
+    else{
+      if (newVote === VoteType.LIKE)
+        voteUpdate = new Vote(trackId, 1, dislikeIncrement) 
+      else
+        voteUpdate = new Vote(trackId, likeIncrement, 1)
+      setVote(newVote);
+    }
+    sessionService.sendVote(voteUpdate, () => setSentVote(voteUpdate), () => {}) 
+  }
+
   // listen for pubsub messages
 	useEffect(() => {
 		var stopListeningForBroadcasts = sessionService.listenForBroadcasts(onBroadcastRecieved)
@@ -218,7 +239,7 @@ export default function ViewerTab() {
         <div className={classes.swipeView}>
           <Toolbar/>   
           <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
-            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} sessionService={sessionService}/> 
+            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} handleVote={handleVote} vote={vote}/> 
           </TabPanel>
         </div>   
       </SwipeableViews>
