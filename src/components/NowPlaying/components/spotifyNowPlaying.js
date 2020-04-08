@@ -63,22 +63,22 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Votes = props => {
-  const {classes, vote, handleVote, likes, dislikes} = props
-	return(
-		<Box className={classes.voting}>
-			<div className={classes.dislike}>
-        { dislikes ? <Typography className={classes.voteCount} variant="body2" color="primary">{readableNumber(dislikes)}</Typography> : <div></div> }
-				<ThumbDownRoundedIcon className={vote === VoteType.DISLIKE ? classes.selectedVote : classes.vote} onClick={handleVote ? () => handleVote(VoteType.DISLIKE) : null}/>
-			</div>
-			<div className={classes.like}>
-				<ThumbUpRoundedIcon className={vote === VoteType.LIKE ? classes.selectedVote : classes.vote} onClick={handleVote ? () => handleVote(VoteType.LIKE): null}/>
-				{ likes ? <Typography className={classes.voteCount} variant="body2" color="primary">{readableNumber(likes)}</Typography> : <div></div>}
-			</div>
-		</Box>
-	)
+// const Votes = props => {
+//   const {classes, vote, handleVote, likes, dislikes} = props
+// 	return(
+// 		<Box className={classes.voting}>
+// 			<div className={classes.dislike}>
+//         { dislikes ? <Typography className={classes.voteCount} variant="body2" color="primary">{readableNumber(dislikes)}</Typography> : <div></div> }
+// 				<ThumbDownRoundedIcon className={vote === VoteType.DISLIKE ? classes.selectedVote : classes.vote} onClick={handleVote ? () => handleVote(VoteType.DISLIKE) : null}/>
+// 			</div>
+// 			<div className={classes.like}>
+// 				<ThumbUpRoundedIcon className={vote === VoteType.LIKE ? classes.selectedVote : classes.vote} onClick={handleVote ? () => handleVote(VoteType.LIKE): null}/>
+// 				{ likes ? <Typography className={classes.voteCount} variant="body2" color="primary">{readableNumber(likes)}</Typography> : <div></div>}
+// 			</div>
+// 		</Box>
+// 	)
 	
-}
+// }
 const NowPlaying = props => {
 	const {classes, track} = props
 	return(
