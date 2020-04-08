@@ -109,12 +109,9 @@ export default function SpotifyNowPlaying(props) {
 
     return(
         <div className={classes.root}>
-            {/* <Refresh iconStyle={classes.icon} onClick={() => console.log('reresh')}/> */}
-            { !nowPlaying && <TextWithTitle title='Not Available' text={getEmptyMsg(role)}/>}
-            { nowPlaying && <NowPlaying classes={classes} track={nowPlaying}/> }
-            { nowPlaying && props.role &&
-                <Votes classes={classes} {...props}/>
-            }
+          {/* <Refresh iconStyle={classes.icon} onClick={() => console.log('reresh')}/> */}
+          { !nowPlaying && <TextWithTitle title='Not Available' text={getEmptyMsg(role)}/>}
+          { nowPlaying && <NowPlaying classes={classes} track={nowPlaying}/> }
         </div> 
     )
     

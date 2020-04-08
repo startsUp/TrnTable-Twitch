@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -115,6 +115,7 @@ export default function ViewerTab() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState({errorMsg: ''});
   const [nowPlaying, setNowPlaying] = React.useState(null)
+  const nowPlayingRef = useRef(null)
   const [vote, setVote] = React.useState(VoteType.NONE)
   const [sentVote, setSentVote] = React.useState(new Vote('', 0, 0))
   const [settings, setSettings] = React.useState({
@@ -138,12 +139,18 @@ export default function ViewerTab() {
     }
     else{
       if (newVote === VoteType.LIKE)
-        voteUpdate = new Vote(trackId, 1, dislikeIncrement) 
+        voteUpdate = new Vote(trackId, likeIncrement + 1, dislikeIncrement) 
       else
-        voteUpdate = new Vote(trackId, likeIncrement, 1)
+        voteUpdate = new Vote(trackId, likeIncrement, dislikeIncrement + 1)
       setVote(newVote);
     }
-    sessionService.sendVote(voteUpdate, () => setSentVote(voteUpdate), () => {}) 
+    console.warn('Vote -->', voteUpdate)
+    const sentVoteCallback = () => {
+      if (nowPlaying && trackId === nowPlayingRef.current.id){
+        setSentVote(voteUpdate)
+      }
+    }
+    sessionService.sendVote(voteUpdate, sentVoteCallback, () => {}) 
   }
 
   // listen for pubsub messages
@@ -168,7 +175,14 @@ export default function ViewerTab() {
 	}
 	
   const handleNowPlayingUpdate = (nowPlayingTrack) => {
+    const currentTrack = nowPlayingRef.current
+
     setNowPlaying(nowPlayingTrack)
+    if (currentTrack && nowPlayingTrack && currentTrack.id !== nowPlayingTrack.id){
+      setVote(VoteType.NONE)
+      setSentVote(new Vote('', 0, 0))
+    }
+    nowPlayingRef.current = nowPlayingTrack
   }
 
   const handleChange = (event, newValue) => {
