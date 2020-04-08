@@ -1,6 +1,6 @@
 import { SettingsService } from './settings-service'
 import { Role } from '../../auth/roles/roles'
-var testConfig ="{\"settings\":[false,100,false,false],\"role\":4,\"extensionPlaylistId\":null,\"playlistId\":null,\"created\":\"2020-04-03T23:45:25.276Z\",\"updated\":\"2020-04-03T23:45:25.276Z\"}"
+var testConfig ="{\"settings\":[false,100,false],\"role\":4,\"extensionPlaylistId\":null,\"playlistId\":null,\"created\":\"2020-04-03T23:45:25.276Z\",\"updated\":\"2020-04-03T23:45:25.276Z\"}"
 var settingService = new SettingsService()
 var broadcasterSettings = settingService.BroadcasterSettings
 var broadcasterSettingsMap = settingService.BroadcasterSettingsMap

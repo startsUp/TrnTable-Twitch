@@ -3,7 +3,7 @@ import { UserSettings } from './model/UserSettings'
 import { Role } from '../../auth/roles/roles'
 
 export class SettingsService{
-    readonly BroadcasterSettingsMap = {'Stop taking Requests': 0, 'Max Requests': 1, 'Keep already played songs': 2, 'Auto add Requests': 3};
+    readonly BroadcasterSettingsMap = {'Stop taking Requests': 0, 'Max Requests': 1, 'Keep already played songs': 2};
 	readonly BroadcasterSettings: Setting<any>[] = [
             new BooleanSetting(
                 'Stop taking Requests',
@@ -23,11 +23,6 @@ export class SettingsService{
 					'You can turn on this option to retain old requests that were added to the playlists. Limit is 10,000.',
 					false, 
 					false),
-			new BooleanSetting(
-					'Auto add Requests', 
-					'Requested songs are automatically added to the playlist.',
-					false, 
-                    false),
 	]
 
 	constructor(){}
