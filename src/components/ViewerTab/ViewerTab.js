@@ -194,7 +194,7 @@ export default function ViewerTab() {
   };
 
   const sendSongRequest = track => {
-    sessionService.sendSongRequest(track, songRequestSuccess, songRequestFail)
+    sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
     setTrackSearchView(TrackSearchView.SEARCH)
   }
 

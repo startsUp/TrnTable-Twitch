@@ -13,7 +13,7 @@ export interface Setting<T>{
     name: string
     details: string
     defaultValue: T
-	getComponent(props: {settingStyle: {}}, id: number): any
+	getComponent(props: {settingStyle: {}}, id: number, render?: boolean): any
 	getSettingWithValue(value: T): Setting<T>
 }
 export const SettingComponent = props => {
@@ -41,7 +41,7 @@ export class NumberSetting implements Setting<number>{
 		valueChange(e){
 			this.value = e.target.value
 		}
-    getComponent(props, id){
+    getComponent(props, id, render?: boolean){
 			const [value, setValue] = React.useState(this.value);
 			const updateValue = (e: any) => {
 				let newValue = +e.target.value
@@ -89,7 +89,7 @@ export class BooleanSetting implements Setting<boolean>{
         public value: boolean,   
     ){}
 
-    getComponent(props, id){
+    getComponent(props, id, render?: boolean){
 			const [value, setValue] = React.useState(this.value);
 			const updateValue = (e) => {
 				console.warn(e.target.checked)
@@ -132,7 +132,7 @@ export class SelectionSetting implements Setting<any>{
 			public options: Array<any>   
 	){}
 	
-	getComponent(props, id){
+	getComponent(props, id, render?: boolean){
 			return (
 					<div>
 							Options
