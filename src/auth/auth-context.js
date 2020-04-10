@@ -90,14 +90,14 @@ function AuthProvider(props) {
 
 
   const setTwitchConfig = (config) => {
-    if (config){
-        twitch.configuration.set("broadcaster", VERSION_NO, config);
-        setData(prev => { // prevent ovewrites
-            return {...prev, config: {content: config, segment: "broadcaster", version: VERSION_NO}}
-        })
+    var versionNo = VERSION_NO
+    if (!config){
+      versionNo = '' 
     }
-    else
-      twitch.configuration.set("broadcaster", '', config);
+    twitch.configuration.set("broadcaster", versionNo, config);
+    setData(prev => { // prevent ovewrites
+      return {...prev, config: {content: config, segment: "broadcaster", version: versionNo}}
+    })
   }
 
   const makeAuthorizedCall = (url, method="GET") => {
