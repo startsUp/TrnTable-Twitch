@@ -31,9 +31,7 @@ export default function ErrorCard(props){
         <div className={classes.root}>
             <Box p={3} className={classes.card}>
                 <TextWithTitle title="Error" text={props.error.message}/>
-                <Button variant="outlined" onClick={props.resetCallback} size="small" color="primary" className={classes.button}>
-					Retry
-				</Button>
+                { props.reset }
             </Box>
         </div>
     )

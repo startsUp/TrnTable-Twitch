@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 /// <reference path="../node_modules/spotify-web-api-js/src/typings/spotify-web-api.d.ts" />
 import SpotifyWebApi from 'spotify-web-api-js'
-
+import { useTheme } from '@material-ui/core/styles';
 import { useAuth } from '../../auth/auth-context';
 import LoadingCard from '../../components/loader';
 import ErrorCard from '../../components/errorCard';
@@ -20,6 +20,7 @@ function SpotifyProvider(props) {
   const [token, setToken] = useState(null)
   const [fetch, fetchDone] = useState(false)
   const [error, setError] = useState(null)
+  const theme = useTheme()
   const updateToken = (token) => {
     api.setAccessToken(token)
     setToken(token)
@@ -96,8 +97,15 @@ function SpotifyProvider(props) {
   }
 
   if (error){
-    return <div style={{height: '100vh'}}><ErrorCard error={error} resetCallback={resetError}/></div>
-  }
+    return( 
+    <div style={{height: '100vh'}}><ErrorCard error={error} reset={
+        <Button variant="outlined" onClick={resetError} size="small" color="primary" className={theme.button}>
+          Retry
+        </Button>
+      }
+    />
+    </div>
+  )}
   if (fetch){    
     return (
       <SpotifyContext.Provider value={[token, api, makeCall]} {...props}/>
