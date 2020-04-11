@@ -111,7 +111,7 @@ export default function Dashboard() {
   const nowPlayingRef = useRef(null)
   const [nowPlaying, setNowPlaying] = useState(null)
 	const [votes, setVotes] = useState({likes: 0, dislikes: 0})
-	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId()) 
+	const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getOpaqueId()) 
 	const settingsService = new SettingsService() 
 	const { config } = auth.data
 

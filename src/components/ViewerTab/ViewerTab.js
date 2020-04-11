@@ -26,6 +26,7 @@ import { PubSubMessageType, PubSubMessage } from '../../util/Twitch/Model/PubSub
 import { SettingsService } from '../ConfigPage/settings-service';
 import { Role } from '../../auth/roles/roles';
 import { VoteType, Vote } from '../../util/Spotify/Model/Vote';
+import { useSpotify } from '../../util/Spotify/spotify-context';
 
 
 function Alert(props) {
@@ -105,8 +106,9 @@ export default function ViewerTab() {
   const theme = useTheme();
   const twitch = window.Twitch ? window.Twitch.ext : null
   const auth = useAuth()
+  const [token, spotify, makeCall] = useSpotify()
   const { config } = auth.data
-  const [sessionService, setSessionService] = useState(new SpotifySessionService(twitch, auth.twitch.getChannelId()))  
+  const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getChannelId())
   const settingsService = new SettingsService()
   const sessionSettings = settingsService.getSessionSettings(config)
   const [toast, showToast] = useState(false)
@@ -194,8 +196,14 @@ export default function ViewerTab() {
   };
 
   const sendSongRequest = track => {
-    sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
-    setTrackSearchView(TrackSearchView.SEARCH)
+    makeCall(spotify.addTracksToPlaylist, [sessionSettings.extensionPlaylistId, [`spotify:track:${track.id}`]], 
+      success => {
+        sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
+        setTrackSearchView(TrackSearchView.SEARCH)
+      },
+      err => {
+
+      })
   }
 
   const showSearch = () => {

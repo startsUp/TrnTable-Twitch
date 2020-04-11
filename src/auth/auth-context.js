@@ -44,6 +44,7 @@ function AuthProvider(props) {
   // data - twitch configuration
   const [ data, setData ] =  useState(null)
   const [ authorized, setAuthorized ] = useState(false)
+  const [ spotifyAccountLinked, setLinked ] = useState(false)
 
   const setAuthData = () => {
     setData(prev => { // prevent ovewrites
@@ -67,13 +68,13 @@ function AuthProvider(props) {
           setAuthData() // set role, channelid and user id
 
 					// get user data to check if it exist, only need to this in config view
-					if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()){
+					// if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()){
             if (twitch.configuration.broadcaster){
               setData(prev => { // prevent ovewrites
                 return {...prev, config: twitch.configuration.broadcaster} 
               })
             }
-          } 
+          // } 
 			
 			}
 		})
@@ -115,25 +116,28 @@ function AuthProvider(props) {
   
   const spotify = new SpotifyLogin()
   var r = getRole(twitchAuth.getRole())
-  console.warn(r)
   if (viewType === ViewType.CONFIG){
-    const spotifyLogin = () => spotify.handleLogin(() => setAuthData())
+    const spotifyLogin = () => spotify.handleLogin(() => {
+      setAuthData()
+      setLinked(true)
+    })
     const spotifyAuth = { login: spotifyLogin, logout: spotify.logout }
     const reset = (onSuccess, onError) => {
       spotifyAuth.logout()
         .then(() => {
           setTwitchConfig('')
+          setLinked(false)
           onSuccess()
         })
         .catch(err => onError(err))
     }
     return (
-      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, makeAuthorizedCall: makeAuthorizedCall, resetAccount: reset, twitch: { setConfig: setTwitchConfig }, data }} {...props} />
+      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, spotifyLinked: spotifyAccountLinked, makeAuthorizedCall: makeAuthorizedCall, resetAccount: reset, twitch: { setConfig: setTwitchConfig }, twitchAuth , data }} {...props} />
     )
   }
   else if (r === Role.BROADCASTER){ // TODO: Add Setting to allow moderators to control music
     return (
-      <AuthContext.Provider value={{ twitch: twitchAuth, updateConfig: setTwitchConfig, data, makeAuthorizedCall: makeAuthorizedCall }} {...props}>
+      <AuthContext.Provider value={{ twitchAuth, updateConfig: setTwitchConfig, spotifyLinked: true, data, makeAuthorizedCall: makeAuthorizedCall }} {...props}>
           <SpotifyProvider>
             <Dashboard/>
           </SpotifyProvider>
@@ -142,8 +146,10 @@ function AuthProvider(props) {
   }
   else {
     return (
-      <AuthContext.Provider value={{ twitch: twitchAuth , data }} {...props}>
-        <ViewerDashboard/>
+      <AuthContext.Provider value={{ twitchAuth, data, spotifyLinked: true, makeAuthorizedCall: makeAuthorizedCall }} {...props}>
+          <SpotifyProvider>
+            <ViewerDashboard/>
+          </SpotifyProvider>
       </AuthContext.Provider>
     )
   }
