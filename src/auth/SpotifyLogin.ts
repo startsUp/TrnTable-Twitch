@@ -1,6 +1,6 @@
 
 export class SpotifyLogin{
-    readonly SPOTIFY_AUTH_URL = 'https://jukebox-2952e.firebaseapp.com';
+    readonly SPOTIFY_AUTH_URL = 'https://us-central1-trntable-twitch.cloudfunctions.net/api';
     tokens: {}
     constructor(){}
 

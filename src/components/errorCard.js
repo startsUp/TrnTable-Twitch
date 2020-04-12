@@ -1,8 +1,9 @@
 import React from 'react'
 import AppLogo from './logo'
-import { Box } from '@material-ui/core'
+import { Box, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { TextWithTitle } from './Misc/TextWithTitle';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -11,8 +12,8 @@ const useStyles = makeStyles(theme => ({
     },
     card: {
         height: '15rem',
-        display: 'flex',
         alignItems: 'center',
+        textAlign: 'center',
         justifyContent: 'center',
     },
     logo: {
@@ -24,17 +25,14 @@ const useStyles = makeStyles(theme => ({
     },
     button: theme.button
 }))
-export default function ErrorCard(){
+export default function ErrorCard(props){
     const classes = useStyles()
     return (
         <div className={classes.root}>
-            <LinearProgress className={classes.progress}/>
             <Box p={3} className={classes.card}>
-                <AppLogo appLogo={classes.logo} animate={true}/>
+                <TextWithTitle title="Error" text={props.error.message}/>
+                { props.reset }
             </Box>
-            <Button variant="outlined" size="small" color="primary" className={classes.button} onClick={resetCallback}>
-                Reset Account
-            </Button> 
         </div>
     )
 }

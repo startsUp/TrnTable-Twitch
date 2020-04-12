@@ -15,9 +15,9 @@ export default function SettingsCard(props){
 			<List>
 				{settings.map((setting, index) => {
                     if(!configSet && initialSkipList.includes(setting.name))
-                        return <div></div>
+                        return setting.getComponent(classes, index, false)
                     else
-                        return setting.getComponent(classes, index)
+                        return setting.getComponent(classes, index, true)
                    })
                 }
 			</List>

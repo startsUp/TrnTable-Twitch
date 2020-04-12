@@ -33,18 +33,18 @@ export class SpotifySessionService{
      
     addTracks = () => {}
     
-    sendSongRequest = (track: Track, success: Function,  error: Function) => {
-        if (track){
-            console.warn('requesting track =', track)
+    sendSongRequest = (tracks: Track[], success: Function,  error: Function) => {
+        if (tracks && tracks.length > 0){
+            console.warn('requesting track =', tracks)
             fetch(`${this.EBS_API}/request/${this.id}`, {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 headers: {
                     'Content-Type': this.jsonType,
                     'Authorization': localStorage.getItem('token')
                 },
-                body: JSON.stringify(new PubSubMessage(track, PubSubMessageType.TRACK)) // body data type must match "Content-Type" header
+                body: JSON.stringify(tracks.map(track => new PubSubMessage(track, PubSubMessageType.TRACK))) // body data type must match "Content-Type" header
             })
-            .then(res => success(track))
+            .then(res => success(tracks))
             .catch(err => error(err))
         }
 			

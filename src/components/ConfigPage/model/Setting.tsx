@@ -13,7 +13,7 @@ export interface Setting<T>{
     name: string
     details: string
     defaultValue: T
-	getComponent(props: {settingStyle: {}}, id: number): any
+	getComponent(props: {settingStyle: {}}, id: number, render?: boolean): any
 	getSettingWithValue(value: T): Setting<T>
 }
 export const SettingComponent = props => {
@@ -41,7 +41,7 @@ export class NumberSetting implements Setting<number>{
 		valueChange(e){
 			this.value = e.target.value
 		}
-    getComponent(props, id){
+    getComponent(props, id, render?: boolean){
 			const [value, setValue] = React.useState(this.value);
 			const updateValue = (e: any) => {
 				let newValue = +e.target.value
@@ -49,6 +49,7 @@ export class NumberSetting implements Setting<number>{
 				setValue(newValue)
 				this.value = newValue
 			}
+			if (!render) return <div></div>
 			return (
 				<SettingComponent key={id} name={this.name} details={this.details} {...props}>
 					<TextField
@@ -63,39 +64,40 @@ export class NumberSetting implements Setting<number>{
 						}}
 						size="small"
 						variant="filled"
-					/>
+						/>
 				</SettingComponent>
 				
-			)
-	}
-	getSettingWithValue(value: number): Setting<number> {
-		return new NumberSetting(
-			this.name,
-			this.details,
-			this.defaultValue,
-			value,
+				)
+			}
+			getSettingWithValue(value: number): Setting<number> {
+				return new NumberSetting(
+					this.name,
+					this.details,
+					this.defaultValue,
+					value,
 			this.minValue,
 			this.maxValue
-		)
+			)
+		}
 	}
-}
-
-export class BooleanSetting implements Setting<boolean>{
-
-    constructor(
-        public name: string,
+	
+	export class BooleanSetting implements Setting<boolean>{
+		
+		constructor(
+			public name: string,
         public details: string,
         public defaultValue: boolean,
         public value: boolean,   
-    ){}
-
-    getComponent(props, id){
+		){}
+		
+		getComponent(props, id, render?: boolean){
 			const [value, setValue] = React.useState(this.value);
 			const updateValue = (e) => {
 				console.warn(e.target.checked)
 				this.value = e.target.checked
 				setValue(e.target.checked)
 			}
+			if (!render) return <div></div>
 			return (
 				<SettingComponent key={id} name={this.name} details={this.details} {...props}>
 					<Switch
@@ -107,48 +109,49 @@ export class BooleanSetting implements Setting<boolean>{
 					/>
 				</SettingComponent>
 				
-			)
-	}
-	
-	getSettingWithValue(value: boolean): Setting<boolean> {
-		return new BooleanSetting(
-			this.name,
-			this.details,
-			this.defaultValue,
-			value
+				)
+			}
+			
+			getSettingWithValue(value: boolean): Setting<boolean> {
+				return new BooleanSetting(
+					this.name,
+					this.details,
+					this.defaultValue,
+					value
 		)
 	}
-		
+	
 }
 
 export class SelectionSetting implements Setting<any>{
-
+	
 	
 	constructor(
-			public name: string,
-			public details: string,
-			public defaultValue: any,
-			public value: any,
-			public options: Array<any>   
-	){}
-	
-	getComponent(props, id){
+		public name: string,
+		public details: string,
+		public defaultValue: any,
+		public value: any,
+		public options: Array<any>   
+		){}
+		
+		getComponent(props, id, render?: boolean){
+			if (!render) return <div></div>
 			return (
-					<div>
+				<div>
 							Options
 					</div>
 			)
-	}
-	getSettingWithValue(value: any): Setting<any> {
-		return new SelectionSetting(
-			this.name,
-			this.details,
-			this.defaultValue,
-			value,
-			this.options,
-		)
-	}
-    
+		}
+		getSettingWithValue(value: any): Setting<any> {
+			return new SelectionSetting(
+				this.name,
+				this.details,
+				this.defaultValue,
+				value,
+				this.options,
+				)
+			}
+			
 }
 
 

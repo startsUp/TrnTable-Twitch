@@ -16,7 +16,8 @@ const useStyles = makeStyles(theme => ({
     margin: 'auto',
     backgroundColor: theme.palette.background.paper,
     boxSizing: 'border-box',
-    paddingLeft: '8px'
+	paddingLeft: '8px',
+	paddingTop: 0
   },
   artistName:{
     fontSize: '0.75rem'

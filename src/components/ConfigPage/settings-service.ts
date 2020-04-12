@@ -52,7 +52,7 @@ export class SettingsService{
     }
 	getUserSettings(config: {content: string}, userRole: Role) : UserSettings{
         // return default settings if no config json provided
-        if (config === null || config === undefined) 
+        if (config === null || config === undefined || !config.content) 
             return this.getDefaultUserSettings(userRole)
 
 		let {settings, role, extensionPlaylistId, playlistId, created, updated} = JSON.parse(config.content)		

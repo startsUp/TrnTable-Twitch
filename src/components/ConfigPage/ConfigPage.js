@@ -110,11 +110,12 @@ const spotifyApi = new SpotifyWebApi();
 
 export default function ConfigPage() {
 	
+	const twitch = window.Twitch ? window.Twitch.ext : null 
+	const auth = useAuth()
     const settingsService = new SettingsService();
-    const sessionService = new SpotifySessionService();
+	const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getOpaqueId())
 	const classes = useStyles();
 	
-	const auth = useAuth()
 	const [spotifyToken, api, makeCall] = useSpotify()
 
 	const { config, role } = auth.data

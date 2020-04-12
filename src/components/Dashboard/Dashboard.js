@@ -26,6 +26,8 @@ import { PubSubMessage, PubSubMessageType } from '../../util/Twitch/Model/PubSub
 import { SettingsService } from '../ConfigPage/settings-service';
 import { Role } from '../../auth/roles/roles';
 import { VoteType } from '../../util/Spotify/Model/Vote';
+import { SpotifyService } from '../../util/Spotify/SpotifyService';
+import ErrorCard from '../errorCard';
 
 
 function TabPanel(props) {
@@ -98,7 +100,7 @@ const BATCH_ADD_LIMIT = 5;
 
 export default function Dashboard() {
   const classes = useStyles()
-
+  const spotifyService = new SpotifyService()
   const theme = useTheme();
   const [value, setValue] = useState(0);
   const [tracksView, setTracksView] = useState(TracksView.REQUESTED);
@@ -111,7 +113,7 @@ export default function Dashboard() {
   const nowPlayingRef = useRef(null)
   const [nowPlaying, setNowPlaying] = useState(null)
 	const [votes, setVotes] = useState({likes: 0, dislikes: 0})
-	const sessionService = new SpotifySessionService(twitch, auth.twitch.getOpaqueId()) 
+	const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getOpaqueId()) 
 	const settingsService = new SettingsService() 
 	const { config } = auth.data
 
@@ -120,11 +122,22 @@ export default function Dashboard() {
 	useEffect(() => {
     var stopListeningForMessages = sessionService.listenForPubSubMessages(handlePubSubMessage) 
     var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
+    fetchPlaylistTracks()
     return () => {
       stopListeningForMessages()
       stopPolling()
     }
 	}, [])
+
+  function fetchPlaylistTracks(){
+    makeCall(spotify.getPlaylistTracks, [userSettings.extensionPlaylistId, {fields:'items(track(album(!available_markets), name, id, artists))'}], 
+      data => {
+        setRequests(spotifyService.getTrackObjects(data.items.length > 0 ? data.items.map(item =>item.track) : []))
+      },
+      err => {
+        setError(new Error('Unable to get Playlist'))
+      })    
+  }
 
   function handlePubSubMessage(pubSubMessage){
     if (pubSubMessage.type === PubSubMessageType.TRACK)
@@ -200,7 +213,15 @@ export default function Dashboard() {
 		auth.updateConfig(settingsService.toJSON(updatedUserSettings))
 		sessionService.broadcastSettingsUpdate(updatedUserSettings, true)
   }
-  console.log('nowplaying -->', nowPlaying)
+  
+  if (!config){
+    return(
+      <div className={classes.root}>
+        <ErrorCard error={new Error('Extension not Configured')} reset={false}/>
+      </div>
+    )
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed" color="default">
