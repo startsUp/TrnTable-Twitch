@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
   artistName:{
     fontSize: '0.75rem'
   },
+
   albumImage: {
     width: theme.spacing(5),
     height: theme.spacing(5)
@@ -37,7 +38,7 @@ const Error = (props) => (
   </Box>
 )
 
-export function TrackList(props: {tracks: Track[], maxSelection: number, onChange: Function, emptyMsg: string, hint: string}) {
+export function TrackList(props: {tracks: Track[], maxSelection: number, onChange: Function, emptyMsg: string, hint: string, selectable: boolean}) {
     const classes = useStyles();
     const [checked, setChecked] = React.useState([]);
     const { tracks } = props
@@ -84,13 +85,16 @@ export function TrackList(props: {tracks: Track[], maxSelection: number, onChang
 									className={classes.listItem}
 								/>
 								<ListItemSecondaryAction>
-									<Checkbox
-										edge="end"
-										disabled={false}
-										onChange={handleToggle(index)}
-										checked={checked.indexOf(index) !== -1}
-										inputProps={{ 'aria-labelledby': labelId }}
-									/>
+
+									{props.selectable && 
+										<Checkbox
+											edge="end"
+											disabled={false}
+											onChange={handleToggle(index)}
+											checked={checked.indexOf(index) !== -1}
+											inputProps={{ 'aria-labelledby': labelId }}
+										/>
+									}
 								</ListItemSecondaryAction>        
 						</ListItem>
 					</React.Fragment>

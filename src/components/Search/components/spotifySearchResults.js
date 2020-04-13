@@ -90,7 +90,7 @@ export default function SpotifySearchResults(props) {
           Request
         </Button>
       </div>
-        <TrackList tracks={props.tracks} emptyMsg="No Songs Found" hint="" maxSelection={1} onChange={handleChange}/>  
+        <TrackList tracks={props.tracks} emptyMsg="No Songs Found" hint="" selectable={true} maxSelection={1} onChange={handleChange}/>  
       </div>
     )   
 }

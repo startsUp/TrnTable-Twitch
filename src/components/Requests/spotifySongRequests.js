@@ -1,4 +1,5 @@
 import React, { Component, useState, useEffect } from 'react'
+import SettingsIcon from '@material-ui/icons/Settings';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
@@ -6,6 +7,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import AddIcon from '@material-ui/icons/Add';
 import { Grid, Button, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
 import { TrackList } from '../Misc/trackList';
+import Collapse from '@material-ui/core/Collapse';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -53,14 +55,40 @@ const useStyles = makeStyles(theme => ({
 		color: theme.palette.primary.main,
 		borderColor: theme.palette.primary.main,
 		...theme.button
-	},
-  header: {
+  },
+  collapseHeader: {
     position: 'sticky',
     top: '0px',
-    backgroundColor: 'rgba(25,20,20,0.95)',
-    display: 'grid',
+    backgroundColor: 'rgba(25,20,20,0.98)',
+    zIndex: '15',
+  },
+  header: {
+    // position: 'sticky',
+    // top: '0px',
+    // backgroundColor: 'rgba(25,20,20,0.95)',
+    // display: 'grid',
     padding: '8px',
-    zIndex: '10'
+    // zIndex: '10',
+    display: 'inline-flex',
+    // justifyContent: 'flex-end',
+    // alignItems: 'center'
+  },
+  settingsIcon: {
+    transition: 'all 0.8s ease',
+    cursor: 'pointer',
+    position: 'absolute',
+    right: '3px',
+    zIndex: '20',
+    padding: theme.spacing(1)
+  },
+  activeSettingsIcon: {
+    cursor: 'pointer',
+    position: 'absolute',
+    right: '3px',
+    zIndex: '20',
+    padding: theme.spacing(1),
+    transform: 'rotate(135deg)',
+    transition: 'all 0.8s ease'
   }
 }));
 
@@ -75,23 +103,43 @@ export default function SpotifySongRequests(props) {
 	const [checked, setChecked] = React.useState([]);
 	const currentTracks = props.requests
 	const [isTakingRequests, setRequestStatus] = React.useState(true);
+  const [selected, setSelected] = React.useState([]);
+  const [showingSettings, showSettings] = React.useState(false)
+
 
 	const handleStatusChange = () => {
     const willTakeRequests = !isTakingRequests
     setRequestStatus(willTakeRequests)
 		props.setRequestTakingStatus(willTakeRequests)
-	}
+  }
+  
+  const handleSelect = values => {
+    console.log(values)
+    setSelected(values)
+  }
+
+  const handleRemove = ( ) => {
+    
+  }
+  const getRemove = () => {
+    
+  }
 	return( // TODO: FIX STYLING 
 		<div className={classes.root}>
-			{
-				currentTracks && currentTracks.length > 0 &&
-				<div className={classes.header}>
-					<Button variant="outlined" size="small" onClick={handleStatusChange} className={isTakingRequests ? classes.stopRequestButton : classes.resumeRequestButton}>
-						{ isTakingRequests ? 'Stop Requests' : 'Resume Requests' }
-					</Button>
-				</div>
-			}
-			<TrackList tracks={currentTracks} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." />
+      <SettingsIcon className={showingSettings ? classes.activeSettingsIcon : classes.settingsIcon} style={{cursor: 'pointer'}} onClick={() => showSettings(!showingSettings)} color="primary" fontSize="small"/>          
+				<Collapse in={showingSettings} className={classes.collapseHeader}>
+        { currentTracks && currentTracks.length > 0 &&
+          <div className={classes.header}>
+            <Button variant="outlined" size="small" onClick={handleStatusChange} className={isTakingRequests ? classes.stopRequestButton : classes.resumeRequestButton}>
+              { isTakingRequests ? 'Stop Requests' : 'Resume Requests' }
+            </Button>
+            <Button style={{marginLeft:'8px'}} variant="outlined" size="small" onClick={handleRemove} className={classes.stopRequestButton} disabled={selected.length === 0}>
+              Remove
+            </Button> 
+          </div>
+        }
+      </Collapse>
+			<TrackList tracks={currentTracks} selectable={showingSettings} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." onChange={handleSelect}/>
 		</div>
 	)   
 }
