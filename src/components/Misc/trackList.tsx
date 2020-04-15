@@ -38,10 +38,10 @@ const Error = (props) => (
   </Box>
 )
 
-export function TrackList(props: {tracks: Track[], maxSelection: number, onChange: Function, emptyMsg: string, hint: string, selectable: boolean}) {
+export function TrackList(props: {tracks: Track[], maxSelection: number, onChange: Function, emptyMsg: string, hint: string, selectable: boolean, indeterminate? : boolean}) {
     const classes = useStyles();
     const [checked, setChecked] = React.useState([]);
-    const { tracks } = props
+	const { tracks } = props
     
     const handleToggle = value => () => {
 			
@@ -85,10 +85,11 @@ export function TrackList(props: {tracks: Track[], maxSelection: number, onChang
 									className={classes.listItem}
 								/>
 								<ListItemSecondaryAction>
-
 									{props.selectable && 
 										<Checkbox
 											edge="end"
+											color="primary"
+											indeterminate={props.indeterminate}
 											disabled={false}
 											onChange={handleToggle(index)}
 											checked={checked.indexOf(index) !== -1}
