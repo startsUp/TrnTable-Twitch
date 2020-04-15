@@ -206,13 +206,20 @@ export default function Dashboard() {
     setTracksView(TracksView.ERROR);
   }
 
-  const handleRemove = trackIndexes => {
+  const removeTracksFromPlaylist = (trackIds) => {
+    setRequests(prev => {
+      let updatedRequests = prev.filter(track => trackIds.indexOf(track.id) === -1)
+      return updatedRequests
+    })  
+  }
+
+  const handleRemove = trackIds => {
     var urisToRemove = []
-    trackIndexes.forEach(trackIndex => {
-      urisToRemove.push(`spotify:track:${requests[trackIndex].id}`)
+    trackIds.forEach(id => {
+      urisToRemove.push(`spotify:track:${id}`)
     })
     makeCall(spotify.removeTracksFromPlaylist, [userSettings.extensionPlaylistId, urisToRemove], success => {
-      fetchPlaylistTracks()
+      removeTracksFromPlaylist(trackIds)
     },
     err => {
 
