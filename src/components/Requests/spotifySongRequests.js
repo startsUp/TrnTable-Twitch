@@ -8,6 +8,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { Grid, Button, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
 import { TrackList } from '../Misc/trackList';
 import Collapse from '@material-ui/core/Collapse';
+import { TextWithTitle } from '../Misc/TextWithTitle';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -63,15 +64,8 @@ const useStyles = makeStyles(theme => ({
     zIndex: '15',
   },
   header: {
-    // position: 'sticky',
-    // top: '0px',
-    // backgroundColor: 'rgba(25,20,20,0.95)',
-    // display: 'grid',
     padding: '8px',
-    // zIndex: '10',
     display: 'inline-flex',
-    // justifyContent: 'flex-end',
-    // alignItems: 'center'
   },
   settingsIcon: {
     transition: 'all 0.8s ease',
@@ -100,7 +94,7 @@ const Error = (props) => (
 
 export default function SpotifySongRequests(props) {
 	const classes = useStyles();
-	const [checked, setChecked] = React.useState([]);
+	const resetChecked = React.useRef(null);
 	const currentTracks = props.requests
 	const [isTakingRequests, setRequestStatus] = React.useState(true);
   const [selected, setSelected] = React.useState([]);
@@ -113,17 +107,19 @@ export default function SpotifySongRequests(props) {
 		props.setRequestTakingStatus(willTakeRequests)
   }
   
-  const handleSelect = values => {
+  const handleSelect = (values, resetCallback) => {
     console.log(values)
     setSelected(values)
+    resetChecked.current = resetCallback
   }
 
-  const handleRemove = ( ) => {
-    
+  const handleRemove = () => {
+    let reset = resetChecked.current // get the current callback
+    reset() // reset selected songs
+    setSelected([])
+    props.onRemove(selected)
   }
-  const getRemove = () => {
-    
-  }
+  
 	return( // TODO: FIX STYLING 
 		<div className={classes.root}>
       <SettingsIcon className={showingSettings ? classes.activeSettingsIcon : classes.settingsIcon} style={{cursor: 'pointer'}} onClick={() => showSettings(!showingSettings)} color="primary" fontSize="small"/>          
@@ -139,7 +135,8 @@ export default function SpotifySongRequests(props) {
           </div>
         }
       </Collapse>
-			<TrackList tracks={currentTracks} selectable={showingSettings} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." onChange={handleSelect}/>
+      { !isTakingRequests && <TextWithTitle title="Not Taking Requests" text=""/> }
+			<TrackList indeterminate tracks={currentTracks} selectable={showingSettings} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." onChange={handleSelect}/>
 		</div>
 	)   
 }

@@ -206,6 +206,19 @@ export default function Dashboard() {
     setTracksView(TracksView.ERROR);
   }
 
+  const handleRemove = trackIndexes => {
+    var urisToRemove = []
+    trackIndexes.forEach(trackIndex => {
+      urisToRemove.push(`spotify:track:${requests[trackIndex].id}`)
+    })
+    makeCall(spotify.removeTracksFromPlaylist, [userSettings.extensionPlaylistId, urisToRemove], success => {
+      fetchPlaylistTracks()
+    },
+    err => {
+
+    })
+  }
+
   function setRequestTaking(willTakeRequests){
 		const stop = !willTakeRequests
 		var updatedUserSettings = settingsService.getUpdatedSettings(config, Role.BROADCASTER, 'Stop taking Requests', stop)
@@ -245,7 +258,7 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
-            <SpotifySongRequests requests={requests} setRequestTakingStatus={setRequestTaking}/>
+            <SpotifySongRequests requests={requests} setRequestTakingStatus={setRequestTaking} onRemove={handleRemove}/>
           </TabPanel>
         </div>   
         <div className={classes.swipeView}>
