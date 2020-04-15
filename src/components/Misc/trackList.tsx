@@ -42,68 +42,72 @@ export function TrackList(props: {tracks: Track[], maxSelection: number, onChang
     const classes = useStyles();
     const [checked, setChecked] = React.useState([]);
 	const { tracks } = props
-    
-    const handleToggle = value => () => {
-			
-			const currentIndex = checked.indexOf(value);
-			const newChecked = [...checked];
 	
-			if (currentIndex === -1) {
-				newChecked.push(value);
-				if(props.maxSelection && newChecked.length > props.maxSelection){
-					newChecked.splice(0, 1); // delete the first element
-				}
-			} else {
-				newChecked.splice(currentIndex, 1);
+	const resetChecked = () => {
+		setChecked([])
+	}
+
+    const handleToggle = value => () => {
+		
+		const currentIndex = checked.indexOf(value);
+		const newChecked = [...checked];
+
+		if (currentIndex === -1) {
+			newChecked.push(value);
+			if(props.maxSelection && newChecked.length > props.maxSelection){
+				newChecked.splice(0, 1); // delete the first element
 			}
-			setChecked(newChecked);
-			if(props.onChange){
-				props.onChange(newChecked)
-			}
+		} else {
+			newChecked.splice(currentIndex, 1);
+		}
+		setChecked(newChecked);
+		if(props.onChange){
+			props.onChange(newChecked, resetChecked)
+		}
     };
 
     return( // TODO: FIX STYLING 
 
-			<List className={classes.results}>
-            { tracks.length === 0 && props.emptyMsg && props.hint && <TextWithTitle title={props.emptyMsg} text={props.hint} />}
-			{ tracks.map((track,index) => {
-				const labelId = `checkbox-request-song-label-${index}`;
-				return(
-					<React.Fragment key={track.id}>
-						<ListItem alignItems="flex-start" >
-								<ListItemAvatar>
-								<Avatar alt={track.album.name}/* TO DO: CHECK if right way to access album name*/
-									variant="rounded" src={track.image} 
-									className={classes.albumImage}
-									/>
-								</ListItemAvatar>
-								<ListItemText
-									primaryTypographyProps={{color: 'textPrimary'}}
-									classes={{secondary: classes.artistName}}
-									primary={track.name}
-									secondary={track.artists}
-									className={classes.listItem}
+		<List className={classes.results}>
+		{ tracks.length === 0 && props.emptyMsg && props.hint && <TextWithTitle title={props.emptyMsg} text={props.hint} />}
+		{ tracks.map((track,index) => {
+			const labelId = `checkbox-request-song-label-${index}`;
+			return(
+				<React.Fragment key={track.id}>
+					<ListItem alignItems="flex-start" >
+							<ListItemAvatar>
+							<Avatar alt={track.album.name}/* TO DO: CHECK if right way to access album name*/
+								variant="rounded" src={track.image} 
+								className={classes.albumImage}
 								/>
-								<ListItemSecondaryAction>
-									{props.selectable && 
-										<Checkbox
-											edge="end"
-											color="primary"
-											indeterminate={props.indeterminate}
-											disabled={false}
-											onChange={handleToggle(index)}
-											checked={checked.indexOf(index) !== -1}
-											inputProps={{ 'aria-labelledby': labelId }}
-										/>
-									}
-								</ListItemSecondaryAction>        
-						</ListItem>
-					</React.Fragment>
-					
-				)
-				})
-			}
-			</List>
+							</ListItemAvatar>
+							<ListItemText
+								primaryTypographyProps={{color: 'textPrimary'}}
+								classes={{secondary: classes.artistName}}
+								primary={track.name}
+								secondary={track.artists}
+								className={classes.listItem}
+							/>
+							<ListItemSecondaryAction>
+								{props.selectable && 
+									<Checkbox
+										edge="end"
+										color="primary"
+										indeterminate={props.indeterminate}
+										disabled={false}
+										onChange={handleToggle(index)}
+										checked={checked.indexOf(index) !== -1}
+										inputProps={{ 'aria-labelledby': labelId }}
+									/>
+								}
+							</ListItemSecondaryAction>        
+					</ListItem>
+				</React.Fragment>
+				
+			)
+			})
+		}
+		</List>
 
     )   
 }
