@@ -86,7 +86,7 @@ export default function SpotifySearchResults(props) {
         }
        
             
-        <Button variant="outlined" size="small" color="primary" onClick={() => props.onRequest(props.tracks[selected])} className={classes.requestButton} disabled={selected === -1 || selected === null || selected === undefined }>
+        <Button variant="outlined" size="small" color="primary" onClick={() => props.onRequest(selected)} className={classes.requestButton} disabled={selected === -1 || selected === null || selected === undefined }>
           Request
         </Button>
       </div>
