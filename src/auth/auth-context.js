@@ -62,26 +62,20 @@ function AuthProvider(props) {
 		twitch.onAuthorized(auth => {
 			if (auth.token) {
           setAuthorized(true)
-          console.log(auth.token)
           localStorage.setItem('token', auth.token)
           twitchAuth.setToken(auth.token)
           setAuthData() // set role, channelid and user id
 
-					// get user data to check if it exist, only need to this in config view
-					// if ((viewType === ViewType.CONFIG || viewType === ViewType.LIVE_CONFIG) && twitchAuth.isModerator()){
             if (twitch.configuration.broadcaster){
               setData(prev => { // prevent ovewrites
                 return {...prev, config: twitch.configuration.broadcaster} 
               })
             }
-          // } 
-			
 			}
 		})
     
     // listen for configuration changes
     twitch.configuration.onChanged(()=> {
-        console.log('config changed', twitch.configuration)
       setData(prev => { // prevent ovewrites
           return {...prev, config: twitch.configuration.broadcaster}
       })
