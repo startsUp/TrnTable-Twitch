@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 /// <reference path="../node_modules/spotify-web-api-js/src/typings/spotify-web-api.d.ts" />
 import SpotifyWebApi from 'spotify-web-api-js'
 import { useTheme } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
 import { useAuth } from '../../auth/auth-context';
 import LoadingCard from '../../components/loader';
 import ErrorCard from '../../components/errorCard';
