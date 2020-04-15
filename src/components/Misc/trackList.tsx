@@ -95,8 +95,8 @@ export function TrackList(props: {tracks: Track[], maxSelection: number, onChang
 										color="primary"
 										indeterminate={props.indeterminate}
 										disabled={false}
-										onChange={handleToggle(index)}
-										checked={checked.indexOf(index) !== -1}
+										onChange={handleToggle(track.id)}
+										checked={checked.indexOf(track.id) !== -1}
 										inputProps={{ 'aria-labelledby': labelId }}
 									/>
 								}
