@@ -27,7 +27,9 @@ import { SettingsService } from '../ConfigPage/settings-service';
 import { Role } from '../../auth/roles/roles';
 import { VoteType, Vote } from '../../util/Spotify/Model/Vote';
 import { useSpotify } from '../../util/Spotify/spotify-context';
-
+import { Toast, HIDE_TOAST } from '../../util/Misc/Toast';
+import { StorageService } from '../../util/Misc/storage';
+import ErrorCard from '../errorCard';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -110,8 +112,9 @@ export default function ViewerTab() {
   const { config } = auth.data
   const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getChannelId())
   const settingsService = new SettingsService()
+  const storageService = new StorageService()
   const sessionSettings = settingsService.getSessionSettings(config)
-  const [toast, showToast] = useState(false)
+  const [toast, setToast] = useState(HIDE_TOAST)
   const [value, setValue] = useState(0);
   const [trackSearchView, setTrackSearchView] = useState(TrackSearchView.SEARCH);
   const [results, setResults] = useState([]);
@@ -123,9 +126,11 @@ export default function ViewerTab() {
   const [settings, setSettings] = React.useState({
     isTakingRequests: !settingsService.getSettingValue(sessionSettings, SettingMap.isTakingRequests)
   })
+
   const songRequestSuccess = res => {
-    showToast(true)
+    setToast(new Toast('success', 'Song Requested!'))
   }
+
   const songRequestFail = err => {
     console.err(err)
   }
@@ -194,16 +199,27 @@ export default function ViewerTab() {
   const handleChangeIndex = index => {
     setValue(index);
   };
-
   const sendSongRequest = track => {
-    makeCall(spotify.addTracksToPlaylist, [sessionSettings.extensionPlaylistId, [`spotify:track:${track.id}`]], 
-      success => {
-        sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
-        setTrackSearchView(TrackSearchView.SEARCH)
-      },
-      err => {
+    const MAX_REQUESTED_AMOUNT = 15 // Save upto 15 last songs to prevent same requests
+    var hasSongBeenRequested = storageService.hasSongBeenRequested(track.id)
+    if (!hasSongBeenRequested){
+      makeCall(spotify.addTracksToPlaylist, [sessionSettings.extensionPlaylistId, [`spotify:track:${track.id}`]], 
+        success => {
+          storageService.addRequestedSong(track.id)
+          var requestedAmount = storageService.getRequestedAmount()
+          if (requestedAmount >= MAX_REQUESTED_AMOUNT)
+            storageService.removeRequestedSong(storageService.getRequestSongsList()[0]) // remove the first added song
 
-      })
+          sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
+          setTrackSearchView(TrackSearchView.SEARCH)
+        },
+        err => {
+  
+        })
+    }
+    else{
+      setToast(new Toast('error', 'Song Already Requested.'))
+    }
   }
 
   const handleRequest = id => {
@@ -229,8 +245,16 @@ export default function ViewerTab() {
     if (reason === 'clickaway') {
       return;
     }
-    showToast(false);
+    setToast(prev=> {return {...prev, show: false}});
   };
+
+  if (!config){
+    return(
+      <div className={classes.root}>
+        <ErrorCard error={new Error('Extension not Configured')} reset={false}/>
+      </div>
+    )
+  }
 
   return (
     <div className={classes.root}>
@@ -270,9 +294,9 @@ export default function ViewerTab() {
           </TabPanel>
         </div>   
       </SwipeableViews>
-      <Snackbar open={toast} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success">
-          Song Requested!
+      <Snackbar open={toast.show} autoHideDuration={toast.time} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={toast.severity}>
+          {toast.message}
         </Alert>
       </Snackbar>
     </div>
