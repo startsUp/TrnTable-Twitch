@@ -27,7 +27,7 @@ import { SettingsService } from '../ConfigPage/settings-service';
 import { Role } from '../../auth/roles/roles';
 import { VoteType, Vote } from '../../util/Spotify/Model/Vote';
 import { useSpotify } from '../../util/Spotify/spotify-context';
-import { Toast, HIDE_TOAST } from '../../util/Misc/Toast';
+import { Toast, HIDE_TOAST } from '../../util/Misc/toast';
 import { StorageService } from '../../util/Misc/storage';
 import ErrorCard from '../errorCard';
 
