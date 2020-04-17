@@ -73,7 +73,7 @@ export function TrackList(props: {tracks: Track[], maxSelection: number, onChang
 		{ tracks.map((track,index) => {
 			const labelId = `checkbox-request-song-label-${index}`;
 			return(
-				<React.Fragment key={track.id}>
+				<React.Fragment key={`${track.id}-${index}`}>
 					<ListItem alignItems="flex-start" >
 							<ListItemAvatar>
 							<Avatar alt={track.album.name}/* TO DO: CHECK if right way to access album name*/
