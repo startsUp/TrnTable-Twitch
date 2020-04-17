@@ -50,6 +50,28 @@ export class SpotifySessionService{
 			
     }
 
+    /**
+     * @param makeCall Spotify call function that 
+     */
+    createPlaylist = (makeCall: Function, userDataCall: () => Promise<any>, createPlaylistCall: () => Promise<any>) : Promise<any> => {
+        return new Promise((resolve, reject) => {
+            makeCall(userDataCall, [], 
+                (data:any)=> {
+                    makeCall(createPlaylistCall, [data.id, {name: 'Twitch Song Requests'}], 
+                        (playlist:any) => {
+                            resolve(playlist)
+                        },
+                        (err:any) => {
+                            reject({msg: "Failed to create playlist"})
+                        })
+                },
+                (err:any) => {
+                    reject({msg: "Failed to create playlist"})
+                }
+            )
+        })
+    }
+
     parsePubSubMessage = (target: string, contentType: string, message: (object | string)) : PubSubMessage => {
         let req = JSON.parse(message.toString())
         return new PubSubMessage(req.content, req.type)

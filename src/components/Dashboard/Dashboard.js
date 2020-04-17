@@ -226,6 +226,14 @@ export default function Dashboard() {
     })
   }
 
+  function deletePlaylist(){
+    // make a new playlist first
+    sessionService.createPlaylist(makeCall, spotify.getMe, spotify.createPlaylist)
+      .then(playlist => sessionService.removePlaylist(makeCall, spotify.unfollowPlaylist, userSettings.extensionPlaylistId))
+      // .then(playlist)
+      .catch(err => console.log(err))
+  }
+
   function setRequestTaking(willTakeRequests){
 		const stop = !willTakeRequests
 		var updatedUserSettings = settingsService.getUpdatedSettings(config, Role.BROADCASTER, 'Stop taking Requests', stop)
@@ -265,7 +273,7 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
-            <SpotifySongRequests requests={requests} setRequestTakingStatus={setRequestTaking} onRemove={handleRemove}/>
+            <SpotifySongRequests requests={requests} setRequestTakingStatus={setRequestTaking} onRemove={handleRemove} onPlaylistReset={deletePlaylist}/>
           </TabPanel>
         </div>   
         <div className={classes.swipeView}>

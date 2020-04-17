@@ -50,12 +50,12 @@ const useStyles = makeStyles(theme => ({
   stopRequestButton: {
 		color: theme.palette.error.light,
 		borderColor: theme.palette.error.light,
-		...theme.button
+		...theme.smallButton
 	},
 	resumeRequestButton: {
 		color: theme.palette.primary.main,
 		borderColor: theme.palette.primary.main,
-		...theme.button
+		...theme.smallButton
   },
   collapseHeader: {
     position: 'sticky',
@@ -120,6 +120,13 @@ export default function SpotifySongRequests(props) {
     props.onRemove(selected)
   }
   
+  const handleReset = () => {
+    let reset = resetChecked.current // get the current callback
+    if (reset) reset()
+    setSelected([])
+    props.onPlaylistReset()
+  }
+  
 	return( // TODO: FIX STYLING 
 		<div className={classes.root}>
       <SettingsIcon className={showingSettings ? classes.activeSettingsIcon : classes.settingsIcon} style={{cursor: 'pointer'}} onClick={() => showSettings(!showingSettings)} color="primary" fontSize="small"/>          
@@ -131,6 +138,9 @@ export default function SpotifySongRequests(props) {
             </Button>
             <Button style={{marginLeft:'8px'}} variant="outlined" size="small" onClick={handleRemove} className={classes.stopRequestButton} disabled={selected.length === 0}>
               Remove
+            </Button> 
+            <Button style={{marginLeft:'8px'}} variant="outlined" size="small" onClick={handleReset} className={classes.stopRequestButton}>
+              Remove All
             </Button> 
           </div>
         }

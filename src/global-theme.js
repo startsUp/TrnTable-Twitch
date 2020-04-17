@@ -37,4 +37,11 @@ export const TrnTableTheme = createMuiTheme({
         justifySelf: 'center',
         cursor: 'pointer',
     },
+    smallButton: {
+        borderRadius: '16px',
+        fontFamily: 'sofia_problack',
+        justifySelf: 'center',
+        cursor: 'pointer',
+        fontSize: '0.65rem'
+    }
  });
