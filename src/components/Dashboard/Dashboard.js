@@ -24,6 +24,7 @@ import { VoteType } from '../../util/Spotify/Model/Vote';
 import { SpotifyService } from '../../util/Spotify/SpotifyService';
 import ErrorCard from '../errorCard';
 import { Toast, HIDE_TOAST, ToastNotification } from '../../util/Misc/toast';
+import LoadingCard from '../loader';
 
 
 function TabPanel(props) {
@@ -112,28 +113,45 @@ export default function Dashboard() {
 	const [votes, setVotes] = useState({likes: 0, dislikes: 0})
 	const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getOpaqueId()) 
 	const settingsService = new SettingsService() 
-	const { config } = auth.data
+  const { config } = auth.data
+  const [totalTracks, setTotalTracks] = useState(null)
+  const [offset, setOffset] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   var userSettings = settingsService.getUserSettings(config, Role.BROADCASTER)
   // listen for requests here
 	useEffect(() => {
     var stopListeningForMessages = sessionService.listenForPubSubMessages(handlePubSubMessage) 
-    var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
+    // var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
     fetchPlaylistTracks()
     return () => {
-      stopListeningForMessages()
-      stopPolling()
+    stopListeningForMessages()
+      // stopPolling()
     }
 	}, [])
 
   function fetchPlaylistTracks(){
-    makeCall(spotify.getPlaylistTracks, [userSettings.playlistId, {fields:'items(track(album(!available_markets), name, id, artists))'}], 
-      data => {
-        setRequests(spotifyService.getTrackObjects(data.items.length > 0 ? data.items.map(item =>item.track) : []))
-      },
-      err => {
-        setError(new Error('Unable to get Playlist'))
-      })    
+    setLoading(true)
+    var p = Promise.resolve({total: totalTracks, limit: 100})
+    if (totalTracks === null){
+      p = sessionService.getTotalTracksForPlaylist(makeCall, spotify.getPlaylistTracks, userSettings.playlistId)
+    }
+    p.then(info => {
+      const { total } = info
+      setTotalTracks(total)
+      var newOffset = offset !== null ? offset - 100  : total - 100
+      if (newOffset < 0) newOffset = 0
+      return sessionService.getTracksForPlaylist(makeCall, spotify.getPlaylistTracks, userSettings.playlistId, newOffset)
+    })
+    .then(data=>{
+      setOffset(data.offset)
+      setLoading(false)
+      setRequests(prev => [...prev, ...spotifyService.getTrackObjects(data.items.length > 0 ? data.items.map(item =>item.track).reverse() : [])])
+    })
+    .catch(err => {
+      setLoading(false)
+      setToast(new Toast('error', 'Failed to get Playlist'))
+    })
   }
 
   function handlePubSubMessage(pubSubMessage){
@@ -178,7 +196,7 @@ export default function Dashboard() {
 	}
 
 	const addRequest = (track) => {
-			setRequests(prev => [...prev, track])
+			setRequests(prev => [track, ...prev])
 	}
   
 
@@ -291,7 +309,14 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
-            <SpotifySongRequests requests={requests} setRequestTakingStatus={setRequestTaking} onRemove={handleRemove} onPlaylistReset={handlePlaylistReset}/>
+            <SpotifySongRequests 
+              requests={requests} 
+              setRequestTakingStatus={setRequestTaking} 
+              onRemove={handleRemove} 
+              loadMore={fetchPlaylistTracks}
+              loadMoreOption={offset !== 0 && offset !== null}
+              loading={loading}
+              onPlaylistReset={handlePlaylistReset}/>
           </TabPanel>
         </div>   
         <div className={classes.swipeView}>

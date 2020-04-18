@@ -85,6 +85,30 @@ export class SpotifySessionService{
         })
     }
 
+    getTotalTracksForPlaylist = (makeCall: Function, getPlaylistCall: () => Promise<any> , playlistId: string) : Promise<any> => {
+        return new Promise((resolve, reject) => {
+            makeCall(getPlaylistCall, [playlistId, {fields:'total,limit'}], 
+                (data:any) => {
+                    resolve(data)
+                },
+                (err:any) => {
+                    reject({msg: 'Failed to fetch playlist info'})
+            })  
+        })
+    }
+
+    getTracksForPlaylist = (makeCall: Function, getPlaylistCall: () => Promise<any> , playlistId: string, offset:number): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            makeCall(getPlaylistCall, [playlistId, {fields:'items(track(album(!available_markets), name, id, artists)),offset', limit: 100, offset}], 
+                (data:any) => {
+                    resolve(data)
+                },
+                (err:any) => {
+                    reject({msg: 'Failed to fetch playlist info'})
+            })  
+        })
+    }
+
     parsePubSubMessage = (target: string, contentType: string, message: (object | string)) : PubSubMessage => {
         let req = JSON.parse(message.toString())
         return new PubSubMessage(req.content, req.type)

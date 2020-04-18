@@ -144,7 +144,12 @@ export default function SpotifySongRequests(props) {
           </div>
       </Collapse>
       { !isTakingRequests && <TextWithTitle title="Not Taking Requests" text=""/> }
-			<TrackList indeterminate tracks={currentTracks} selectable={showingSettings} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." onChange={handleSelect}/>
+			<TrackList indeterminate tracks={currentTracks} selectable={showingSettings} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." onChange={handleSelect} />
+      { props.loadMoreOption &&
+        <Button style={{marginBottom: '8px'}} variant="outlined" size="small" onClick={props.loadMore} className={classes.resumeRequestButton}>
+          Load older
+        </Button>
+      } 
 		</div>
 	)   
 }
