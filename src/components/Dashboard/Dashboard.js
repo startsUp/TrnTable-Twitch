@@ -2,9 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import { Tab, Tabs, AppBar } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Icon from '@material-ui/core/Icon';
@@ -14,10 +12,8 @@ import SpotifySearch from '../Search/components/spotifySearch'
 import SpotifySearchResults from '../Search/components/spotifySearchResults';
 import SpotifyNowPlaying from '../NowPlaying/components/spotifyNowPlaying';
 import { Toolbar } from '@material-ui/core';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService';
 import { useAuth } from '../../auth/auth-context';
-import LoadingCard from '../loader';
 import SpotifySongRequests from '../Requests/spotifySongRequests';
 import { Track } from '../../util/Spotify/Model/Track';
 import { useSpotify } from '../../util/Spotify/spotify-context';
@@ -27,6 +23,7 @@ import { Role } from '../../auth/roles/roles';
 import { VoteType } from '../../util/Spotify/Model/Vote';
 import { SpotifyService } from '../../util/Spotify/SpotifyService';
 import ErrorCard from '../errorCard';
+import { Toast, HIDE_TOAST, ToastNotification } from '../../util/Misc/toast';
 
 
 function TabPanel(props) {
@@ -104,6 +101,7 @@ export default function Dashboard() {
   const [value, setValue] = useState(0);
   const [tracksView, setTracksView] = useState(TracksView.REQUESTED);
   const [results, setResults] = useState([]);
+  const [toast, setToast] = useState(HIDE_TOAST)
 	const [error, setError] = useState({errorMsg: ''});
 	const [requests, setRequests] = useState([]);
 	const twitch = window.Twitch ? window.Twitch.ext : null
@@ -129,7 +127,7 @@ export default function Dashboard() {
 	}, [])
 
   function fetchPlaylistTracks(){
-    makeCall(spotify.getPlaylistTracks, [userSettings.extensionPlaylistId, {fields:'items(track(album(!available_markets), name, id, artists))'}], 
+    makeCall(spotify.getPlaylistTracks, [userSettings.playlistId, {fields:'items(track(album(!available_markets), name, id, artists))'}], 
       data => {
         setRequests(spotifyService.getTrackObjects(data.items.length > 0 ? data.items.map(item =>item.track) : []))
       },
@@ -218,7 +216,7 @@ export default function Dashboard() {
     trackIds.forEach(id => {
       urisToRemove.push(`spotify:track:${id}`)
     })
-    makeCall(spotify.removeTracksFromPlaylist, [userSettings.extensionPlaylistId, urisToRemove], success => {
+    makeCall(spotify.removeTracksFromPlaylist, [userSettings.playlistId, urisToRemove], success => {
       removeTracksFromPlaylist(trackIds)
     },
     err => {
@@ -226,12 +224,32 @@ export default function Dashboard() {
     })
   }
 
-  function deletePlaylist(){
+  function handlePlaylistReset(){
     // make a new playlist first
     sessionService.createPlaylist(makeCall, spotify.getMe, spotify.createPlaylist)
-      .then(playlist => sessionService.removePlaylist(makeCall, spotify.unfollowPlaylist, userSettings.extensionPlaylistId))
-      // .then(playlist)
-      .catch(err => console.log(err))
+      .then(playlist => {
+        var playlistToUnfollow = userSettings.playlistId
+        userSettings.extensionPlaylistId = playlist.id
+        userSettings.playlistId = playlist.id
+        auth.updateConfig(settingsService.toJSON(userSettings))
+        sessionService.broadcastSettingsUpdate(userSettings, true)
+        return sessionService.removePlaylist(makeCall, spotify.unfollowPlaylist, playlistToUnfollow)
+      })
+      .then(() => {
+        setToast(new Toast('success', 'Songs Removed.'))
+        setRequests([])
+      })
+      .catch(err => {
+        console.log(err)
+        setToast(new Toast('error', 'Failed to remove all'))
+      })
+  }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setToast(prev=> {return {...prev, show: false}});
   }
 
   function setRequestTaking(willTakeRequests){
@@ -273,7 +291,7 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
-            <SpotifySongRequests requests={requests} setRequestTakingStatus={setRequestTaking} onRemove={handleRemove} onPlaylistReset={deletePlaylist}/>
+            <SpotifySongRequests requests={requests} setRequestTakingStatus={setRequestTaking} onRemove={handleRemove} onPlaylistReset={handlePlaylistReset}/>
           </TabPanel>
         </div>   
         <div className={classes.swipeView}>
@@ -283,6 +301,7 @@ export default function Dashboard() {
           </TabPanel>
         </div>   
       </SwipeableViews>
+      <ToastNotification toast={toast} onClose={handleClose}/> 
     </div>
   );
 }

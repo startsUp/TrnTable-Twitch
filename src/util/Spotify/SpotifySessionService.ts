@@ -71,6 +71,19 @@ export class SpotifySessionService{
             )
         })
     }
+    
+    removePlaylist = (makeCall: Function, unfollowPlaylistCall: () => Promise<any>, playlistId: string) : Promise<any> => {
+        return new Promise((resolve, reject)=> {
+            makeCall(unfollowPlaylistCall, [playlistId], 
+                (data:any)=> {
+                    resolve(data)
+                },
+                (err:any) => {
+                    reject({msg: "Failed to remove playlist"})
+                }
+            )
+        })
+    }
 
     parsePubSubMessage = (target: string, contentType: string, message: (object | string)) : PubSubMessage => {
         let req = JSON.parse(message.toString())

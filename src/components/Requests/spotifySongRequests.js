@@ -131,7 +131,6 @@ export default function SpotifySongRequests(props) {
 		<div className={classes.root}>
       <SettingsIcon className={showingSettings ? classes.activeSettingsIcon : classes.settingsIcon} style={{cursor: 'pointer'}} onClick={() => showSettings(!showingSettings)} color="primary" fontSize="small"/>          
 				<Collapse in={showingSettings} className={classes.collapseHeader}>
-        { currentTracks && currentTracks.length > 0 &&
           <div className={classes.header}>
             <Button variant="outlined" size="small" onClick={handleStatusChange} className={isTakingRequests ? classes.stopRequestButton : classes.resumeRequestButton}>
               { isTakingRequests ? 'Stop Requests' : 'Resume Requests' }
@@ -139,11 +138,10 @@ export default function SpotifySongRequests(props) {
             <Button style={{marginLeft:'8px'}} variant="outlined" size="small" onClick={handleRemove} className={classes.stopRequestButton} disabled={selected.length === 0}>
               Remove
             </Button> 
-            <Button style={{marginLeft:'8px'}} variant="outlined" size="small" onClick={handleReset} className={classes.stopRequestButton}>
+            <Button style={{marginLeft:'8px'}} variant="outlined" size="small" onClick={handleReset} className={classes.stopRequestButton} disabled={!(currentTracks && currentTracks.length > 0)}>
               Remove All
             </Button> 
           </div>
-        }
       </Collapse>
       { !isTakingRequests && <TextWithTitle title="Not Taking Requests" text=""/> }
 			<TrackList indeterminate tracks={currentTracks} selectable={showingSettings} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." onChange={handleSelect}/>

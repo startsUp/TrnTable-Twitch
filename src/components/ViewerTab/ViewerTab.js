@@ -20,7 +20,6 @@ import { useAuth } from '../../auth/auth-context';
 import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService';
 import { Track } from '../../util/Spotify/Model/Track'
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import { UserSettings } from '../ConfigPage/model/UserSettings';
 import { PubSubMessageType, PubSubMessage } from '../../util/Twitch/Model/PubSubMessage';
 import { SettingsService } from '../ConfigPage/settings-service';
@@ -203,7 +202,7 @@ export default function ViewerTab() {
     const MAX_REQUESTED_AMOUNT = 15 // Save upto 15 last songs to prevent same requests
     var hasSongBeenRequested = storageService.hasSongBeenRequested(track.id)
     if (!hasSongBeenRequested){
-      makeCall(spotify.addTracksToPlaylist, [sessionSettings.extensionPlaylistId, [`spotify:track:${track.id}`]], 
+      makeCall(spotify.addTracksToPlaylist, [sessionSettings.playlistId, [`spotify:track:${track.id}`]], 
         success => {
           storageService.addRequestedSong(track.id)
           var requestedAmount = storageService.getRequestedAmount()
