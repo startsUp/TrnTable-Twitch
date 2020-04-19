@@ -89,8 +89,8 @@ export function TrackList(props: {tracks: Track[], maxSelection: number, onChang
 								className={classes.listItem}
 							/>
 							<ListItemSecondaryAction>
-								{props.selectable && 
 									<Checkbox
+										style={{visibility: props.selectable ? 'visible' : 'hidden'}}
 										edge="end"
 										color="primary"
 										indeterminate={props.indeterminate}
@@ -99,7 +99,6 @@ export function TrackList(props: {tracks: Track[], maxSelection: number, onChang
 										checked={checked.indexOf(track.id) !== -1}
 										inputProps={{ 'aria-labelledby': labelId }}
 									/>
-								}
 							</ListItemSecondaryAction>        
 					</ListItem>
 				</React.Fragment>

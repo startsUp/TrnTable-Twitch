@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     display: 'inline-flex',
   },
   settingsIcon: {
-    transition: 'all 0.8s ease',
+    transition: 'all 0.6s ease',
     cursor: 'pointer',
     position: 'absolute',
     right: '3px',
@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
     zIndex: '20',
     padding: theme.spacing(1),
     transform: 'rotate(135deg)',
-    transition: 'all 0.8s ease'
+    transition: 'all 0.6s ease'
   }
 }));
 
@@ -146,8 +146,8 @@ export default function SpotifySongRequests(props) {
       { !isTakingRequests && <TextWithTitle title="Not Taking Requests" text=""/> }
 			<TrackList indeterminate tracks={currentTracks} selectable={showingSettings} emptyMsg="No Songs Requested" hint="Once your viewers request songs, they will show up here." onChange={handleSelect} />
       { props.loadMoreOption &&
-        <Button style={{marginBottom: '8px'}} variant="outlined" size="small" onClick={props.loadMore} className={classes.resumeRequestButton}>
-          Load older
+        <Button style={{marginBottom: '8px'}} variant="outlined" size="small" onClick={props.loadMore} className={classes.resumeRequestButton} disabled={props.loading}>
+          { props.loading ? '...' : 'Load older' } 
         </Button>
       } 
 		</div>
