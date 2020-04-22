@@ -6,6 +6,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import AddIcon from '@material-ui/icons/Add';
 import { Grid, Button, Typography, Avatar, ListItemAvatar, List, ListItem, ListItemText, ListItemSecondaryAction, Checkbox } from '@material-ui/core';
 import { TrackList } from '../../Misc/trackList';
+import BitIcon from '../../bitIcon';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,6 +52,15 @@ const useStyles = makeStyles(theme => ({
     fontFamily: 'sofia_problack',
     cursor: 'pointer'
   },
+  bitIcon: {
+    height: '18px',
+    stroke: 'none',
+    fill: theme.palette.primary.main
+  },
+  bitIconDisabled: {
+    height: '18px',
+    fill: theme.palette.text.disabled
+  },
   header: {
     position: 'sticky',
     top: '0px',
@@ -76,7 +86,7 @@ export default function SpotifySearchResults(props) {
     const handleChange = values => {
       setSelected(values[0]); // TODO: Support multiple song requests
     };
-
+    const disabled = selected === -1 || selected === null || selected === undefined 
     return( // TODO: FIX STYLING 
       <div className={classes.root}>
       <div className={classes.header}>
@@ -86,8 +96,8 @@ export default function SpotifySearchResults(props) {
         }
        
             
-        <Button variant="outlined" size="small" color="primary" onClick={() => props.onRequest(selected)} className={classes.requestButton} disabled={selected === -1 || selected === null || selected === undefined }>
-          Request
+        <Button variant="outlined" size="small" color="primary" onClick={() => props.onRequest(selected)} className={classes.requestButton} disabled={disabled}>
+          Request { props.requiresBits && <BitIcon bitIcon={disabled ? classes.bitIconDisabled : classes.bitIcon}/> }
         </Button>
       </div>
         <TrackList tracks={props.tracks} emptyMsg="No Songs Found" hint="" selectable={true} maxSelection={1} onChange={handleChange}/>  

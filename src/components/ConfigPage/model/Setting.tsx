@@ -140,6 +140,9 @@ export class SelectionSetting implements Setting<any>{
 			const updateSelected = (e) => {
 				setSelection(e.target.value)
 				this.value = this.options[e.target.value]
+				if (props.onChange){
+					props.onChange(this.value)
+				}
 			}
 			if (!render) return <div></div>
 			return (

@@ -282,7 +282,7 @@ export default function ViewerTab() {
                 {trackSearchView === TrackSearchView.SEARCH && 
                   <SpotifySearch isTakingRequests={settings.isTakingRequests} onResult={showTracks} onError={showError} onLoad={() => setTrackSearchView(TrackSearchView.LOADING)}/>}
                 {trackSearchView === TrackSearchView.LOADING && <div className={classes.loading}><LoadingCard /></div>}
-                {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results}  onRequest={handleRequest} onNavigateBack={showSearch} error={error}/>}
+                {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} requiresBits={auth.bits.enabled} onRequest={handleRequest} onNavigateBack={showSearch} error={error}/>}
                 {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error} />}
           </TabPanel>
         </div>   

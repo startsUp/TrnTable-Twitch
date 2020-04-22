@@ -29,7 +29,7 @@ export class SettingsService{
 
     getDefaultUserSettings(userRole: Role) : UserSettings{
         if(userRole === Role.BROADCASTER){
-            return new UserSettings(this.BroadcasterSettings.map(s=>s.defaultValue), userRole, null, null, new Date(), new Date())
+            return new UserSettings(this.BroadcasterSettings.map(s=>s.defaultValue), userRole, null, null, null, new Date(), new Date())
         }
     }
 
@@ -55,8 +55,8 @@ export class SettingsService{
         if (config === null || config === undefined || !config.content) 
             return this.getDefaultUserSettings(userRole)
 
-		let {settings, role, extensionPlaylistId, playlistId, created, updated} = JSON.parse(config.content)		
-		return new UserSettings(settings, role, extensionPlaylistId, playlistId, created, updated)
+		let {settings, role, extensionPlaylistId, playlistId, requestProductSKU, created, updated} = JSON.parse(config.content)		
+		return new UserSettings(settings, role, extensionPlaylistId, playlistId, requestProductSKU, created, updated)
 	}
 
     /**
