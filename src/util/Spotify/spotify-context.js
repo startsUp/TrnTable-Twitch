@@ -22,9 +22,11 @@ function SpotifyProvider(props) {
   const [fetch, fetchDone] = useState(false)
   const [error, setError] = useState(null)
   const theme = useTheme()
-  const updateToken = (token) => {
-    api.setAccessToken(token)
-    setToken(token)
+  const updateToken = (newToken) => {
+    api.setAccessToken(newToken)
+    if (!token){
+      setToken(newToken)
+    }
   }
 
   const getToken = async (url) => {
@@ -56,17 +58,25 @@ function SpotifyProvider(props) {
   /**
    * 
    */
-  const makeCall = async (f, args, onSuccess, onError) =>{
+  const makeCall = async (f, args, onSuccess, onError, retries = 0) =>{
 		f(...args)
 			.then(
 				data => {
 					onSuccess(data)
 				},
 				err => {
+          console.log('Error when making call--->', err)
 					if(err.status === 401){
-						refreshSpotifyToken()
-              .then(() => makeCall(f, args, onSuccess, err))
-              .catch(err => onError(err))
+            if (retries < 4){
+              refreshSpotifyToken()
+                .then(() => makeCall(f, args, onSuccess, onError, retries+1))
+                .catch(err => onError(err))
+            }
+            else{
+              let error = new Error('Unable to connect with spotify service.')
+              setError(error)
+              onError(error)
+            }
 					}
 					else{
 						onError(err)
