@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TextField, ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, Switch } from '@material-ui/core';
+import { MenuItem, TextField, ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, Switch, Select } from '@material-ui/core';
 
 
 export enum SettingType {
@@ -129,19 +129,40 @@ export class SelectionSetting implements Setting<any>{
 	constructor(
 		public name: string,
 		public details: string,
-		public defaultValue: any,
-		public value: any,
+		public defaultValue: number,
+		public value: number,
 		public options: Array<any>   
 		){}
 		
 		getComponent(props, id, render?: boolean){
+			const [selected, setSelection] = React.useState(this.defaultValue ? this.options.findIndex(i => i.value === this.defaultValue) : 0);
+
+			const updateSelected = (e) => {
+				setSelection(e.target.value)
+				this.value = this.options[e.target.value]
+			}
 			if (!render) return <div></div>
 			return (
-				<div>
-							Options
-					</div>
+				<SettingComponent key={id} name={this.name} details={this.details} {...props}>
+					<Select
+					labelId="demo-simple-select-filled-label"
+					style={{textAlign: 'start'}}
+					id="demo-simple-select-filled"
+					value={selected}
+					onChange={updateSelected}
+					>
+					{ 
+						this.options.map((item, index) => 
+							<MenuItem key={item.id} value={index}>
+								{item.value}
+							</MenuItem>
+						)
+					}   
+					</Select>
+				</SettingComponent>
 			)
 		}
+
 		getSettingWithValue(value: any): Setting<any> {
 			return new SelectionSetting(
 				this.name,

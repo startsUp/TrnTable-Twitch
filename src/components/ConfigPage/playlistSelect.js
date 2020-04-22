@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Typography, Box, List, Button, Checkbox, FormControlLabel, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core'
 import { SettingComponent } from './model/Setting'
 import { useSpotify } from "../../util/Spotify/spotify-context"
-import { useAuth } from "../../auth/auth-context"
+import { SpotifyService } from "../../util/Spotify/SpotifyService"
 
 const PLAYLIST_OPTION = { CREATE: true, EXISTING: false}
 // const spotify  = new SpotifyWebApi();
@@ -11,41 +11,37 @@ const PLAYLIST_LIMIT = 50
 export const PlaylistSelect = (props) => {
 	const { classes } = props
 	const [option, setOption] = useState(PLAYLIST_OPTION.CREATE)
-	const auth = useAuth()
 	const [token, spotify, makeCall] = useSpotify()
 	const [playlists, setPlaylists] = useState([])
 	const [selected, setSelected] = useState(0)
-
 	const updateToken = token => spotify.setAccessToken(token)
+	const spotifyService = new SpotifyService()
 
-	const fetchPlaylists = (limit, offset, callback) => {
-		makeCall(spotify.getUserPlaylists, [{limit, offset}], 
-			(data) =>{
+	const fetchPlaylists = (limit, offset) => {
+		spotifyService.getUserPlaylists(makeCall, spotify.getUserPlaylists,{limit, offset})
+			.then(data => {
 				var playlists = data.items ? data.items : []
-				callback(playlists)
-			},
-			err => {
-				console.log(err)
+				if (props.configSet) { // settings were saved before  
+					if (props.userSettings.extensionPlaylistId !== props.userSettings.playlistId){
+						setOption(PLAYLIST_OPTION.EXISTING)
+					}
+					playlists = playlists.filter(p => p.id !== props.userSettings.extensionPlaylistId)
+					let selectIndex = playlists.findIndex(p => (p.id === props.userSettings.playlistId))              
+					setSelected(selectIndex !== -1 ? selectIndex : 0)
+				}
+				setPlaylists(playlists)
 			})
+			.catch(err => console.log(err))
 	}           
 	
   
 	useEffect(() =>{
 		// spotify.setAccessToken(token)
-		fetchPlaylists(PLAYLIST_LIMIT, 0, data => {
-				var playlists = []  
-				if (props.configSet) { // settings were saved before  
-					if (props.userSettings.extensionPlaylistId !== props.userSettings.playlistId)
-						setOption(PLAYLIST_OPTION.EXISTING)
-					playlists = data.filter(p => p.id !== props.userSettings.extensionPlaylistId)
-					let selectIndex = playlists.findIndex(p => (p.id === props.userSettings.playlistId))              
-					setSelected(selectIndex !== -1 ? selectIndex : 0)
-				}
-				else{
-						playlists = data
-				}
-				setPlaylists(playlists)
-		}) 
+
+		fetchPlaylists(PLAYLIST_LIMIT, 0)
+		return () => {
+			console.log('Unmounting Playlist select')
+		} 
 	}, [])
     
 	const handleOptionChange = () => {
@@ -62,7 +58,8 @@ export const PlaylistSelect = (props) => {
 	}
 
 	return(
-		<List>
+		<React.Fragment>
+
 			<SettingComponent key='playlistSelect' 
 				name='Playlist' 
 				details='Your requests will go into a playlist. You can either create a new or use an existing '
@@ -104,26 +101,26 @@ export const PlaylistSelect = (props) => {
 		</SettingComponent>
         { option === PLAYLIST_OPTION.EXISTING && 
             <div style={{textAlign: 'end'}}>
-            <FormControl variant="filled" size="small" style={{width: '150px'}} >
-                <InputLabel id="demo-simple-select-filled-label">Playlist</InputLabel>
-                <Select
-                style={{textAlign: 'start'}}
-                labelId="demo-simple-select-filled-label"
-                id="demo-simple-select-filled"
-                value={selected}
-                onChange={updateSelected}
-                >
-               { 
-                    playlists.map((item, index) => 
-                        <MenuItem key={item.id} value={index}>
-                            {item.name}
-                        </MenuItem>
-                    )
-                }   
-                </Select>
-            </FormControl>
-        </div>
+				<FormControl variant="filled" size="small" style={{width: '150px'}} >
+					<InputLabel id="demo-simple-select-filled-label">Playlist</InputLabel>
+					<Select
+					style={{textAlign: 'start'}}
+					labelId="demo-simple-select-filled-label"
+					id="demo-simple-select-filled"
+					value={selected}
+					onChange={updateSelected}
+					>
+				{ 
+						playlists.map((item, index) => 
+							<MenuItem key={item.id} value={index}>
+								{item.name}
+							</MenuItem>
+						)
+					}   
+					</Select>
+				</FormControl>
+        	</div>
         }
-		</List>
+		</React.Fragment>
 	)
 }

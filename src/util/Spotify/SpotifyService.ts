@@ -23,6 +23,18 @@ export class SpotifyService{
         return this.getTrackObjects([track])[0]
     }
 
+    getUserPlaylists = (makeCall: Function, userPlaylistCall: Function, options: any) => {
+        return new Promise((resolve, reject) => {
+            makeCall(userPlaylistCall, [options], 
+                (data: any) => {
+                    resolve(data)
+                },
+                (err: any) => {
+                    reject({msg: 'Failed to fetch playlists'})
+                })
+        })
+    }
+
     search = async (query: string) => {
         return fetch(`${this.SPOTIFY_API_URL}/search?q=${query}`)
                                 .then(res => res.json())

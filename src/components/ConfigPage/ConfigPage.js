@@ -216,7 +216,15 @@ export default function ConfigPage() {
 					</div>
 					<Divider/>
 					{ configState === ConfigStates.LOGGEDOUT && <Login callback={popupCallback}/> }
-					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && <SettingsCard classes={classes} userSettings={userSettings} configSet={config} settings={settingComponents} saveConfigCallback={updateConfig}/>}
+					{ configState === ConfigStates.SETTINGS  && error === Error.NONE && 
+						<SettingsCard 
+							classes={classes} 
+							userSettings={userSettings} 
+							configSet={config} 
+							settings={settingComponents} 
+							saveConfigCallback={updateConfig}
+							bits={auth.bits}/>
+					}
 					{ configState === ConfigStates.LOGGEDIN && error === Error.NONE && <LoggedInCard classes={classes} 
 						settingsCallback={()=> setConfigState(ConfigStates.SETTINGS)} 
 						resetCallback={handleAccountReset} />
