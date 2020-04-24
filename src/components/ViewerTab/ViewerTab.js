@@ -223,8 +223,15 @@ export default function ViewerTab() {
 
   const handleRequest = id => {
     let track = results.find(track => track.id === id)
-    sendSongRequest(track)
+    if (auth.bits.enabled){
+      twitch.bits.useBits(sessionSettings.requestProductSKU)
+    }
+    else{
+      sendSongRequest(track)
+    }
   }
+
+
 
   const showSearch = () => {
     setTrackSearchView(TrackSearchView.SEARCH);
