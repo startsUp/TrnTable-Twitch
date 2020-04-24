@@ -86,6 +86,11 @@ export default function SpotifySearchResults(props) {
     const handleChange = values => {
       setSelected(values[0]); // TODO: Support multiple song requests
     };
+
+    const handleRequest = () => {
+      props.onRequest(selected)
+      setSelected(-1)
+    }
     const disabled = selected === -1 || selected === null || selected === undefined 
     return( // TODO: FIX STYLING 
       <div className={classes.root}>
@@ -96,7 +101,7 @@ export default function SpotifySearchResults(props) {
         }
        
             
-        <Button variant="outlined" size="small" color="primary" onClick={() => props.onRequest(selected)} className={classes.requestButton} disabled={disabled}>
+        <Button variant="outlined" size="small" color="primary" onClick={handleRequest} className={classes.requestButton} disabled={disabled}>
           Request { props.requiresBits && <BitIcon bitIcon={disabled ? classes.bitIconDisabled : classes.bitIcon}/> }
         </Button>
       </div>

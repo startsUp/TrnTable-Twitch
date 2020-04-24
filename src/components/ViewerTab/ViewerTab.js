@@ -26,7 +26,7 @@ import { SettingsService } from '../ConfigPage/settings-service';
 import { Role } from '../../auth/roles/roles';
 import { VoteType, Vote } from '../../util/Spotify/Model/Vote';
 import { useSpotify } from '../../util/Spotify/spotify-context';
-import { Toast, HIDE_TOAST } from '../../util/Misc/toast';
+import { Toast, HIDE_TOAST, ToastNotification } from '../../util/Misc/toast';
 import { StorageService } from '../../util/Misc/storage';
 import ErrorCard from '../errorCard';
 
@@ -198,36 +198,44 @@ export default function ViewerTab() {
   const handleChangeIndex = index => {
     setValue(index);
   };
-  const sendSongRequest = track => {
-    const MAX_REQUESTED_AMOUNT = 15 // Save upto 15 last songs to prevent same requests
-    var hasSongBeenRequested = storageService.hasSongBeenRequested(track.id)
-    if (!hasSongBeenRequested){
-      makeCall(spotify.addTracksToPlaylist, [sessionSettings.playlistId, [`spotify:track:${track.id}`]], 
-        success => {
-          storageService.addRequestedSong(track.id)
-          var requestedAmount = storageService.getRequestedAmount()
-          if (requestedAmount >= MAX_REQUESTED_AMOUNT)
-            storageService.removeRequestedSong(storageService.getRequestSongsList()[0]) // remove the first added song
 
-          sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
-          setTrackSearchView(TrackSearchView.SEARCH)
-        },
-        err => {
-  
+  const hasNotBeenRequested = (track) => !storageService.hasSongBeenRequested(track.id)
+    
+  const sendSongRequest = track => {
+    const MAX_REQUESTED_AMOUNT = 15
+    makeCall(spotify.addTracksToPlaylist, [sessionSettings.playlistId, [`spotify:track:${track.id}`]], 
+      success => {
+        storageService.addRequestedSong(track.id)
+        var requestedAmount = storageService.getRequestedAmount()
+        if (requestedAmount >= MAX_REQUESTED_AMOUNT)
+          storageService.removeRequestedSong(storageService.getRequestSongsList()[0]) // remove the first added song
+
+        sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
+        setTrackSearchView(TrackSearchView.SEARCH)
+      },
+      err => {
+        setToast(new Toast('error', 'Server down. Request not sent.'))
+      })
+  }
+      
+  const handleRequest = id => {
+    let track = results.find(track => track.id === id)
+    if(hasNotBeenRequested(track)){
+      if (auth.bits.enabled){
+        twitch.bits.useBits(sessionSettings.requestProductSKU)
+        twitch.bits.onTransactionComplete(transaction => {
+          sendSongRequest(track)
         })
+        twitch.bits.onTransactionCancelled(cancelled => {
+          setToast(new Toast('warning', 'Request Cancelled.'))
+        })
+      }
+      else{
+        sendSongRequest(track)
+      }
     }
     else{
       setToast(new Toast('error', 'Song Already Requested.'))
-    }
-  }
-
-  const handleRequest = id => {
-    let track = results.find(track => track.id === id)
-    if (auth.bits.enabled){
-      twitch.bits.useBits(sessionSettings.requestProductSKU)
-    }
-    else{
-      sendSongRequest(track)
     }
   }
 
@@ -300,11 +308,7 @@ export default function ViewerTab() {
           </TabPanel>
         </div>   
       </SwipeableViews>
-      <Snackbar open={toast.show} autoHideDuration={toast.time} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={toast.severity}>
-          {toast.message}
-        </Alert>
-      </Snackbar>
+      <ToastNotification toast={toast} onClose={handleClose}/> 
     </div>
   );
 }
