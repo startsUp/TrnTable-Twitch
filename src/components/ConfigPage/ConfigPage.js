@@ -158,7 +158,7 @@ export default function ConfigPage() {
                         (playlist) => {
                             // set twitch config
                             console.log('playlist created', playlist)
-                            userSettings.extensionPlaylistId = playlist.id
+							userSettings.extensionPlaylistId = playlist.id
                             if (!userSettings.playlistId)
                                 userSettings.playlistId = playlist.id
                             // get json string and set config
@@ -195,11 +195,16 @@ export default function ConfigPage() {
 	}
 
 	const handleAccountReset = () => {
+		setConfigState(ConfigStates.LOGGEDOUT);
+		sessionService.removePlaylist(makeCall, spotify.unfollowPlaylist, userSettings.playlistId)
+			.catch(() => {})
+
 		auth.resetAccount(
 			(success) => {
-				setConfigState(ConfigStates.LOGGEDOUT);
+				auth.twitch.setConfig('')
 			},
 			(error) => {
+				setConfigState(ConfigStates.LOGGEDIN)
 				setError(Error.RESETFAIL)
 			}
 		)
