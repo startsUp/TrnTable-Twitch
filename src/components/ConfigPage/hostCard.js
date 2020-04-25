@@ -20,15 +20,13 @@ const useStyles = makeStyles(theme => ({
 	},
 }))
 
-
-const cardDetails = () => {
-	
-}
-
-
 export default function HostCard(props){
 	const classes = useStyles()
-	console.log(props)
+	const [loginPending, setPending] = useState(false)
+	const handleLogin = () => {
+		setPending(true)
+		props.handleLogin()
+	}
 	return(
 		<Box p={3}>
 			<Typography variant="h4" className={classes.hostTitle}>
@@ -39,8 +37,8 @@ export default function HostCard(props){
 			</Typography>
 			<Box className={classes.login}>
 				<Typography color='textPrimary'>Let's Get Started</Typography>
-				<Button variant="outlined" onClick={props.handleLogin} size="small" color="primary" className={classes.button}>
-					Login
+				<Button variant="outlined" onClick={handleLogin} size="small" color="primary" className={classes.button}>
+					{ loginPending ? 'Logging In ...' : 'Login' } 
 				</Button>
 			</Box>
 		</Box>

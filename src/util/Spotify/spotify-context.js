@@ -38,6 +38,7 @@ function SpotifyProvider(props) {
             return {access_token: null}
         })
         .catch(err=> {
+          console.log('Error calling ebs -->', err)
           let error = new Error('Unable to connect with spotify service.')
           setError(error)
         })
@@ -94,9 +95,13 @@ function SpotifyProvider(props) {
   },[])
   
   useEffect(()=>{
-    if ((auth.data.channelId || auth.twitchAuth) && fetch){
+    if ((auth.data.channelId || auth.twitchAuth) && fetch && auth.spotifyLinked){
       var channelId = auth.data.channelId ? auth.data.channelId : auth.twitchAuth.getChannelId()
       refreshSpotifyToken(channelId)
+    }
+    if (!auth.spotifyLinked && token){ // if spotify account if unlinked then remove token from state
+      setToken(null)
+      api.setAccessToken(null)
     }
   }, [auth.data.channelId, auth.spotifyLinked])
 

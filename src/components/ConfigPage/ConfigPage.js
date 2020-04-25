@@ -195,8 +195,7 @@ export default function ConfigPage() {
 	}
 
 	const handleAccountReset = () => {
-		setConfigState(ConfigStates.LOGGEDOUT);
-		sessionService.removePlaylist(makeCall, spotify.unfollowPlaylist, userSettings.playlistId)
+		sessionService.removePlaylist(makeCall, api.unfollowPlaylist, userSettings.playlistId)
 			.catch(() => {})
 
 		auth.resetAccount(
@@ -204,12 +203,10 @@ export default function ConfigPage() {
 				auth.twitch.setConfig('')
 			},
 			(error) => {
-				setConfigState(ConfigStates.LOGGEDIN)
 				setError(Error.RESETFAIL)
 			}
 		)
 	}
-  console.log('spot token', spotifyToken)
   return (
 	<div className={classes.root}>
 		<div className={classes.cover}> 

@@ -73,6 +73,9 @@ function AuthProvider(props) {
             setData(prev => { // prevent ovewrites
               return {...prev, config: twitch.configuration.broadcaster} 
             })
+            if (twitch.configuration.broadcaster.content){
+              setLinked(true)
+            }
           }
         
           // bits
@@ -89,6 +92,9 @@ function AuthProvider(props) {
       setData(prev => { // prevent ovewrites
           return {...prev, config: twitch.configuration.broadcaster}
       })
+      if (twitch.configuration.broadcaster && twitch.configuration.broadcaster.content){
+        setLinked(true)
+      }
     })
 
     }, [])

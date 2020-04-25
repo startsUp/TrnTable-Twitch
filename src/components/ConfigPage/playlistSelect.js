@@ -58,7 +58,7 @@ export const PlaylistSelect = (props) => {
 	}
 
 	return(
-		<React.Fragment>
+		<React.Fragment key="playlist-select">
 
 			<SettingComponent key='playlistSelect' 
 				name='Playlist' 
