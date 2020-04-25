@@ -10,6 +10,8 @@ import { Role, getRole } from './roles/roles';
 import Dashboard from '../components/Dashboard/Dashboard';
 import ViewerDashboard from '../ViewerDashboard';
 import { SpotifyProvider } from '../util/Spotify/spotify-context';
+import ErrorCard from '../components/errorCard';
+
 const VERSION_NO = "0.0.1";
 const AuthContext = React.createContext()
 
@@ -127,7 +129,6 @@ function AuthProvider(props) {
     const reset = (onSuccess, onError) => {
       spotifyAuth.logout()
         .then(() => {
-          setTwitchConfig('')
           setLinked(false)
           onSuccess()
         })
@@ -135,6 +136,13 @@ function AuthProvider(props) {
     }
     return (
       <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, spotifyLinked: spotifyAccountLinked, makeAuthorizedCall: makeAuthorizedCall, resetAccount: reset, twitch: { setConfig: setTwitchConfig }, twitchAuth , data, bits }} {...props} />
+    )
+  }
+  else if (!data.config || !data.config.content){
+    return(
+      <div style={{height: '100vh'}}>
+        <ErrorCard error={new Error('Extension not Configured')} reset={false}/>
+      </div>
     )
   }
   else if (r === Role.BROADCASTER){ // TODO: Add Setting to allow moderators to control music
