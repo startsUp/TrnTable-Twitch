@@ -69,6 +69,7 @@ export class SettingsService{
                 settingsArray.push(setting.value)
             })
             userSettings.settings = settingsArray
+            userSettings.updated  = new Date()
         }
     }
 
