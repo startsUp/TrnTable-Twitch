@@ -22,7 +22,6 @@ import { SettingsService } from '../ConfigPage/settings-service';
 import { Role } from '../../auth/roles/roles';
 import { VoteType } from '../../util/Spotify/Model/Vote';
 import { SpotifyService } from '../../util/Spotify/SpotifyService';
-import ErrorCard from '../errorCard';
 import { Toast, HIDE_TOAST, ToastNotification } from '../../util/Misc/toast';
 import LoadingCard from '../loader';
 
@@ -191,12 +190,12 @@ export default function Dashboard() {
 			setError({errorMsg: 'Error updating now playing'})
 	}
 
-	const updateTrackList = (track) => { // called when new songs added
-			addRequest(track)
+	const updateTrackList = (tracks) => { // called when new songs added
+			addRequests(tracks)
 	}
 
-	const addRequest = (track) => {
-			setRequests(prev => [track, ...prev])
+	const addRequests = (tracks) => {
+			setRequests(prev => [...tracks, ...prev])
 	}
   
 
@@ -277,14 +276,6 @@ export default function Dashboard() {
 		sessionService.broadcastSettingsUpdate(updatedUserSettings, true)
   }
   
-  if (!config){
-    return(
-      <div className={classes.root}>
-        <ErrorCard error={new Error('Extension not Configured')} reset={false}/>
-      </div>
-    )
-  }
-
   return (
     <div className={classes.root}>
       <AppBar position="fixed" color="default">

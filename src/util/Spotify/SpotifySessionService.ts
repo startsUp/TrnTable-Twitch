@@ -42,7 +42,7 @@ export class SpotifySessionService{
                     'Content-Type': this.jsonType,
                     'Authorization': localStorage.getItem('token')
                 },
-                body: JSON.stringify(tracks.map(track => new PubSubMessage(track, PubSubMessageType.TRACK))) // body data type must match "Content-Type" header
+                body: JSON.stringify(new PubSubMessage(tracks, PubSubMessageType.TRACK)) // body data type must match "Content-Type" header
             })
             .then(res => success(tracks))
             .catch(err => error(err))
