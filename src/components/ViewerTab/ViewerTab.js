@@ -28,7 +28,6 @@ import { VoteType, Vote } from '../../util/Spotify/Model/Vote';
 import { useSpotify } from '../../util/Spotify/spotify-context';
 import { Toast, HIDE_TOAST, ToastNotification } from '../../util/Misc/toast';
 import { StorageService } from '../../util/Misc/storage';
-import ErrorCard from '../errorCard';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -205,10 +204,10 @@ export default function ViewerTab() {
     const MAX_REQUESTED_AMOUNT = 15
     makeCall(spotify.addTracksToPlaylist, [sessionSettings.playlistId, [`spotify:track:${track.id}`]], 
       success => {
-        storageService.addRequestedSong(track.id)
-        var requestedAmount = storageService.getRequestedAmount()
+        storageService.addRequestedSong(track.id, auth.twitchAuth.getChannelId())
+        var requestedAmount = storageService.getRequestedAmount(auth.twitchAuth.getChannelId())
         if (requestedAmount >= MAX_REQUESTED_AMOUNT)
-          storageService.removeRequestedSong(storageService.getRequestSongsList()[0]) // remove the first added song
+          storageService.removeRequestedSong(storageService.getRequestSongsList(auth.twitchAuth.getChannelId())[0]) // remove the first added song
 
         sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
         setTrackSearchView(TrackSearchView.SEARCH)
@@ -262,13 +261,7 @@ export default function ViewerTab() {
     setToast(prev=> {return {...prev, show: false}});
   };
 
-  if (!config){
-    return(
-      <div className={classes.root}>
-        <ErrorCard error={new Error('Extension not Configured')} reset={false}/>
-      </div>
-    )
-  }
+
 
   return (
     <div className={classes.root}>

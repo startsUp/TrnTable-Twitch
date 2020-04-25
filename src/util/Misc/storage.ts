@@ -26,29 +26,29 @@ export class StorageService {
     else return defaultValue
   }
 
-  getRequestedAmount(){
-    var list = this.getRequestSongsList()
+  getRequestedAmount(channelId: string){
+    var list = this.getRequestSongsList(channelId)
     return list.length
   }
 
-  getRequestSongsList(): any[]{
-    return this.getOrDefault(REQUESTED_SONGS_KEY, [])
+  getRequestSongsList(channelId: string): any[]{
+    return this.getOrDefault(REQUESTED_SONGS_KEY+channelId, [])
   }
 
-  hasSongBeenRequested(trackId: string){
-    var list = this.getRequestSongsList()
+  hasSongBeenRequested(trackId: string, channelId: string){
+    var list = this.getRequestSongsList(channelId)
     return list.includes(trackId)
   }
 
-  removeRequestedSong(trackId: string){
-    var list = this.getRequestSongsList()
+  removeRequestedSong(trackId: string, channelId: string){
+    var list = this.getRequestSongsList(channelId)
     var newList = list.filter(id => id !== trackId)
-    this.save(REQUESTED_SONGS_KEY, newList)
+    this.save(REQUESTED_SONGS_KEY+channelId, newList)
   }
 
-  addRequestedSong(trackId: string){
-    var list = this.getRequestSongsList()
+  addRequestedSong(trackId: string, channelId: string){
+    var list = this.getRequestSongsList(channelId)
     list.push(trackId)
-    this.save(REQUESTED_SONGS_KEY, list)
+    this.save(REQUESTED_SONGS_KEY+channelId, list)
   }
 }

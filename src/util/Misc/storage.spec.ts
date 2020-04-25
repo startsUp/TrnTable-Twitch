@@ -20,19 +20,19 @@ test('should return default if no saved value is found', () => {
 })
 
 test('should save requested songs', () => {
-	s.addRequestedSong('testId')
-	expect(s.hasSongBeenRequested('testId')).toBe(true)
+	s.addRequestedSong('testId', 'test-channel')
+	expect(s.hasSongBeenRequested('testId', 'test-channel')).toBe(true)
 })
 
 test('should remove by song id', () => {
-	s.addRequestedSong('testId')
-	s.removeRequestedSong('testId')
-	expect(s.hasSongBeenRequested('testId')).toBe(false)
-	expect(s.getRequestedAmount()).toBe(0)
+	s.addRequestedSong('testId', 'test-channel')
+	s.removeRequestedSong('testId', 'test-channel')
+	expect(s.hasSongBeenRequested('testId', 'test-channel')).toBe(false)
+	expect(s.getRequestedAmount('test-channel')).toBe(0)
 })
 
 test('return correct requested amount', () => {
-	expect(s.getRequestedAmount()).toBe(0)
-	s.addRequestedSong('testId')
-	expect(s.getRequestedAmount()).toBe(1)
+	expect(s.getRequestedAmount('test-channel')).toBe(0)
+	s.addRequestedSong('testId', 'test-channel')
+	expect(s.getRequestedAmount('test-channel')).toBe(1)
 })
