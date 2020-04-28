@@ -11,6 +11,7 @@ import Dashboard from '../components/Dashboard/Dashboard';
 import ViewerDashboard from '../ViewerDashboard';
 import { SpotifyProvider } from '../util/Spotify/spotify-context';
 import ErrorCard from '../components/errorCard';
+import ConfigPage from "../components/ConfigPage/ConfigPage"
 
 const VERSION_NO = "0.0.1";
 const AuthContext = React.createContext()
