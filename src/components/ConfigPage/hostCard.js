@@ -37,7 +37,7 @@ export default function HostCard(props){
 			</Typography>
 			<Box className={classes.login}>
 				<Typography color='textPrimary'>Let's Get Started</Typography>
-				<Button variant="outlined" onClick={handleLogin} size="small" color="primary" className={classes.button}>
+				<Button variant="outlined" onClick={handleLogin} size="small" color="primary" className={classes.button} disabled={loginPending}>
 					{ loginPending ? 'Logging In ...' : 'Login' } 
 				</Button>
 			</Box>

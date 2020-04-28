@@ -14,9 +14,6 @@ import { SpotifyProvider } from "./util/Spotify/spotify-context"
 ReactDOM.render(
 <MuiThemeProvider theme={ TrnTableTheme }>
   <AuthProvider viewType={ViewType.CONFIG}>
-    <SpotifyProvider>
-    <ConfigPage />
-    </SpotifyProvider>
   </AuthProvider>
 </MuiThemeProvider>,
   document.getElementById("root")

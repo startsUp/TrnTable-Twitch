@@ -28,7 +28,7 @@ const validateToken = token => {
   return false
   
 }
-
+  const twitchAuth = new Authentication()
 /**
  * Auth Provider for auth context. This handles login/logout and fetching of user data
  * @param {Object} props 
@@ -40,7 +40,7 @@ function AuthProvider(props) {
   const authToken = localStorage.getItem('token')
   const isTokenValid = validateToken(authToken) 
   
-  const twitchAuth = new Authentication(isTokenValid && authToken)
+   
 
   // initFetchDone - for checking if refresh token is stored, 
   // data - twitch configuration
@@ -141,7 +141,11 @@ function AuthProvider(props) {
         .catch(err => onError(err))
     }
     return (
-      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, spotifyLinked: spotifyAccountLinked, makeAuthorizedCall: makeAuthorizedCall, resetAccount: reset, twitch: { setConfig: setTwitchConfig }, twitchAuth , data, bits }} {...props} />
+      <AuthContext.Provider value={{ thirdPartyLogin: { spotify: spotifyAuth }, spotifyLinked: spotifyAccountLinked, makeAuthorizedCall: makeAuthorizedCall, resetAccount: reset, twitch: { setConfig: setTwitchConfig }, twitchAuth , data, bits }} {...props}>
+        <SpotifyProvider>
+          <ConfigPage />
+        </SpotifyProvider>
+      </AuthContext.Provider>
     )
   }
   else if (!data.config || !data.config.content){
