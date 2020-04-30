@@ -218,7 +218,17 @@ export default function ViewerTab() {
       })
   }
       
-  const isUnderLimit = () => storageService.getRequestedAmount(auth.twitchAuth.getChannelId()) < sessionService.getSettingValue(sessionSettings, 'Max Requests') 
+  const isUnderLimit = () => {
+    var channelId = auth.twitchAuth.getChannelId()
+    var lastRequestedAt = storageService.lastRequestedAt(channelId)
+    var diffMs = (new Date()) - lastRequestedAt
+    var diffMins = Math.floor(((diffMs % 86400000) % 3600000) / 60000); // minutes
+    if (diffMins > 30) {
+      storageService.setRequestedAmount(channelId, 0) // reset requested after
+      return true
+    } 
+    return storageService.getRequestedAmount(channelId) < sessionService.getSettingValue(sessionSettings, 'Max Requests')
+  }
   
   const handleRequest = id => {
     let track = results.find(track => track.id === id)

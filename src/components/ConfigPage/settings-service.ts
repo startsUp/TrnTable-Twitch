@@ -13,7 +13,7 @@ export class SettingsService{
             ),
 			new NumberSetting(
 				'Max Requests', 
-				'The maximum number of songs a viewer can request',
+				'The maximum number of songs a viewer can request. Once this limit is reached a viewer can only request again after 30mins.',
 				100,
 				100,
 				0,

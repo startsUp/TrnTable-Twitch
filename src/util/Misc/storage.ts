@@ -1,5 +1,5 @@
 export const REQUESTED_AMOUNT_KEY = 'reqA'
-
+export const LAST_REQUESTED_AT = 'reqL'
 export const REQUESTED_SONGS_KEY = 'reqS'
 
 
@@ -24,6 +24,10 @@ export class StorageService {
     let res = this.get(key)
     if (res) return res
     else return defaultValue
+  }
+
+  lastRequestedAt(channelId: string){
+    return this.getOrDefault(LAST_REQUESTED_AT+channelId, new Date('2020-1-1'))
   }
 
   getRequestedAmount(channelId: string){
@@ -53,6 +57,7 @@ export class StorageService {
     var list = this.getRequestSongsList(channelId)
     list.push(trackId)
     this.setRequestedAmount(channelId, this.getRequestedAmount(channelId)+1)
+    this.save(LAST_REQUESTED_AT+channelId, new Date())
     this.save(REQUESTED_SONGS_KEY+channelId, list)
   }
 }
