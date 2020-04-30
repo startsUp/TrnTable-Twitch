@@ -205,9 +205,10 @@ export default function ViewerTab() {
     makeCall(spotify.addTracksToPlaylist, [sessionSettings.playlistId, [`spotify:track:${track.id}`]], 
       success => {
         storageService.addRequestedSong(track.id, auth.twitchAuth.getChannelId())
-        var requestedAmount = storageService.getRequestedAmount(auth.twitchAuth.getChannelId())
+        var recentlyRequested = storageService.getRequestSongsList(auth.twitchAuth.getChannelId())
+        var requestedAmount = recentlyRequested.length
         if (requestedAmount >= MAX_REQUESTED_AMOUNT)
-          storageService.removeRequestedSong(storageService.getRequestSongsList(auth.twitchAuth.getChannelId())[0]) // remove the first added song
+          storageService.removeRequestedSong([0]) // remove the first added song
 
         sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
         setTrackSearchView(TrackSearchView.SEARCH)
@@ -217,9 +218,13 @@ export default function ViewerTab() {
       })
   }
       
+  const isUnderLimit = () => storageService.getRequestedAmount(auth.twitchAuth.getChannelId()) < sessionService.getSettingValue(sessionSettings, 'Max Requests') 
+  
   const handleRequest = id => {
     let track = results.find(track => track.id === id)
-    if(hasNotBeenRequested(track)){
+    var notRequested = hasNotBeenRequested(track)
+    var underLimit = isUnderLimit()
+    if(notRequested && underLimit){
       if (auth.bits.enabled){
         twitch.bits.useBits(sessionSettings.requestProductSKU)
         twitch.bits.onTransactionComplete(transaction => {
@@ -234,8 +239,11 @@ export default function ViewerTab() {
       }
     }
     else{
-      setToast(new Toast('error', 'Song Already Requested.'))
-    }
+      if (!notRequested)
+        setToast(new Toast('error', 'Song Already Requested.'))
+      if (!underLimit)
+        setToast(new Toast('error', 'Max song requested. Please try again in 15mins.'))
+      }
   }
 
 

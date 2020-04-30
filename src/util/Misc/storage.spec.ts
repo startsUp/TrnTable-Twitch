@@ -28,7 +28,7 @@ test('should remove by song id', () => {
 	s.addRequestedSong('testId', 'test-channel')
 	s.removeRequestedSong('testId', 'test-channel')
 	expect(s.hasSongBeenRequested('testId', 'test-channel')).toBe(false)
-	expect(s.getRequestedAmount('test-channel')).toBe(0)
+	expect(s.getRequestedAmount('test-channel')).toBe(1)
 })
 
 test('return correct requested amount', () => {

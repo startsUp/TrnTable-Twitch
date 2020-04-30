@@ -27,8 +27,11 @@ export class StorageService {
   }
 
   getRequestedAmount(channelId: string){
-    var list = this.getRequestSongsList(channelId)
-    return list.length
+    return parseInt(this.getOrDefault(REQUESTED_AMOUNT_KEY+channelId, '0'))
+  }
+
+  setRequestedAmount(channelId: string, amount: number){
+    this.save(REQUESTED_AMOUNT_KEY+channelId, `${amount}`)
   }
 
   getRequestSongsList(channelId: string): any[]{
@@ -49,6 +52,7 @@ export class StorageService {
   addRequestedSong(trackId: string, channelId: string){
     var list = this.getRequestSongsList(channelId)
     list.push(trackId)
+    this.setRequestedAmount(channelId, this.getRequestedAmount(channelId)+1)
     this.save(REQUESTED_SONGS_KEY+channelId, list)
   }
 }
