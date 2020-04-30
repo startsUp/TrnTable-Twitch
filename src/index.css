@@ -7,7 +7,7 @@ body {
 
 
 #record-label{
-    animation: App-logo-spin infinite 2s linear;
+    animation: App-logo-spin infinite 1s linear;
 }
 
 @keyframes App-logo-spin {

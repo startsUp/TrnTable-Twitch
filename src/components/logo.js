@@ -19,17 +19,17 @@ const AppLogo = (props) => {
                 </pattern>
             </defs>
             <circle r="90" stroke="#1ed660" strokeWidth="12"/>
-            <g id={props.animate ? 'record-label' : ''}>
+        <g id={props.animate ? 'record-label' : ''}>
             <circle r="60" stroke="#1ed660" fill="#191414" strokeWidth="2.5"/>
             <circle r="25" fill={patternURL}/>
             <circle r="5" stroke="#fff"/>
+            <path fill="white" stroke="antiquewhite" d="M-41 -2.1c-2.5 -1.7 -2 -6.1 -1.6 -9.6c0.4 -3 1.1 -8.8 5.6 -14.4c0.6 -0.8 3.8 -4.7 9.3 -7c2.1 -0.9 4.8 -2 6.3 -0.7c0.9 0.7 1.3 2.2 1 3.3c-0.5 1.9 -2.8 2.7 -4.2 3.4c-5.9 2.9 -10.2 10.7 -10.7 16.3c-0.4 4.4 0.6 7.3 -1.3 8.7c-1.2 0.9 -3.1 0.8 -4.4 0l0 0z"/>  
         </g>
             <g strokeLinejoin="round" stroke="#60de8f">
                 <path d="M42.813-82.723h3.355v78.261h-3.355z" strokeWidth="1.8"/>
                 <path d="M40.633-13.593h8.015V4.01h-8.015z" strokeWidth="2.076"/>
             </g>
         </svg>
-
     )
 }
 export default AppLogo
