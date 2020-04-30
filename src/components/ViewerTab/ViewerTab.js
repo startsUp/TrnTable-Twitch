@@ -198,7 +198,7 @@ export default function ViewerTab() {
     setValue(index);
   };
 
-  const hasNotBeenRequested = (track) => !storageService.hasSongBeenRequested(track.id)
+  const hasNotBeenRequested = (track) => !storageService.hasSongBeenRequested(track.id, auth.twitchAuth.getChannelId())
     
   const sendSongRequest = track => {
     const MAX_REQUESTED_AMOUNT = 15
