@@ -227,7 +227,7 @@ export default function ViewerTab() {
       storageService.setRequestedAmount(channelId, 0) // reset requested after
       return true
     } 
-    return storageService.getRequestedAmount(channelId) < sessionService.getSettingValue(sessionSettings, 'Max Requests')
+    return storageService.getRequestedAmount(channelId) < settingsService.getSettingValue(sessionSettings, 'Max Requests')
   }
   
   const handleRequest = id => {
