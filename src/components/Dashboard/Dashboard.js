@@ -121,11 +121,11 @@ export default function Dashboard() {
   // listen for requests here
 	useEffect(() => {
     var stopListeningForMessages = sessionService.listenForPubSubMessages(handlePubSubMessage) 
-    // var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
+    var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
     fetchPlaylistTracks()
     return () => {
-    stopListeningForMessages()
-      // stopPolling()
+      stopListeningForMessages()
+      stopPolling()
     }
 	}, [])
 
@@ -161,6 +161,7 @@ export default function Dashboard() {
   }
 
 	function updateNowPlaying(track){
+    console.log(track)
     // closure prevents this function to get latest nowPlaying value, hence use useRef
     const currentTrack = nowPlayingRef.current
     
