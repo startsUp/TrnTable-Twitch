@@ -29,7 +29,7 @@ function UserProvider(props) {
   // whether or not we have a user token and if we do, then we render a spinner
   // while we go retrieve that user's information.
   if (weAreStillWaitingToGetTheUserData) {
-    return <LoadingCard />
+    return <LoadingCard progressbar/>
   }
 	
 	const spotifyCallback = () => {

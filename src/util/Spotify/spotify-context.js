@@ -74,7 +74,7 @@ function SpotifyProvider(props) {
                 .catch(err => onError(err))
             }
             else{
-              let error = new Error('Unable to connect with spotify service.')
+              let error = new Error('Unable to connect with spotify service. Try reconnecting your spotify account again.')
               setError(error)
               onError(error)
             }
@@ -128,7 +128,7 @@ function SpotifyProvider(props) {
     )
   }
   else {
-    return <div style={{height: '100vh'}}><LoadingCard /></div>
+    return <div style={{height: '100vh'}}><LoadingCard progressbar /></div>
   }
 }
 const useSpotify = () => React.useContext(SpotifyContext)

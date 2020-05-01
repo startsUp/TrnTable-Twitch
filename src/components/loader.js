@@ -23,11 +23,11 @@ const useStyles = makeStyles(theme => ({
         height: '2px'
     }
 }))
-export default function LoadingCard(){
+export default function LoadingCard(props){
     const classes = useStyles()
     return (
         <div className={classes.root}>
-            <LinearProgress className={classes.progress}/>
+            { props.progressbar && <LinearProgress className={classes.progress}/>}
             <Box p={3} className={classes.card}>
                 <AppLogo appLogo={classes.logo} animate={true}/>
             </Box> 
