@@ -26,8 +26,8 @@ export const TrnTableTheme = createMuiTheme({
                 main: '#FFFFFF'
             },
             background: {
-                paper: '#201c2b',
-                default: "#201c2b",
+                paper: '#0e0e10',
+                default: "#0e0e10",
                 cover: 'rgba(25, 36, 26, 0.8)' // 9th midpoint 
             }
     },
