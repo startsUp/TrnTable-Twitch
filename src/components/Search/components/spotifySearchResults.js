@@ -64,7 +64,6 @@ const useStyles = makeStyles(theme => ({
   header: {
     position: 'sticky',
     top: '0px',
-    backgroundColor: 'rgba(25,20,20,0.95)',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     padding: '5px',
