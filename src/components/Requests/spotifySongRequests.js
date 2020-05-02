@@ -60,7 +60,6 @@ const useStyles = makeStyles(theme => ({
   collapseHeader: {
     position: 'sticky',
     top: '0px',
-    backgroundColor: 'rgba(25,20,20,0.98)',
     zIndex: '15',
   },
   header: {
