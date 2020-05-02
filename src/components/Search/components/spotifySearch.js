@@ -25,7 +25,7 @@ export function SearchInput(props) {
       
       { isTakingRequests ?
         <div>
-          <TextWithTitle title="Find song to Request" text=""/>
+          <TextWithTitle title="Request a Song" text="Find a song to be played on stream. Requested songs will be added to the current spotify playlist."/>
           <form className={classes.root} noValidate autoComplete="off" onKeyPress={(e)=>(e.key==='Enter' && props.submit(e))}>
               <TextField id="spotify-search-input" label="Search..." 
               InputLabelProps={{
