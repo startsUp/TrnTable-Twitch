@@ -22,13 +22,17 @@ export function SearchInput(props) {
   const { isTakingRequests } = props
   return (
     <div>
+      
       { isTakingRequests ?
-        <form className={classes.root} noValidate autoComplete="off" onKeyPress={(e)=>(e.key==='Enter' && props.submit(e))}>
-            <TextField id="spotify-search-input" label="Search For Song" 
-            InputLabelProps={{
-              classes: {root: classes.spotifySearch}
-            }}/>
-        </form> :
+        <div>
+          <TextWithTitle title="Find song to Request" text=""/>
+          <form className={classes.root} noValidate autoComplete="off" onKeyPress={(e)=>(e.key==='Enter' && props.submit(e))}>
+              <TextField id="spotify-search-input" label="Search..." 
+              InputLabelProps={{
+                classes: {root: classes.spotifySearch}
+              }}/>
+          </form>
+        </div> :
         <TextWithTitle title="Not Taking Requests" text="The streamer has disabled requests temporarily."/>
       }
     </div>
