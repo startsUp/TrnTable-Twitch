@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import LoadingCard from '../components/loader'
 import { SpotifyLogin } from './SpotifyLogin'
 import Authentication from '../util/Twitch/Authentication';
-import { useLazyQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 import jwt from 'jsonwebtoken'
 import { ViewType } from '../util/Twitch/ViewType' 
 import { Role, getRole } from './roles/roles';

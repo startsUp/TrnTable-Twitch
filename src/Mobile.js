@@ -2,15 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import ViewerDashboard from './ViewerDashboard';
-import registerServiceWorker from './registerServiceWorker';
 import { TrnTableTheme } from './global-theme'
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';  
-import { GraphQLAuth } from './auth/GraphQLAuth';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+import { MuiThemeProvider } from '@material-ui/core/styles';  
 import { AuthProvider } from './auth/auth-context';
 import { ViewType } from './util/Twitch/ViewType';
-
 
 ReactDOM.render(
 <MuiThemeProvider theme={ TrnTableTheme }>
@@ -19,4 +14,3 @@ ReactDOM.render(
   </AuthProvider>	
 </MuiThemeProvider>
 , document.getElementById('root'));
-// registerServiceWorker();
