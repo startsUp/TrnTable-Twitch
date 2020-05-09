@@ -17,14 +17,14 @@ const useStyles = makeStyles(theme => ({
     display: 'grid',
     justifyContent: 'center',
     justifyItems: 'center',
-    padding: theme.spacing(2),
     paddingTop: theme.spacing(1),
     gridGap: theme.spacing(2),
     maxHeight: '500px',
-
+    
 	},
 	nowPlaying: {
-		display: 'contents', 
+    padding: theme.spacing(2),
+    display: 'contents', 
 		textAlign: 'center'
 	},
   icon: {
@@ -136,14 +136,15 @@ export default function SpotifyNowPlaying(props) {
               </Button>
             </React.Fragment>
           }
-          { nowPlaying && <NowPlaying classes={classes} track={nowPlaying}/> }
-          { nowPlaying &&
-          <div className={classes.footer}>
-            { nowPlaying.context && <ContextLink text="Find on Spotify:" 
-              link={{url: nowPlaying.context.external_urls.spotify, text: nowPlaying.context.type}}
-              title=''/>}
+          { nowPlaying && 
+          <React.Fragment>
+            <NowPlaying classes={classes} track={nowPlaying}/>
             {!isExtensionPlaylistBeingPlayed() && <Typography variant="body2" className={classes.warning}>Extension playlist not being played right now!</Typography>}
-          </div>
+            { nowPlaying.context && 
+              <ContextLink className={classes.footer} text="Find on Spotify:" 
+                link={{url: nowPlaying.context.external_urls.spotify, text: nowPlaying.context.type}}
+                title=''/>}
+          </React.Fragment>
           }
         </div> 
     )
