@@ -4,7 +4,6 @@ import { Typography, Link } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
     root: {
         textAlign: 'center',
-        padding: theme.spacing(2)
     },
     title: {
         textDecoration: 'underline',
