@@ -5,6 +5,7 @@ import { Error } from '../searchErrors';
 import { Typography } from '@material-ui/core';
 import { SpotifyService } from '../../../util/Spotify/SpotifyService';
 import { TextWithTitle } from '../../Misc/TextWithTitle';
+import { ContextLink } from '../../Misc/ContextLink';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -14,12 +15,17 @@ const useStyles = makeStyles(theme => ({
   },
   spotifySearch: {
     fontFamily: 'sofia_problack'
+  },
+  footer: {
+    position: 'absolute',
+    bottom: '3px',
+    width: '100%',
   }
 }));
 
 export function SearchInput(props) {
   const classes = useStyles();
-  const { isTakingRequests } = props
+  const { isTakingRequests, playlistId } = props
   return (
     <div>
       
@@ -32,6 +38,10 @@ export function SearchInput(props) {
                 classes: {root: classes.spotifySearch}
               }}/>
           </form>
+          <div className={classes.footer}>
+            <ContextLink  text="Songs are added here:"
+              link={{url: `https://open.spotify.com/playlist/${playlistId}`, text: 'Playlist'}}/>
+          </div>
         </div> :
         <TextWithTitle title="Not Taking Requests" text="The streamer has disabled requests temporarily."/>
       }
