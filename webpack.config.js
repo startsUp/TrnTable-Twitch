@@ -25,11 +25,6 @@ module.exports = (_env,argv)=> {
       outputHtml:"config.html",
       build:true
     },
-    LiveConfig:{
-      path:"./src/LiveConfig.js",
-      outputHtml:"live_config.html",
-      build:true
-    },
     Mobile:{
       path:"./src/Mobile.js",
       outputHtml:"mobile.html",
