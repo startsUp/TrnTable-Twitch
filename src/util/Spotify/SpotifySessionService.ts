@@ -148,8 +148,9 @@ export class SpotifySessionService{
         var poll = (retries: number) => {
             makeCall(call, [], 
                 (data: any) => {
-                    
-                    callback(data.item ? this.spotifyService.getTrackObject(data.item) : null)
+                    var track = data.item ? this.spotifyService.getTrackObject(data.item) : null
+                    if (track) track.context = data.context // add context for indicating which playlist the track is being played from
+                    callback(track)
                     if (!data || !data.is_playing ){
                         // delay poll
                         interval = Math.round(Math.random()*10000) + 5000

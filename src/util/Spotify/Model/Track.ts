@@ -1,4 +1,5 @@
 export class Track{
+    context: any;
     constructor(
         public id: string,
         public name: string,

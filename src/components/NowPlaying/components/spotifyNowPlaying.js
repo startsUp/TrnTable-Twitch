@@ -11,6 +11,7 @@ import { TextWithTitle } from '../../Misc/TextWithTitle';
 import { VoteType, Vote } from '../../../util/Spotify/Model/Vote';
 import { SpotifySessionService } from '../../../util/Spotify/SpotifySessionService';
 import { readableNumber } from '../../../util/Misc/readable'
+import { ContextLink } from '../../Misc/ContextLink';
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'grid',
@@ -59,6 +60,11 @@ const useStyles = makeStyles(theme => ({
   voteCount: {
     fontFamily: 'sofia_problack',
     padding: `0 8px`
+  },
+  button: theme.button,
+  warning: {
+    color: theme.palette.warning.light,
+    textAlign: 'center'
   }
 }));
 
@@ -104,13 +110,36 @@ const getEmptyMsg = (role)=> {
 export default function SpotifyNowPlaying(props) {
     const classes = useStyles();
     const role = props.role ? props.role : Role.VIEWER
-    const {nowPlaying} = props
+    const { playlistId, nowPlaying, errored, resetError } = props
+
+    const isExtensionPlaylistBeingPlayed = () => {
+      if (nowPlaying && nowPlaying.context && nowPlaying.context.type==="playlist"){
+        return playlistId === nowPlaying.context.uri.split('playlist:')[1]
+      }
+      return false
+    }
 
     return(
         <div className={classes.root}>
           {/* <Refresh iconStyle={classes.icon} onClick={() => console.log('reresh')}/> */}
-          { !nowPlaying && <TextWithTitle title='Not Available' text={getEmptyMsg(role)}/>}
+          { !nowPlaying && !errored && <TextWithTitle title='Not Available' text={getEmptyMsg(role)}/>}
+          { !nowPlaying && errored && 
+            <React.Fragment>
+              <TextWithTitle title='Error' text="Unable to get currently playing track. Please refresh."/>}
+              <Button variant="outlined" onClick={resetError} size="small" color="primary" className={classes.button}>
+                Refresh
+              </Button>
+            </React.Fragment>
+          }
           { nowPlaying && <NowPlaying classes={classes} track={nowPlaying}/> }
+          { nowPlaying && nowPlaying.context &&
+          <React.Fragment>
+            <ContextLink text="Find on Spotify" 
+              link={{url: nowPlaying.context.external_urls.spotify, text: nowPlaying.context.type}}
+              title=''/>
+            {!isExtensionPlaylistBeingPlayed() && <Typography variant="body2" className={classes.warning}>Extension playlist not being played right now!</Typography>}
+          </React.Fragment>
+          }
         </div> 
     )
     

@@ -315,7 +315,7 @@ export default function ViewerTab() {
         <div className={classes.swipeView}>
           <Toolbar/>   
           <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
-            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} handleVote={handleVote} vote={vote}/> 
+            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} handleVote={handleVote} vote={vote} playlistId={sessionSettings.playlistId}/> 
           </TabPanel>
         </div>   
       </SwipeableViews>

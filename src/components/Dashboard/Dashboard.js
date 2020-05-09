@@ -116,18 +116,24 @@ export default function Dashboard() {
   const [totalTracks, setTotalTracks] = useState(null)
   const [offset, setOffset] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [nowPlayingPoll, resetNowPlaying] = useState(false)
 
   var userSettings = settingsService.getUserSettings(config, Role.BROADCASTER)
   // listen for requests here
 	useEffect(() => {
     var stopListeningForMessages = sessionService.listenForPubSubMessages(handlePubSubMessage) 
-    var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
     fetchPlaylistTracks()
     return () => {
       stopListeningForMessages()
+    }
+  }, [])
+  
+  useEffect(() => {
+    var stopPolling = sessionService.pollApi(spotify.getMyCurrentPlayingTrack, makeCall, updateNowPlaying, nowPlayingError, 4000)
+    return () => {
       stopPolling()
     }
-	}, [])
+	}, [nowPlayingPoll])
 
   function fetchPlaylistTracks(){
     setLoading(true)
@@ -188,7 +194,7 @@ export default function Dashboard() {
   }
 
 	const nowPlayingError = (err) => {
-			setError({errorMsg: 'Error updating now playing'})
+      setError({errorMsg: 'Error updating now playing'})
 	}
 
 	const updateTrackList = (tracks) => { // called when new songs added
@@ -314,7 +320,9 @@ export default function Dashboard() {
         <div className={classes.swipeView}>
           <Toolbar/>   
           <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
-            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} likes={votes.likes} dislikes={votes.dislikes}/> 
+            <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} likes={votes.likes} dislikes={votes.dislikes}
+            resetError={() => {setError({errorMsg: ''}); resetNowPlaying(!nowPlayingPoll)}}
+            errored={error && error.errorMsg === 'Error updating now playing'} playlistId={userSettings.playlistId}/> 
           </TabPanel>
         </div>   
       </SwipeableViews>
