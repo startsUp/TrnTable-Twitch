@@ -135,9 +135,12 @@ export default function SpotifyNowPlaying(props) {
             <NowPlaying classes={classes} track={nowPlaying}/>
             {!isExtensionPlaylistBeingPlayed() && <Typography variant="body2" className={classes.warning}>Extension playlist not being played right now!</Typography>}
             { nowPlaying.context && 
-              <ContextLink className={classes.footer} text="Find on Spotify:" 
-                link={{url: nowPlaying.context.external_urls.spotify, text: nowPlaying.context.type}}
-                title=''/>}
+              <div className={classes.footer}>
+                <ContextLink  text="Find on Spotify:" 
+                  link={{url: nowPlaying.context.external_urls.spotify, text: nowPlaying.context.type}}
+                  title=''/>
+              </div>
+            }
           </React.Fragment>
           }
         </div> 
