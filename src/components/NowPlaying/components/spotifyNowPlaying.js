@@ -65,6 +65,11 @@ const useStyles = makeStyles(theme => ({
   warning: {
     color: theme.palette.warning.light,
     textAlign: 'center'
+  },
+  footer: {
+    position: 'absolute',
+    width: '100%',
+    top: theme.spacing(1)
   }
 }));
 
@@ -133,12 +138,12 @@ export default function SpotifyNowPlaying(props) {
           }
           { nowPlaying && <NowPlaying classes={classes} track={nowPlaying}/> }
           { nowPlaying && nowPlaying.context &&
-          <React.Fragment>
+          <div className={classes.footer}>
             <ContextLink text="Find on Spotify" 
               link={{url: nowPlaying.context.external_urls.spotify, text: nowPlaying.context.type}}
               title=''/>
             {!isExtensionPlaylistBeingPlayed() && <Typography variant="body2" className={classes.warning}>Extension playlist not being played right now!</Typography>}
-          </React.Fragment>
+          </div>
           }
         </div> 
     )
