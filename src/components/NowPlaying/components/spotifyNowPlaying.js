@@ -1,11 +1,6 @@
 import React, { Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Box, Typography } from '@material-ui/core';
-import { Avatar, Paper } from '@material-ui/core';
-import { getThemeProps } from '@material-ui/styles';
-import ThumbDownRoundedIcon from '@material-ui/icons/ThumbDownRounded';
-import ThumbUpRoundedIcon from '@material-ui/icons/ThumbUpRounded';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import { Box, Typography, Avatar } from '@material-ui/core';
 import { Role } from '../../../auth/roles/roles';
 import { TextWithTitle } from '../../Misc/TextWithTitle';
 import { VoteType, Vote } from '../../../util/Spotify/Model/Vote';
@@ -23,10 +18,12 @@ const useStyles = makeStyles(theme => ({
     
 	},
 	nowPlaying: {
-    padding: theme.spacing(2),
     display: 'contents', 
 		textAlign: 'center'
-	},
+  },
+  nowPlayingText:{
+    padding: theme.spacing(2),
+  },
   icon: {
 		cursor: 'pointer',
 	},
@@ -99,16 +96,14 @@ const NowPlaying = props => {
           className={classes.albumImage}
         />
       </Box>
-			<div>
+			<div className={classes.nowPlayingText}>
 				<Typography variant="h6" color='textPrimary' align='center'>{track.name}</Typography>
 				<Typography variant="body2" color='textSecondary' align='center'>{track.artists}</Typography>
 			</div>
 		</div>
 	)
 }
-const Refresh = props => (
-	<RefreshIcon className={props.iconStyle} color='primary' onClick={props.onClick}/>
-)
+
 const getEmptyMsg = (role)=> {
     return `No songs being played right now. When ${role === Role.BROADCASTER ? 'you play' : 'the streamer plays'} a song from spotify it will appear here.`
 }
@@ -126,7 +121,6 @@ export default function SpotifyNowPlaying(props) {
 
     return(
         <div className={classes.root}>
-          {/* <Refresh iconStyle={classes.icon} onClick={() => console.log('reresh')}/> */}
           { !nowPlaying && !errored && <TextWithTitle title='Not Available' text={getEmptyMsg(role)}/>}
           { !nowPlaying && errored && 
             <React.Fragment>
