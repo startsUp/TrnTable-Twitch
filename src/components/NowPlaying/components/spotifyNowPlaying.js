@@ -32,7 +32,6 @@ const useStyles = makeStyles(theme => ({
   albumImage: {
     width: theme.spacing(10),
 		height: theme.spacing(10),
-		marginTop: theme.spacing(3)
   },
   voting: {
     display: 'grid',
@@ -83,7 +82,7 @@ const NowPlaying = props => {
 	const {classes, track} = props
 	return(
 		<div className={classes.nowPlaying}>
-      <Box boxShadow={3}>
+      <Box boxShadow={3} style={{marginTop: '24px'}}>
         <Avatar alt={track.album.name}
           variant="rounded" src={track.album.images[0].url} 
           className={classes.albumImage}
