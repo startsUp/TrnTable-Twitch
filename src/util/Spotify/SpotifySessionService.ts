@@ -24,7 +24,7 @@ export class SpotifySessionService{
         public id: string,// may be null for viewers that opt out of sharing identity,
         public spotifyService: SpotifyService = new SpotifyService(),
      ){
-        this.pubSubTopic = `whisper-U${id}`
+        this.pubSubTopic = `whisper-${id}`
      }
 
     clearPlaylist = () => {
