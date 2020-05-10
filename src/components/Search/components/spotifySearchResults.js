@@ -62,6 +62,7 @@ const useStyles = makeStyles(theme => ({
     fill: theme.palette.text.disabled
   },
   header: {
+    background: theme.palette.background.paper,
     position: 'sticky',
     top: '0px',
     display: 'grid',
