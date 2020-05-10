@@ -108,10 +108,11 @@ export default function ViewerTab() {
   const auth = useAuth()
   const [token, spotify, makeCall] = useSpotify()
   const { config } = auth.data
-  const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getChannelId())
   const settingsService = new SettingsService()
   const storageService = new StorageService()
   const sessionSettings = settingsService.getSessionSettings(config)
+  const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getChannelId())
+  const [channelTopic, setChannelTopic] = useState(sessionSettings.channelTopic)
   const [toast, setToast] = useState(HIDE_TOAST)
   const [value, setValue] = useState(0);
   const [trackSearchView, setTrackSearchView] = useState(TrackSearchView.SEARCH);
@@ -173,10 +174,11 @@ export default function ViewerTab() {
       handleNowPlayingUpdate(pubsubMsg.content)
   }
 	
-	const handleSettingsChange = (sessionSettings) => {
+	const handleSettingsChange = (settings) => {
 		setSettings({
-      isTakingRequests: !settingsService.getSettingValue(sessionSettings, SettingMap.isTakingRequests)
+      isTakingRequests: !settingsService.getSettingValue(settings, SettingMap.isTakingRequests)
     })
+    setChannelTopic(settings.channelTopic) 
 	}
 	
   const handleNowPlayingUpdate = (nowPlayingTrack) => {
@@ -210,7 +212,7 @@ export default function ViewerTab() {
         if (requestedAmount >= MAX_REQUESTED_AMOUNT)
           storageService.removeRequestedSong([0]) // remove the first added song
 
-        sessionService.sendSongRequest([track], songRequestSuccess, songRequestFail)
+        sessionService.sendSongRequest([track], channelTopic, songRequestSuccess, songRequestFail)
         setTrackSearchView(TrackSearchView.SEARCH)
       },
       err => {

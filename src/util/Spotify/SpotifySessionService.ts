@@ -33,10 +33,10 @@ export class SpotifySessionService{
      
     addTracks = () => {}
     
-    sendSongRequest = (tracks: Track[], success: Function,  error: Function) => {
+    sendSongRequest = (tracks: Track[], topic: string, success: Function,  error: Function) => {
         if (tracks && tracks.length > 0){
             console.warn('requesting track =', tracks)
-            fetch(`${this.EBS_API}/request/${this.id}`, {
+            fetch(`${this.EBS_API}/request/${this.id}?target=${topic}`, {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 headers: {
                     'Content-Type': this.jsonType,

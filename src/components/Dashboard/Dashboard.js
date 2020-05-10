@@ -110,7 +110,7 @@ export default function Dashboard() {
   const nowPlayingRef = useRef(null)
   const [nowPlaying, setNowPlaying] = useState(null)
 	const [votes, setVotes] = useState({likes: 0, dislikes: 0})
-	const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getChannelId()) 
+	const sessionService = new SpotifySessionService(twitch, auth.twitchAuth.getOpaqueId()) 
 	const settingsService = new SettingsService() 
   const { config } = auth.data
   const [totalTracks, setTotalTracks] = useState(null)
@@ -123,6 +123,11 @@ export default function Dashboard() {
 	useEffect(() => {
     var stopListeningForMessages = sessionService.listenForPubSubMessages(handlePubSubMessage) 
     fetchPlaylistTracks()
+    if(userSettings.channelTopic !== auth.twitchAuth.getOpaqueId()){ // if opaque id changed broadcast update for whispers 
+      userSettings.channelTopic = auth.twitchAuth.getOpaqueId()
+      auth.updateConfig(settingsService.toJSON(userSettings))
+      sessionService.broadcastSettingsUpdate(userSettings, true)
+    }
     return () => {
       stopListeningForMessages()
     }

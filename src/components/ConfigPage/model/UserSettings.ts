@@ -10,6 +10,7 @@ export class UserSettings{
         public requestProductSKU: string, // sku for the request bits product
         public created: Date,
         public updated: Date,
+        public channelTopic: string
     ){}
     
 

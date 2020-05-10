@@ -146,7 +146,7 @@ export default function ConfigPage() {
     const updateConfig = async () => {
         // update user settings
         settingsService.updateUserSettings(userSettings, settingComponents)
-
+		userSettings.channelTopic = auth.twitchAuth.getOpaqueId()
         // convert to json
         
 
