@@ -8,18 +8,20 @@ To facilitate a quick review process, we suggest that you provide a clear and th
 Trntable is a simple extension that lets viewers request songs through spotify.
 Walkthrough:
     As the Streamer:
-    Configuration:
-        1. For configuration, the streamer will have to connection their spotify account for the extension.
-        2. Once enabled, streamers can change some settings initally.
-            - They can either select to make a new playlist for taking requests or use an existing playlist from their Spotify Account.
-            - They can also set the maximum number of requests that they want to allow a user to request. The limit is reset after 30mins to allow that user request songs again.
-            - If streamer has bits support, they can enable bits for taking requests and they can set the bits amount for a request.
-        3. Once settings have been saved, streamer can activate the extension and start using it.    
-    Live Use:
-        
+    Configuration (Config, Live Config):
+        1. For configuration, as a streamer you will have to connect your spotify account to the extension.
+        2. Once enabled, you have can configure some settings initally.
+            - You can either select to make a new playlist for taking requests or use an existing playlist from their Spotify Account.
+            - You can also set the maximum number of requests that they want to allow a user to request. The limit is reset after 30mins to allow that user request songs again.
+            - If you as a streamer have bits support, you can enable bits for taking requests and set the bits amount for a request.
+        3. Once settings have been saved, streamer can activate the extension and start using it.
+        4. If you change settings after activation, they should be reflected during live use. To test this, pick a setting to change (example: stop requests) and enable it. Panel should show that the streamer is not taking requests right now.    
+    Live Use (Panel, Video Component):
+        1. As a streamer, you can see all request that are made under "Requests" tab. To test this feature, you can access the extension as a viewer and submit a request (see step 2 under "As a Viewer").
+        2. As a streamer, you can pause requests to stop viewers from adding songs temporarily. To test this, click on Settings Icon (to reveal header) > Click "Stop Requests". This should stop request and not allow any viewers to be able to send requests.
+        3. As a streamer, you can remove certain or all songs. To test this, click on Settings Icon > Select songs to remove > Click "Remove". To test removal of all songs, click on Settings Icon > Remove all.
     As a Viewer:
-        1. Go to channel that has the extension enabled
-        2. Search for any song
-        3. Click on request to add the song the channel playlist
-        4. To verify the song has been added you can click the link 
-    
+    Live Use (Panel, Video Component):
+        1. Go to channel that has the extension enabled 
+        2. As a viewer, you can request a song. To test this, go to "Request" tab search for any song and request it. The song should show up in the playlist (which can be opened by clicking on the playlist link on the "Request" Tab).
+        3. As a viewer, you can see the currently playing song. To test this, as a streamer play a song and have the extension open. Under "Now playing" tab, the viewer should see the song name.
