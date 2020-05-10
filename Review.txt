@@ -1,0 +1,25 @@
+Name of Channel for Review
+Please provide the URL path of the channel you want used for the review process.
+https://www.twitch.tv/ogprocrastinator
+
+Walkthrough Guide and Change Log
+To facilitate a quick review process, we suggest that you provide a clear and thorough walkthrough guide for the features of your Extension for our review team. If you are releasing a new version, please include a change log. Failure to provide a walkthrough or change log may result in extended review time or rejection.
+
+Trntable is a simple extension that lets viewers request songs through spotify.
+Walkthrough:
+    As the Streamer:
+    Configuration:
+        1. For configuration, the streamer will have to connection their spotify account for the extension.
+        2. Once enabled, streamers can change some settings initally.
+            - They can either select to make a new playlist for taking requests or use an existing playlist from their Spotify Account.
+            - They can also set the maximum number of requests that they want to allow a user to request. The limit is reset after 30mins to allow that user request songs again.
+            - If streamer has bits support, they can enable bits for taking requests and they can set the bits amount for a request.
+        3. Once settings have been saved, streamer can activate the extension and start using it.    
+    Live Use:
+        
+    As a Viewer:
+        1. Go to channel that has the extension enabled
+        2. Search for any song
+        3. Click on request to add the song the channel playlist
+        4. To verify the song has been added you can click the link 
+    
