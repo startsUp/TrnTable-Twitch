@@ -10,15 +10,15 @@ export default function LoggedInCard(props){
 						All Setup!
 				</Typography>
 				<Typography>
-						You are ready to start using TrnTable. Once you start the stream, viewers will be able to vote on currently playing songs and request new ones.
+						You are ready to start using TrnTable. Once you start playing songs viewers will see it on the extension. You need to have at least one panel open on your end for viewers to get updates.
 				</Typography>
 
-				<Box p={2} className={classes.resetBox}>
+				{/* <Box p={2} className={classes.resetBox}>
 					<Typography>Change the current TrnTable settings</Typography>
 					<Button variant="outlined" size="small" color="primary" className={classes.button} onClick={settingsCallback}>
 							Settings
 					</Button>
-				</Box>
+				</Box> */}
 				<Box p={2} className={classes.resetBox}>
 					<Typography>Logout to reset playlist and use a different account.</Typography>
 					<Button variant="outlined" size="small" color="primary" className={classes.button}

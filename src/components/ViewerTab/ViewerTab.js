@@ -294,8 +294,8 @@ export default function ViewerTab() {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Request Songs" {...a11yProps(0)} />
-          <Tab label="Now Playing" {...a11yProps(1)} />
+          {/* <Tab label="Request Songs" {...a11yProps(0)} /> */}
+          <Tab label="Now Playing" {...a11yProps(0)} />
         </Tabs>
       </AppBar>
      
@@ -304,7 +304,7 @@ export default function ViewerTab() {
         index={value}
         onChangeIndex={handleChangeIndex}
       >
-        <div className={classes.swipeView}>
+        {/* <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
                 {trackSearchView === TrackSearchView.SEARCH && 
@@ -313,10 +313,10 @@ export default function ViewerTab() {
                 {trackSearchView === TrackSearchView.RESULTS && <SpotifySearchResults tracks={results} requiresBits={auth.bits.enabled} onRequest={handleRequest} onNavigateBack={showSearch} error={error}/>}
                 {trackSearchView === TrackSearchView.ERROR && <SpotifySearchResults error={error} />}
           </TabPanel>
-        </div>   
+        </div>    */}
         <div className={classes.swipeView}>
           <Toolbar/>   
-          <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
+          <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
             <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} handleVote={handleVote} vote={vote} playlistId={sessionSettings.playlistId}/> 
           </TabPanel>
         </div>   

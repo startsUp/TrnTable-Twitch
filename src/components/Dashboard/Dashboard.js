@@ -299,8 +299,8 @@ export default function Dashboard() {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Requested Songs" {...a11yProps(0)} />
-          <Tab label="Now Playing" {...a11yProps(1)} />
+          {/* <Tab label="Requested Songs" {...a11yProps(0)} /> */}
+          <Tab label="Now Playing" {...a11yProps(0)} />
         </Tabs>
       </AppBar>
      
@@ -309,7 +309,7 @@ export default function Dashboard() {
         index={value}
         onChangeIndex={handleChangeIndex}
       >
-        <div className={classes.swipeView}>
+        {/* <div className={classes.swipeView}>
           <Toolbar/>
           <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
             <SpotifySongRequests 
@@ -321,10 +321,10 @@ export default function Dashboard() {
               loading={loading}
               onPlaylistReset={handlePlaylistReset}/>
           </TabPanel>
-        </div>   
+        </div>    */}
         <div className={classes.swipeView}>
           <Toolbar/>   
-          <TabPanel value={value} index={1} dir={theme.direction} className={classes.scrollView}>
+          <TabPanel value={value} index={0} dir={theme.direction} className={classes.scrollView}>
             <SpotifyNowPlaying nowPlaying={nowPlaying} role={auth.data.role} likes={votes.likes} dislikes={votes.dislikes}
             resetError={() => {setError({errorMsg: ''}); resetNowPlaying(!nowPlayingPoll)}}
             errored={error && error.errorMsg === 'Error updating now playing'} playlistId={userSettings.playlistId}/> 
