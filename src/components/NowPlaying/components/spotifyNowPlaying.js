@@ -3,9 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Box, Typography, Avatar } from '@material-ui/core';
 import { Role } from '../../../auth/roles/roles';
 import { TextWithTitle } from '../../Misc/TextWithTitle';
-import { VoteType, Vote } from '../../../util/Spotify/Model/Vote';
-import { SpotifySessionService } from '../../../util/Spotify/SpotifySessionService';
-import { readableNumber } from '../../../util/Misc/readable'
 import { ContextLink } from '../../Misc/ContextLink';
 const useStyles = makeStyles(theme => ({
   root: {
@@ -133,7 +130,7 @@ export default function SpotifyNowPlaying(props) {
           { nowPlaying && 
           <React.Fragment>
             <NowPlaying classes={classes} track={nowPlaying}/>
-            {!isExtensionPlaylistBeingPlayed() && <Typography variant="body2" className={classes.warning}>Extension playlist not being played right now!</Typography>}
+            {/* {!isExtensionPlaylistBeingPlayed() && <Typography variant="body2" className={classes.warning}>Extension playlist not being played right now!</Typography>} */}
             { nowPlaying.context && 
               <div className={classes.footer}>
                 <ContextLink  text="Find on Spotify:" 

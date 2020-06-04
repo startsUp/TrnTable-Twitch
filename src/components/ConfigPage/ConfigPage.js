@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import '../../App.css'
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Container, Box, Paper, Typography, SvgIcon, Divider, List, Button } from '@material-ui/core'; 
+import { makeStyles } from '@material-ui/core/styles';
+import { Paper, Typography, Divider } from '@material-ui/core'; 
 import Login from './login';
 import SpotifyWebApi from 'spotify-web-api-js'
 import { Error } from './ConfigErrors'
 import AppLogo from '../logo'
 import Bg from '../../res/images/stockBG.jpeg'
-import { SettingType } from './model/Setting'
 import { SettingsService } from './settings-service'
-import SettingsCard from './settingsCard'
 import LoggedInCard from './loggedinCard'
-import LoadingCard from '../loader'
 import { useAuth } from '../../auth/auth-context';
 import { ConfigStates } from './config-states'
-import { UserSettings } from './model/UserSettings'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useSpotify } from '../../util/Spotify/spotify-context';
 import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService';
-import { PubSubMessage, PubSubMessageType } from '../../util/Twitch/Model/PubSubMessage';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -121,7 +116,7 @@ export default function ConfigPage() {
 	const { config, role } = auth.data
 
 	const getInitialState = () => {
-		return spotifyToken ? config ? ConfigStates.LOGGEDIN : ConfigStates.SETTINGS : ConfigStates.LOGGEDOUT
+		return spotifyToken && config ? ConfigStates.LOGGEDIN : ConfigStates.LOGGEDOUT
 	}
 
 	var userSettings = settingsService.getUserSettings(config, role)
@@ -141,47 +136,47 @@ export default function ConfigPage() {
 
 	const setDefaultConfiguration = () => {
 		setConfig(settingsService.getJSONConfig())
-    }
+	}
     
     const updateConfig = async () => {
         // update user settings
         settingsService.updateUserSettings(userSettings, settingComponents)
-		userSettings.channelTopic = auth.twitchAuth.getOpaqueId()
+				userSettings.channelTopic = auth.twitchAuth.getOpaqueId()
         // convert to json
         
 
         // create trntable playlist if it doesn't exist
-        if (!userSettings.extensionPlaylistId){
-            makeCall(api.getMe, [], 
-                data => {
-                    makeCall(api.createPlaylist, [data.id, {name: 'Twitch Song Requests'}], 
-                        (playlist) => {
-                            // set twitch config
-                            console.log('playlist created', playlist)
-							userSettings.extensionPlaylistId = playlist.id
-                            if (!userSettings.playlistId)
-                                userSettings.playlistId = playlist.id
-                            // get json string and set config
-                            var jsonSettings = settingsService.toJSON(userSettings)
-                            auth.twitch.setConfig(jsonSettings)
-                            sessionService.broadcastSettingsUpdate(userSettings, true)
-                            setConfigState(ConfigStates.LOGGEDIN)
-                        },
-                        (err) => {
+        // if (!userSettings.extensionPlaylistId){
+        //     makeCall(api.getMe, [], 
+        //         data => {
+        //             makeCall(api.createPlaylist, [data.id, {name: 'Twitch Song Requests'}], 
+        //                 (playlist) => {
+        //                     // set twitch config
+        //                     console.log('playlist created', playlist)
+				// 			userSettings.extensionPlaylistId = playlist.id
+        //                     if (!userSettings.playlistId)
+        //                         userSettings.playlistId = playlist.id
+        //                     // get json string and set config
+        //                     var jsonSettings = settingsService.toJSON(userSettings)
+        //                     auth.twitch.setConfig(jsonSettings)
+        //                     sessionService.broadcastSettingsUpdate(userSettings, true)
+        //                     setConfigState(ConfigStates.LOGGEDIN)
+        //                 },
+        //                 (err) => {
                             
-                        })
-                },
-                err => {
-                    console.error(err)
-                }
-            )
-        }
-        else { 
+        //                 })
+        //         },
+        //         err => {
+        //             console.error(err)
+        //         }
+        //     )
+        // }
+        // else { 
             var jsonSettings = settingsService.toJSON(userSettings)
             auth.twitch.setConfig(jsonSettings)
-            sessionService.broadcastSettingsUpdate(userSettings, true)
+            // sessionService.broadcastSettingsUpdate(userSettings, true)
             setConfigState(ConfigStates.LOGGEDIN)
-        }
+        // }
         
         
     }
@@ -195,8 +190,8 @@ export default function ConfigPage() {
 	}
 
 	const handleAccountReset = () => {
-		sessionService.removePlaylist(makeCall, api.unfollowPlaylist, userSettings.playlistId)
-			.catch(() => {})
+		// sessionService.removePlaylist(makeCall, api.unfollowPlaylist, userSettings.playlistId)
+		// 	.catch(() => {})
 
 		auth.resetAccount(
 			(success) => {

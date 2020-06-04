@@ -5,25 +5,16 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Tab, Tabs, AppBar } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Icon from '@material-ui/core/Icon';
-import AudiotrackIcon from '@material-ui/icons/Audiotrack';
-import AddIcon from '@material-ui/icons/Add';
-import SpotifySearch from '../Search/components/spotifySearch'
-import SpotifySearchResults from '../Search/components/spotifySearchResults';
 import SpotifyNowPlaying from '../NowPlaying/components/spotifyNowPlaying';
 import { Toolbar } from '@material-ui/core';
 import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService';
 import { useAuth } from '../../auth/auth-context';
-import SpotifySongRequests from '../Requests/spotifySongRequests';
-import { Track } from '../../util/Spotify/Model/Track';
 import { useSpotify } from '../../util/Spotify/spotify-context';
 import { PubSubMessage, PubSubMessageType } from '../../util/Twitch/Model/PubSubMessage';
 import { SettingsService } from '../ConfigPage/settings-service';
 import { Role } from '../../auth/roles/roles';
-import { VoteType } from '../../util/Spotify/Model/Vote';
 import { SpotifyService } from '../../util/Spotify/SpotifyService';
 import { Toast, HIDE_TOAST, ToastNotification } from '../../util/Misc/toast';
-import LoadingCard from '../loader';
 
 
 function TabPanel(props) {
@@ -91,22 +82,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TracksView  = { REQUESTED: 'requests', ERROR: 'error', LOADING: 'loading'};
-const MAX_SONGS_BEFORE_DELETING_OLD = 200; // after this limit has been reached, the older songs will be deleted from the request list 
-const BATCH_ADD_LIMIT = 5;
 
 export default function Dashboard() {
   const classes = useStyles()
   const spotifyService = new SpotifyService()
   const theme = useTheme();
   const [value, setValue] = useState(0);
-  const [tracksView, setTracksView] = useState(TracksView.REQUESTED);
-  const [results, setResults] = useState([]);
+  const [, setTracksView] = useState(TracksView.REQUESTED);
+  const [, setResults] = useState([]);
   const [toast, setToast] = useState(HIDE_TOAST)
 	const [error, setError] = useState({errorMsg: ''});
-	const [requests, setRequests] = useState([]);
+	const [, setRequests] = useState([]);
 	const twitch = window.Twitch ? window.Twitch.ext : null
 	const auth = useAuth()
-	const [token, spotify, makeCall] = useSpotify()
+	const [, spotify, makeCall] = useSpotify()
   const nowPlayingRef = useRef(null)
   const [nowPlaying, setNowPlaying] = useState(null)
 	const [votes, setVotes] = useState({likes: 0, dislikes: 0})
@@ -115,22 +104,22 @@ export default function Dashboard() {
   const { config } = auth.data
   const [totalTracks, setTotalTracks] = useState(null)
   const [offset, setOffset] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [, setLoading] = useState(false)
   const [nowPlayingPoll, resetNowPlaying] = useState(false)
 
   var userSettings = settingsService.getUserSettings(config, Role.BROADCASTER)
   // listen for requests here
 	useEffect(() => {
-    var stopListeningForMessages = sessionService.listenForPubSubMessages(handlePubSubMessage) 
-    fetchPlaylistTracks()
-    if(userSettings.channelTopic !== auth.twitchAuth.getOpaqueId()){ // if opaque id changed broadcast update for whispers 
-      userSettings.channelTopic = auth.twitchAuth.getOpaqueId()
-      auth.updateConfig(settingsService.toJSON(userSettings))
-      sessionService.broadcastSettingsUpdate(userSettings, true)
-    }
-    return () => {
-      stopListeningForMessages()
-    }
+    // var stopListeningForMessages = sessionService.listenForPubSubMessages(handlePubSubMessage) 
+    // fetchPlaylistTracks()
+    // if(userSettings.channelTopic !== auth.twitchAuth.getOpaqueId()){ // if opaque id changed broadcast update for whispers 
+    //   userSettings.channelTopic = auth.twitchAuth.getOpaqueId()
+    //   auth.updateConfig(settingsService.toJSON(userSettings))
+    //   sessionService.broadcastSettingsUpdate(userSettings, true)
+    // }
+    // return () => {
+    //   stopListeningForMessages()
+    // }
   }, [])
   
   useEffect(() => {
@@ -158,7 +147,7 @@ export default function Dashboard() {
       setLoading(false)
       setRequests(prev => [...prev, ...spotifyService.getTrackObjects(data.items.length > 0 ? data.items.map(item =>item.track).reverse() : [])])
     })
-    .catch(err => {
+    .catch(() => {
       setLoading(false)
       setToast(new Toast('error', 'Failed to get Playlist'))
     })
@@ -198,7 +187,7 @@ export default function Dashboard() {
     }
   }
 
-	const nowPlayingError = (err) => {
+	const nowPlayingError = () => {
       setError({errorMsg: 'Error updating now playing'})
 	}
 
@@ -219,19 +208,8 @@ export default function Dashboard() {
     setValue(index);
   };
 
-  const showSearch = () => {
-    setTracksView(TracksView.SEARCH);
-  }
 
-	const showTracks = tracks => {
-    setResults(tracks);
-    setTracksView(TracksView.RESULTS);
-  }
   
-  const showError = error => {
-    setError(error);
-    setTracksView(TracksView.ERROR);
-  }
 
   const removeTracksFromPlaylist = (trackIds) => {
     setRequests(prev => {
@@ -240,39 +218,7 @@ export default function Dashboard() {
     })  
   }
 
-  const handleRemove = trackIds => {
-    var urisToRemove = []
-    trackIds.forEach(id => {
-      urisToRemove.push(`spotify:track:${id}`)
-    })
-    makeCall(spotify.removeTracksFromPlaylist, [userSettings.playlistId, urisToRemove], success => {
-      removeTracksFromPlaylist(trackIds)
-    },
-    err => {
 
-    })
-  }
-
-  function handlePlaylistReset(){
-    // make a new playlist first
-    sessionService.createPlaylist(makeCall, spotify.getMe, spotify.createPlaylist)
-      .then(playlist => {
-        var playlistToUnfollow = userSettings.playlistId
-        userSettings.extensionPlaylistId = playlist.id
-        userSettings.playlistId = playlist.id
-        auth.updateConfig(settingsService.toJSON(userSettings))
-        sessionService.broadcastSettingsUpdate(userSettings, true)
-        return sessionService.removePlaylist(makeCall, spotify.unfollowPlaylist, playlistToUnfollow)
-      })
-      .then(() => {
-        setToast(new Toast('success', 'Songs Removed.'))
-        setRequests([])
-      })
-      .catch(err => {
-        console.log(err)
-        setToast(new Toast('error', 'Failed to remove all'))
-      })
-  }
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -281,12 +227,6 @@ export default function Dashboard() {
     setToast(prev=> {return {...prev, show: false}});
   }
 
-  function setRequestTaking(willTakeRequests){
-		const stop = !willTakeRequests
-		var updatedUserSettings = settingsService.getUpdatedSettings(config, Role.BROADCASTER, 'Stop taking Requests', stop)
-		auth.updateConfig(settingsService.toJSON(updatedUserSettings))
-		sessionService.broadcastSettingsUpdate(updatedUserSettings, true)
-  }
   
   return (
     <div className={classes.root}>

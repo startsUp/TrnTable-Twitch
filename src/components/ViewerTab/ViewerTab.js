@@ -7,31 +7,17 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Icon from '@material-ui/core/Icon';
-import AudiotrackIcon from '@material-ui/icons/Audiotrack';
-import AddIcon from '@material-ui/icons/Add';
-import SpotifySearch from '../Search/components/spotifySearch'
-import SpotifySearchResults from '../Search/components/spotifySearchResults';
 import SpotifyNowPlaying from '../NowPlaying/components/spotifyNowPlaying';
 import { Toolbar } from '@material-ui/core';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import LoadingCard from '../loader';
 import { useAuth } from '../../auth/auth-context';
 import { SpotifySessionService } from '../../util/Spotify/SpotifySessionService';
-import { Track } from '../../util/Spotify/Model/Track'
-import Snackbar from '@material-ui/core/Snackbar';
-import { UserSettings } from '../ConfigPage/model/UserSettings';
-import { PubSubMessageType, PubSubMessage } from '../../util/Twitch/Model/PubSubMessage';
+import { PubSubMessageType } from '../../util/Twitch/Model/PubSubMessage';
 import { SettingsService } from '../ConfigPage/settings-service';
-import { Role } from '../../auth/roles/roles';
 import { VoteType, Vote } from '../../util/Spotify/Model/Vote';
 import { useSpotify } from '../../util/Spotify/spotify-context';
 import { Toast, HIDE_TOAST, ToastNotification } from '../../util/Misc/toast';
 import { StorageService } from '../../util/Misc/storage';
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 
 function TabPanel(props) {
@@ -106,7 +92,7 @@ export default function ViewerTab() {
   const theme = useTheme();
   const twitch = window.Twitch ? window.Twitch.ext : null
   const auth = useAuth()
-  const [token, spotify, makeCall] = useSpotify()
+  const [, spotify, makeCall] = useSpotify()
   const { config } = auth.data
   const settingsService = new SettingsService()
   const storageService = new StorageService()
@@ -115,18 +101,18 @@ export default function ViewerTab() {
   const [channelTopic, setChannelTopic] = useState(sessionSettings.channelTopic)
   const [toast, setToast] = useState(HIDE_TOAST)
   const [value, setValue] = useState(0);
-  const [trackSearchView, setTrackSearchView] = useState(TrackSearchView.SEARCH);
+  const [, setTrackSearchView] = useState(TrackSearchView.SEARCH);
   const [results, setResults] = useState([]);
-  const [error, setError] = useState({errorMsg: ''});
+  const [, setError] = useState({errorMsg: ''});
   const [nowPlaying, setNowPlaying] = React.useState(null)
   const nowPlayingRef = useRef(null)
   const [vote, setVote] = React.useState(VoteType.NONE)
   const [sentVote, setSentVote] = React.useState(new Vote('', 0, 0))
-  const [settings, setSettings] = React.useState({
+  const [, setSettings] = React.useState({
     isTakingRequests: !settingsService.getSettingValue(sessionSettings, SettingMap.isTakingRequests)
   })
 
-  const songRequestSuccess = res => {
+  const songRequestSuccess = () => {
     setToast(new Toast('success', 'Song Requested!'))
   }
 
@@ -205,7 +191,7 @@ export default function ViewerTab() {
   const sendSongRequest = track => {
     const MAX_REQUESTED_AMOUNT = 15
     makeCall(spotify.addTracksToPlaylist, [sessionSettings.playlistId, [`spotify:track:${track.id}`]], 
-      success => {
+      () => {
         storageService.addRequestedSong(track.id, auth.twitchAuth.getChannelId())
         var recentlyRequested = storageService.getRequestSongsList(auth.twitchAuth.getChannelId())
         var requestedAmount = recentlyRequested.length
@@ -215,7 +201,7 @@ export default function ViewerTab() {
         sessionService.sendSongRequest([track], channelTopic, songRequestSuccess, songRequestFail)
         setTrackSearchView(TrackSearchView.SEARCH)
       },
-      err => {
+      () => {
         setToast(new Toast('error', 'Server down. Request not sent.'))
       })
   }
@@ -232,47 +218,11 @@ export default function ViewerTab() {
     return storageService.getRequestedAmount(channelId) < settingsService.getSettingValue(sessionSettings, 'Max Requests')
   }
   
-  const handleRequest = id => {
-    let track = results.find(track => track.id === id)
-    var notRequested = hasNotBeenRequested(track)
-    var underLimit = isUnderLimit()
-    if(notRequested && underLimit){
-      if (auth.bits.enabled){
-        twitch.bits.useBits(sessionSettings.requestProductSKU)
-        twitch.bits.onTransactionComplete(transaction => {
-          sendSongRequest(track)
-        })
-        twitch.bits.onTransactionCancelled(cancelled => {
-          setToast(new Toast('warning', 'Request Cancelled.'))
-        })
-      }
-      else{
-        sendSongRequest(track)
-      }
-    }
-    else{
-      if (!notRequested)
-        setToast(new Toast('error', 'Song Already Requested.'))
-      if (!underLimit)
-        setToast(new Toast('error', 'Max song requested. Please try again in 15mins.'))
-      }
-  }
 
 
 
-  const showSearch = () => {
-    setTrackSearchView(TrackSearchView.SEARCH);
-  }
 
-	const showTracks = tracks => {
-    setResults(tracks);
-    setTrackSearchView(TrackSearchView.RESULTS);
-  }
   
-  const showError = error => {
-    setError(error);
-    setTrackSearchView(TrackSearchView.ERROR);
-  }
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {

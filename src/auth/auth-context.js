@@ -10,8 +10,9 @@ import ViewerDashboard from '../ViewerDashboard';
 import { SpotifyProvider } from '../util/Spotify/spotify-context';
 import ErrorCard from '../components/errorCard';
 import ConfigPage from "../components/ConfigPage/ConfigPage"
+import { SettingsService } from '../components/ConfigPage/settings-service';
 
-const VERSION_NO = "0.0.1";
+const VERSION_NO = "1.0.0";
 const AuthContext = React.createContext()
 
 /**
@@ -35,7 +36,7 @@ const validateToken = token => {
 function AuthProvider(props) {
   const viewType = props.viewType
   const twitch = window.Twitch ? window.Twitch.ext : null
-
+  const settingsService = new SettingsService()
   const authToken = localStorage.getItem('token')
   const isTokenValid = validateToken(authToken) 
   
@@ -129,6 +130,10 @@ function AuthProvider(props) {
     const spotifyLogin = () => spotify.handleLogin(() => {
       setAuthData()
       setLinked(true)
+ 
+      var jsonSettings = settingsService.toJSON(settingsService.getDefaultUserSettings(Role.BROADCASTER))
+      setTwitchConfig(jsonSettings)
+
     })
     const spotifyAuth = { login: spotifyLogin, logout: spotify.logout }
     const reset = (onSuccess, onError) => {
