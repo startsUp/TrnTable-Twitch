@@ -33,7 +33,7 @@ export default function HostCard(props){
 				Host a Session
 			</Typography>
 			<Typography color="textSecondary" className={classes.desc}>
-					Login to setup a TrnTable playlist. This will create a spotify playlist and let your viewers: request music and vote on currently playing music.  
+					Login to setup a TrnTable. This will connect with your spotify account and let your viewers see the currently playing music.  
 			</Typography>
 			<Box className={classes.login}>
 				<Typography color='textPrimary'>Let's Get Started</Typography>
